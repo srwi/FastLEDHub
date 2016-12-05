@@ -1,0 +1,64 @@
+#accordion .panel-heading
+{
+	cursor: pointer;
+}
+
+#effectButtons button
+{
+	margin: 6px;
+}
+
+#effectButtons
+{
+	text-align: center;
+}
+
+#wrapper
+{
+	 margin: 0px 20px;
+}
+
+body .cp-disp
+{
+	display: none;
+}
+
+body .cp-xy-slider
+{
+	width: 230px;
+	height: 230px;
+	z-index: 9999;
+}
+
+body .cp-xy-cursor
+{
+	width: 16px;
+	height: 16px;
+	border-width: 2px;
+	margin: -8px;
+	z-index: 9999;
+}
+
+body .cp-z-slider
+{
+	height: 230px;
+	width: 40px;
+	z-index: 9999;
+}
+
+body .cp-z-cursor
+{
+	border-width: 8px;
+	margin-top: -8px;
+	z-index: 9999;
+}
+
+body .cp-alpha
+{
+	display: none;
+}
+
+body .cp-color-picker
+{
+	z-index: 9999;
+}

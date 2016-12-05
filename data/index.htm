@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<!--If any libraries fail to load in the future go search for them on cdnjs.com-->
+
+		<!--jquery-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+		<!--bootstrap-->
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+		<!--touchspin-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css" media="all">
+
+		<!--slider-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/bootstrap-slider.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css" media="all">
+
+		<!--color picker-->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js"></script>
+		<link href="http://www.virtuosoft.eu/code/jquery-colorpickersliders/jquery-colorpickersliders/v4.1.7/jquery.colorpickersliders.css" rel="stylesheet" type="text/css" media="all">
+		<script src="http://www.virtuosoft.eu/code/jquery-colorpickersliders/jquery-colorpickersliders/v4.1.7/jquery.colorpickersliders.js"></script>
+
+		<title>Lightstrip Controller</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="controlcenter.js"></script>
+		<link rel="stylesheet" href="controlcenter.css">
+
+	</head>
+
+	<body>
+		<div id="wrapper">
+
+		<h1 style="text-align: center; margin-bottom: 30px;">Lightstrip Controller</h1>
+
+			<div class="panel panel-default">
+				<div id="single_color_heading" class="panel-heading" style="color:white;">Real-Time Color Control</div>
+				<div class="panel-body">
+
+					<div id="single_color_picker"></div>
+
+					<div style="width: 120px; display: inline-block;">
+						<label for="red">Red:</label>
+						<input onChange="send_color(red.value, green.value, blue.value);" id="red" name="red">
+					</div>
+					<div style="width: 120px; display: inline-block;">
+						<label for="green">Green:</label>
+						<input onChange="send_color(red.value, green.value, blue.value);" id="green" name="green">
+					</div>
+					<div style="width: 120px; display: inline-block;">
+						<label for="blue">Blue:</label>
+						<input onChange="send_color(red.value, green.value, blue.value);" id="blue" name="blue">
+					</div>
+					<div style="display: inline-block;">
+						<button style="margin-top: 61px;" onClick="send_wakeup_color();" id="send_wakeup_color_button" type="button" class="btn btn-primary">Set Wakeup Color</button>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading">Wakeup Settings</div>
+				<div class="panel-body">
+
+					<div>
+						<label for="wakeup_duration">Wakeup Interval (Speed):</label>
+						<input id="wakeup_duration" name="wakeup_duration">
+					</div>
+					<br />
+					<div>
+						<label for="sunset_offset">Sunset Offset (minutes):</label>
+						<input id="sunset_offset" name="sunset_offset">
+					</div>
+					<br />
+					<button onClick="send_config();" type="button" class="btn btn-primary">Save</button>
+					<button onClick="send_config(); send_text('wakeup');" type="button" class="btn btn-primary">Save &amp; Start Wakeup</button>
+
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading">Time and Location Settings</div>
+				<div class="panel-body">
+
+					<div>
+						<label for="time_zone">Timezone:</label>
+						<input id="time_zone" name="time_zone">
+					</div>
+					<br />
+					<div>
+						<label for="summer_time">Summer time</label>
+						<input id="summer_time" name="summer_time">
+					</div>
+					<br />
+					<div class="form-group">
+						<label for="longitude">Longitude:</label>
+						<input id="longitude" type="text" class="form-control" name="longitude">
+					</div>
+					<div class="form-group">
+						<label for="latitude">Latitude:</label>
+						<input id="latitude" type="text" class="form-control" name="latitude">
+					</div>
+					<button onClick="send_config();" type="button" class="btn btn-primary" data-toggle="tooltip1" title="Reboot to apply changes!">Save</button>
+
+				</div>
+			</div>
+
+			<div style="text-align: center; margin-bottom: 20px;">
+				<button style="display: inline-block;" onClick="send_text('restart');" type="button" class="btn btn-link">Restart</button>
+				<a style="display: inline-block;" href="/edit.htm" class="btn btn-link" role="button">Editor UI</a>
+			</div>
+		
+		</div>
+	</body>
+</html>
