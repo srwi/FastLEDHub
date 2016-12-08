@@ -1,30 +1,67 @@
 #include "EffectController.h"
 
 Ticker effectTicker;
-Effect effect;
+
 bool canBeResumed = false;
 bool effectRunning = false;
+LinkedList<Effect> effectList;
+uint8_t effectIndex = 0;
+uint8_t speed = 0;
 
-void begin(Effect &eff, float interval)
+void initController()
+{
+	effectList.add({"Custom Color", customColor});
+	effectList.add({"Gradient", gradient});
+}
+
+void begin(String newName, int8_t newSpeed)
 {
 	// Check if effect is already running
-	if(effectRunning && eff.name == effect.name)
+	if(effectRunning && effectList.get(effectIndex).name == newName)
 		return;
 
-	// Copy new interval to effect struct if provided
-	if(interval)
-		eff.currentInterval = interval;
+	// Get effect index from name
+	for(uint8_t i = 0; i < effectList.size(); i++)
+	{
+		if(effectList.get(i).name == newName)
+		{
+			effectIndex = i;
+			break;
+		}
+	}
 
-	effect = eff;
+	// Save lastEffectIndex to config
+	Config.last_effect = newName;
+	Config.save();
 
+	// Change speed if provided as parameter
+	if(newSpeed >= 0)
+		speed = newSpeed;
+
+	// Start effect
 	effectTicker.detach();
-	writeBlank();
-	effect.reset();
-	effectTicker.attach_ms(effect.currentInterval, effect.tick);
-
-	potiColorBeforeEffectStart = currentPotiColor;
+	FastLED.clear();
+	FastLED.show();
+	effectList.get(effectIndex).configuration.reset();
+	attachTicker();
 	canBeResumed = false;
 	effectRunning = true;
+
+	Serial.println("[EffectController] Started '" + Config.last_effect + "' effect.");
+}
+
+void cycleEffect()
+{
+	uint8_t nextEffectIndex = effectIndex;
+
+	if(effectRunning)
+	{
+		nextEffectIndex++;
+		nextEffectIndex %= effectList.size();
+	}
+
+	stop();
+	begin(effectList.get(nextEffectIndex).name);
 }
 
 void stop()
@@ -32,20 +69,20 @@ void stop()
 	canBeResumed = false;
 	effectRunning = false;
 	effectTicker.detach();
-	effect.reset();
-	writeBlank();
+	effectList.get(effectIndex).configuration.reset();
+	FastLED.clear();
+	FastLED.show();
 }
 
 void resume()
 {
 	if(!canBeResumed)
 	{
-		Serial.println("[Effect] The effect can not be resumed because it is currently in stopped state.");
+		//effectList.get(effectIndex).configuration.reset();
 		return;
 	}
 
-	effectTicker.attach_ms(effect.currentInterval, effect.tick);
-	potiColorBeforeEffectStart = currentPotiColor;
+	attachTicker();
 	canBeResumed = false;
 	effectRunning = true;
 }
@@ -53,7 +90,7 @@ void resume()
 void restart()
 {
 	stop();
-	begin(effect);
+	begin(effectList.get(effectIndex).name);
 }
 
 void pause()
@@ -63,18 +100,20 @@ void pause()
 	effectRunning = false;
 }
 
-void setInterval(uint16_t interval)
+void setSpeed(uint8_t newSpeed)
 {
-	effect.currentInterval = interval;
+	speed = newSpeed;
 
 	if(effectRunning)
 	{
 		effectTicker.detach();
-		effectTicker.attach_ms(effect.currentInterval, effect.tick);
+		attachTicker();
 	}
 }
 
-void setSpeed(uint16_t speed)
+void attachTicker()
 {
-	setInterval(effect.speedZeroOffset + effect.speedStepSize * speed);
+	uint16_t interval = effectList.get(effectIndex).configuration.intervalZeroOffset + speed * effectList.get(effectIndex).configuration.intervalStepSize;
+
+	effectTicker.attach_ms(interval, effectList.get(effectIndex).configuration.tick);
 }

@@ -6,7 +6,7 @@ unsigned int localPort = 2390;//8888;
 const int NTP_PACKET_SIZE = 48;
 byte packetBuffer[NTP_PACKET_SIZE];
 
-bool alarmHold = false;
+Ticker alarmTimer;
 Ticker wakeupTimer;
 Ticker holdTimer;
 myTime sunsetTime;
@@ -33,7 +33,7 @@ myTime getSunsetTime()
 	if (!client.connect(host, 80))
 	{
 		Serial.println("failed!\nUsing fallback time.");
-		return { Config.fallback_sunset_hour, Config.fallback_sunset_minute };
+		return { Config.sunset_hour, Config.sunset_minute };
 	}
 	client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
 	unsigned long timeout = millis();
@@ -43,7 +43,7 @@ myTime getSunsetTime()
 		{
 			Serial.println("failed!\nUsing fallback time.");
 			client.stop();
-			return { Config.fallback_sunset_hour, Config.fallback_sunset_minute };
+			return { Config.sunset_hour, Config.sunset_minute };
 		}
 	}
 
@@ -61,7 +61,7 @@ myTime getSunsetTime()
 	String sunset = root["results"]["sunset"];
 
 	if(sunset == "")
-		return { Config.fallback_sunset_hour, Config.fallback_sunset_minute };
+		return { Config.sunset_hour, Config.sunset_minute };
 
 	// Generate wakeup time from JSON and saved settings
 	int8_t hour = 0;
@@ -81,7 +81,7 @@ myTime getSunsetTime()
 	while(minute < 0)
 	{
 		minute += 60;
-		hour--; 
+		hour--;
 	}
 	while(hour >= 24)
 		hour -= 24;
@@ -89,8 +89,8 @@ myTime getSunsetTime()
 		hour += 24;
 
 	// Save time as new fallback_time in case there is no wifi connection next time
-	Config.fallback_sunset_hour = hour;
-	Config.fallback_sunset_minute = minute;
+	Config.sunset_hour = hour;
+	Config.sunset_minute = minute;
 
 	Serial.println("ok!");
 	return myTime {hour, minute};
@@ -98,6 +98,10 @@ myTime getSunsetTime()
 
 time_t getNtpTime()
 {
+	// Don't get time while websocket connection is open (Could cause connection to drop)
+	if(websocketConnectionCount > 0)
+		return now();
+
 	Serial.print("[Time] Getting time from NTP server...");
 	time_t time = 0;
 	uint32_t beginWait_1 = millis();
@@ -145,21 +149,4 @@ void sendNTPpacket(IPAddress &address)
 	Udp.beginPacket(address, 123);
 	Udp.write(packetBuffer, NTP_PACKET_SIZE);
 	Udp.endPacket();
-}
-
-void handleAlarm()
-{
-	if(alarmHold)
-		return;
-
-	if(hour() == sunsetTime.hour && minute() == sunsetTime.minute)
-	{
-		// TODO: Set wakeup interval depending on wakeup duration
-		int duration = 
-		begin(wakeup);
-
-		// Pause for 90 seconds to prevent multiple executions
-		alarmHold = true;
-		holdTimer.once(90, [&](){ alarmHold = false; });
-	}
 }

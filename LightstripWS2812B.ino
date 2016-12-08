@@ -5,9 +5,7 @@
 #include "Time.h"
 #include "Hardware.h"
 #include "Config.h"
-
-#include "Effects/Wakeup.h"
-#include "Effects/StaticSingleColor.h"
+#include "Fade.h"
 
 void setup()
 {
@@ -18,13 +16,15 @@ void setup()
 	WebServer.init();
 	if(Wifi.isAP())
 		return;
-	
 	OTA.init("Lightstrip");
-	websocket_init();
+	
 	Config.init();
-
+	initWebsocket();
 	initHardware();
 	initTime();
+	initController();
+
+	begin(Config.last_effect);
 }
 
 void loop()
@@ -39,6 +39,6 @@ void loop()
 		OTA.handle();
 		webSocket.loop();
 		
-		handleAlarm();
+		handleFade();
 	}
 }

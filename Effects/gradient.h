@@ -1,15 +1,14 @@
-#ifndef _WAKEUP_H
-#define _WAKEUP_H
+#ifndef _GRADIENT_H
+#define _GRADIENT_H
 
 #include <Arduino.h>
 #include <Time.h>
 
-#include "../Config.h"
 #include "../EffectController.h"
 
-extern Effect wakeup;
+extern EffectConfiguration gradient;
 
-namespace wakeupNamespace
+namespace gradientNamespace
 {
 	extern void reset();
 	extern void tick();

@@ -3,20 +3,17 @@
 
 #include <WebSocketsServer.h>
 #include <ESP8266mDNS.h>
-#include <Hash.h>
 
 #include "EffectController.h"
 #include "Config.h"
 
-#include "Effects/Wakeup.h"
-#include "Effects/StaticSingleColor.h"
-
 extern WebSocketsServer webSocket;
+extern uint8_t websocketConnectionCount;
 
-void websocket_init();
-void websocket_event(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
-void handle_websocket_text(String text, uint8_t num);
-void handle_websocket_binary(uint8_t *binary);
-String byte_array_to_String(uint8_t *bytes);
+void initWebsocket();
+void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
+void handleWebsocketText(String text, uint8_t num);
+void handleWebsocketBinary(uint8_t *binary);
+String byteArrayToString(uint8_t *bytes);
 
 #endif

@@ -2,9 +2,6 @@
 <html>
 
 	<head>
-
-		<!--If any libraries fail to load in the future go search for them on cdnjs.com-->
-
 		<!--jquery-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
@@ -12,6 +9,10 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+		<!--timepicker-->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" media="all">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
 
 		<!--touchspin-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
@@ -22,13 +23,10 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css" media="all">
 
 		<!--color picker-->
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/tinycolor/0.11.1/tinycolor.min.js"></script>
-		<link href="http://www.virtuosoft.eu/code/jquery-colorpickersliders/jquery-colorpickersliders/v4.1.7/jquery.colorpickersliders.css" rel="stylesheet" type="text/css" media="all">
-		<script src="http://www.virtuosoft.eu/code/jquery-colorpickersliders/jquery-colorpickersliders/v4.1.7/jquery.colorpickersliders.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
 
 		<title>Lightstrip Controller</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<script src="controlcenter.js"></script>
 		<link rel="stylesheet" href="controlcenter.css">
 
 	</head>
@@ -36,85 +34,121 @@
 	<body>
 		<div id="wrapper">
 
-		<h1 style="text-align: center; margin-bottom: 30px;">Lightstrip Controller</h1>
+			<h1 style="text-align: center">Lightstrip</h1>
 
-			<div class="panel panel-default">
-				<div id="single_color_heading" class="panel-heading" style="color:white;">Real-Time Color Control</div>
-				<div class="panel-body">
+			<br>
 
-					<div id="single_color_picker"></div>
+			<div id="effectButtons">
+				<button type="button" class="btn btn-default color no-alpha">Custom Color</button>
+				<button type="button" class="btn btn-success">RGB Rainbow</button>
+				<button type="button" class="btn btn-default">Roy G. Biv</button>
+				<button type="button" class="btn btn-default">Sunset</button>
+				<button type="button" class="btn btn-default">Sunrise</button>
+				<button type="button" class="btn btn-default">Aqua</button>
+				<button type="button" class="btn btn-default">Twinkle Twinkle</button>
+				<button type="button" class="btn btn-default">#borntoparty</button>
+				<button type="button" class="btn btn-danger">Nox</button>
+			</div>
 
-					<div style="width: 120px; display: inline-block;">
-						<label for="red">Red:</label>
-						<input onChange="send_color(red.value, green.value, blue.value);" id="red" name="red">
-					</div>
-					<div style="width: 120px; display: inline-block;">
-						<label for="green">Green:</label>
-						<input onChange="send_color(red.value, green.value, blue.value);" id="green" name="green">
-					</div>
-					<div style="width: 120px; display: inline-block;">
-						<label for="blue">Blue:</label>
-						<input onChange="send_color(red.value, green.value, blue.value);" id="blue" name="blue">
-					</div>
-					<div style="display: inline-block;">
-						<button style="margin-top: 61px;" onClick="send_wakeup_color();" id="send_wakeup_color_button" type="button" class="btn btn-primary">Set Wakeup Color</button>
-					</div>
+			<br>
 
+			<div class="panel-group" id="accordion">
+
+				<div class="panel panel-default">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#wakeupCollapse">
+						<h4 class="panel-title">Wakeup</h4>
+					</div>
+					<div id="wakeupCollapse" class="panel-collapse collapse">
+						<div class="panel-body">
+							<div class="checkbox">
+								<label><input type="checkbox" value="">Enable</label>
+							</div>
+
+							<label for="alarm_timepicker_container">Time</label>
+							<div id="alarm_timepicker_container" class="input-group bootstrap-timepicker timepicker">
+								<input id="alarm_timepicker" type="text" class="form-control input-small">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+							</div>
+
+							<label for="wakeup_duration">Duration</label>
+							<input id="wakeup_duration" name="wakeup_duration">
+
+							<label for="wakeup_effect">Wakeup Effect</label>
+							<select class="form-control" id="wakeup_effect">
+								<option>RGB Rainbow</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+
+							<label for="post_wakeup_effect">Post Wakeup Effect</label>
+							<select class="form-control" id="post_wakeup_effect">
+								<option>Roy G. Biv</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+
+							<button type="button" class="btn btn-primary">Save</button>
+						</div>
+					</div>
 				</div>
-			</div>
 
-			<div class="panel panel-default">
-				<div class="panel-heading">Wakeup Settings</div>
-				<div class="panel-body">
+				<br>
 
-					<div>
-						<label for="wakeup_duration">Wakeup Interval (Speed):</label>
-						<input id="wakeup_duration" name="wakeup_duration">
+				<div class="panel panel-default">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
+						<h4 class="panel-title">Sunset</h4>
 					</div>
-					<br />
-					<div>
-						<label for="sunset_offset">Sunset Offset (minutes):</label>
-						<input id="sunset_offset" name="sunset_offset">
-					</div>
-					<br />
-					<button onClick="send_config();" type="button" class="btn btn-primary">Save</button>
-					<button onClick="send_config(); send_text('wakeup');" type="button" class="btn btn-primary">Save &amp; Start Wakeup</button>
+					<div id="sunsetCollapse" class="panel-collapse collapse">
+						<div class="panel-body">
+							<div class="checkbox">
+								<label><input type="checkbox" value="">Enable</label>
+							</div>
 
+							<label for="longitude">Longitude</label>
+							<input type="text" class="form-control" id="longitude" name="longitude">
+
+							<label for="latitude">Latitude</label>
+							<input type="text" class="form-control" id="latitude" name="latitude">
+
+							<label for="sunset_offset">Sunset Offset</label>
+							<input id="sunset_offset" name="sunset_offset">
+
+							<label for="time_zone">Time Zone</label>
+							<input id="time_zone" name="time_zone">
+
+							<div class="checkbox">
+								<label><input type="checkbox" value="">Summer Time</label>
+							</div>
+
+							<label for="wakeup_effect">Wakeup Effect</label>
+							<select class="form-control" id="wakeup_effect">
+								<option>RGB Rainbow</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+							</select>
+
+							<button type="button" class="btn btn-primary">Save</button>
+						</div>
+					</div>
 				</div>
+
 			</div>
 
-			<div class="panel panel-default">
-				<div class="panel-heading">Time and Location Settings</div>
-				<div class="panel-body">
+			<!-- <center><img style="margin:50px 0px;" src="pusheen_so_fancy.gif"></center> -->
 
-					<div>
-						<label for="time_zone">Timezone:</label>
-						<input id="time_zone" name="time_zone">
-					</div>
-					<br />
-					<div>
-						<label for="summer_time">Summer time</label>
-						<input id="summer_time" name="summer_time">
-					</div>
-					<br />
-					<div class="form-group">
-						<label for="longitude">Longitude:</label>
-						<input id="longitude" type="text" class="form-control" name="longitude">
-					</div>
-					<div class="form-group">
-						<label for="latitude">Latitude:</label>
-						<input id="latitude" type="text" class="form-control" name="latitude">
-					</div>
-					<button onClick="send_config();" type="button" class="btn btn-primary" data-toggle="tooltip1" title="Reboot to apply changes!">Save</button>
-
-				</div>
-			</div>
-
-			<div style="text-align: center; margin-bottom: 20px;">
-				<button style="display: inline-block;" onClick="send_text('restart');" type="button" class="btn btn-link">Restart</button>
-				<a style="display: inline-block;" href="/edit.htm" class="btn btn-link" role="button">Editor UI</a>
-			</div>
-		
 		</div>
+
+		<script src="controlcenter.js"></script>
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-88431234-1', 'auto');
+			ga('send', 'pageview');
+			ga('set', 'checkProtocolTask', null); // Disable file protocol checking.
+		</script>
+		
 	</body>
 </html>

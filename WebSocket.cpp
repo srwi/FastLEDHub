@@ -1,11 +1,12 @@
 #include "WebSocket.h"
 
 WebSocketsServer webSocket = WebSocketsServer(81);
+uint8_t websocketConnectionCount = 0;
 
-void websocket_init()
+void initWebsocket()
 {
 	webSocket.begin();
-	webSocket.onEvent(websocket_event);
+	webSocket.onEvent(websocketEvent);
 	if(MDNS.begin("lightstrip"))
 	{
 		Serial.println("[Websocket] MDNS responder started");
@@ -14,15 +15,17 @@ void websocket_init()
 	MDNS.addService("ws", "tcp", 81);
 }
 
-void websocket_event(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
+void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length)
 {
 	switch(type)
 	{
 		case WStype_DISCONNECTED:
+			websocketConnectionCount--;
 			Serial.printf("[Websocket] [%u] Disconnected!\n", num);
 		break;
 		case WStype_CONNECTED:
 		{
+			websocketConnectionCount++;
 			IPAddress ip = webSocket.remoteIP(num);
 			Serial.printf("[Websocket] [%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 			webSocket.sendTXT(num, Config.getJSON().c_str());
@@ -30,17 +33,18 @@ void websocket_event(uint8_t num, WStype_t type, uint8_t * payload, size_t lengt
 		break;
 		case WStype_TEXT:
 			Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
-			handle_websocket_text(byte_array_to_String(payload), num);
+			handleWebsocketText(byteArrayToString(payload), num);
 		break;
 		case WStype_BIN:
 			//Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
-			handle_websocket_binary(payload);
+			handleWebsocketBinary(payload);
 		break;
 	}
 }
 
-void handle_websocket_text(String text, uint8_t num)
+void handleWebsocketText(String text, uint8_t num)
 {
+	// TODO: use .c_str()
 	char textArray[text.length()];
 	text.toCharArray(textArray, text.length());
 
@@ -54,32 +58,26 @@ void handle_websocket_text(String text, uint8_t num)
 	{
 		ESP.restart();
 	}
-	else if(text == "wakeup")
-	{
-		begin(wakeup);
-	}
 	else
 	{
 		Serial.println("Command '" + text + "' not found!");
 	}
 }
 
-void handle_websocket_binary(uint8_t *binary)
+void handleWebsocketBinary(uint8_t *binary)
 {
 	switch(binary[0])
 	{
 		case 0: // Color
 		{
-			begin(staticSingleColor);
-
-			rgb newColor = { byteToColorRange(binary[1]), byteToColorRange(binary[2]), byteToColorRange(binary[3]) };
-			staticSingleColorNamespace::currentStaticSingleColor = newColor;
+			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
+			begin("Custom Color");
 		}
 		break;
 	}
 }
 
-String byte_array_to_String(uint8_t *bytes)
+String byteArrayToString(uint8_t *bytes)
 {
 	String s = "";
 	for(uint16_t i = 0; bytes[i] != '\0'; i++)

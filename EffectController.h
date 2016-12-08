@@ -3,29 +3,39 @@
 
 #include <Arduino.h>
 #include <Ticker.h>
-#include "Types.h"
-#include "Color.h"
+#include <LinkedList.h>
+#include "FastLED.h"
+
+#include "Config.h"
+#include "Hardware.h"
 
 typedef void (*func_ptr)();
+
+struct EffectConfiguration
+{
+	func_ptr tick;
+	func_ptr reset;
+	uint16_t intervalZeroOffset;
+	uint16_t intervalStepSize;
+};
 
 struct Effect
 {
 	String name;
-	func_ptr tick;
-	func_ptr reset;
-	uint16_t speedZeroOffset;
-	uint16_t speedStepSize;
-	uint16_t currentInterval;
+	EffectConfiguration configuration;
 };
 
-extern bool effectRunning;
+#include "Effects/customColor.h"
+#include "Effects/gradient.h"
 
-void begin(Effect &eff, float interval = 0);
+void initController();
+void begin(String newName, int8_t newSpeed = -1);
 void stop();
 void pause();
 void restart();
 void resume();
-void setInterval(uint16_t interval);
-void setSpeed(uint16_t speed);
+void cycleEffect();
+void setSpeed(uint8_t speed);
+void attachTicker();
 
 #endif
