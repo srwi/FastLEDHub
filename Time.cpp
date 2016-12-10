@@ -83,6 +83,7 @@ myTime getSunsetTime()
 		minute += 60;
 		hour--;
 	}
+	// TODO: use modulo
 	while(hour >= 24)
 		hour -= 24;
 	while(hour < 0)
@@ -91,6 +92,7 @@ myTime getSunsetTime()
 	// Save time as new fallback_time in case there is no wifi connection next time
 	Config.sunset_hour = hour;
 	Config.sunset_minute = minute;
+	Config.save();
 
 	Serial.println("ok!");
 	return myTime {hour, minute};

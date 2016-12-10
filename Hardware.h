@@ -12,7 +12,6 @@
 #define BUTTON_PIN 4
 
 extern CRGB strip[NUM_LEDS];
-extern uint8_t potiSpeed;
 
 void initHardware();
 void handleInput();

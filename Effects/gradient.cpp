@@ -15,7 +15,7 @@ namespace gradientNamespace
 
 	void reset()
 	{
-		fill_gradient(strip, 0, CHSV(0,0,50), 86, CHSV(0,0,0));
+		fill_gradient(strip, 0, CHSV(0,0,150), NUM_LEDS, CHSV(0,0,0));
 		FastLED.show();
 	}
 

@@ -8,6 +8,7 @@
 
 #include "Config.h"
 #include "Hardware.h"
+#include "WebSocket.h"
 
 typedef void (*func_ptr)();
 
@@ -28,8 +29,13 @@ struct Effect
 #include "Effects/customColor.h"
 #include "Effects/gradient.h"
 
+extern bool effectRunning;
+extern uint8_t effectIndex;
+extern LinkedList<Effect> effectList;
+
 void initController();
-void begin(String newName, int8_t newSpeed = -1);
+void begin(String name);
+void toggle(String name);
 void stop();
 void pause();
 void restart();

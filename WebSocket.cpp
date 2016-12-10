@@ -28,11 +28,13 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 			websocketConnectionCount++;
 			IPAddress ip = webSocket.remoteIP(num);
 			Serial.printf("[Websocket] [%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+
 			webSocket.sendTXT(num, Config.getJSON().c_str());
+			webSocket.sendTXT(num, getEffectSettingsJSON().c_str());
 		}
 		break;
 		case WStype_TEXT:
-			Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
+			//Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
 			handleWebsocketText(byteArrayToString(payload), num);
 		break;
 		case WStype_BIN:
@@ -40,6 +42,29 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 			handleWebsocketBinary(payload);
 		break;
 	}
+}
+
+String getEffectSettingsJSON()
+{
+	// TODO: maybe use dynamic buffer?
+	StaticJsonBuffer<JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(255)> jsonBuffer;
+
+	JsonObject& root = jsonBuffer.createObject();
+
+	root["alarm_effect"] = Config.alarm_effect;
+	root["post_alarm_effect"] = Config.post_alarm_effect;
+	root["sunset_effect"] = Config.sunset_effect;
+
+	JsonArray& data = root.createNestedArray("effectList");
+	for(uint8_t i = 0; i < effectList.size(); i++)
+	{
+		data.add(effectList.get(i).name);
+	}
+
+	String output = "";
+	root.prettyPrintTo(output);
+
+	return output;
 }
 
 void handleWebsocketText(String text, uint8_t num)
@@ -50,13 +75,27 @@ void handleWebsocketText(String text, uint8_t num)
 
 	if(Config.parseJSON(textArray))
 	{
+		Config.last_effect = effectList.get(effectIndex).name;
 		Config.save();
 		return;
 	}
 
-	if(text == "restart")
+	if(text == "reboot")
 	{
 		ESP.restart();
+	}
+	else if(text == "stop")
+	{
+		stop();
+	}
+	else if(text == "pause")
+	{
+		pause();
+	}
+	else if(text.startsWith("toggle"))
+	{
+		String effectName = text.substring(7);
+		toggle(effectName);
 	}
 	else
 	{
@@ -68,11 +107,12 @@ void handleWebsocketBinary(uint8_t *binary)
 {
 	switch(binary[0])
 	{
-		case 0: // Color
-		{
+		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
 			begin("Custom Color");
-		}
+		break;
+		case 1: // Speed
+			setSpeed(binary[1]);
 		break;
 	}
 }

@@ -13,12 +13,13 @@ void handleFade()
 	fadeStep = 0;
 
 	// Check for alarm
-	if(hour() == Config.alarm_hour && minute() == Config.alarm_minute)
+	if(Config.alarm_enabled && hour() == Config.alarm_hour && minute() == Config.alarm_minute)
 	{
 		currentFade = ALARM;
 		fadeTicker.attach_ms(Config.alarm_duration*60*1000/256, fadeTick);
 	}
-	else if(hour() == Config.sunset_hour && minute() == Config.sunset_minute)
+	// Check for sunset
+	else if(Config.sunset_enabled && hour() == Config.sunset_hour && minute() == Config.sunset_minute)
 	{
 		currentFade = SUNSET;
 		fadeTicker.attach_ms(Config.sunset_duration*60*1000/256, fadeTick);

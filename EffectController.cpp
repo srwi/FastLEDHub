@@ -6,7 +6,6 @@ bool canBeResumed = false;
 bool effectRunning = false;
 LinkedList<Effect> effectList;
 uint8_t effectIndex = 0;
-uint8_t speed = 0;
 
 void initController()
 {
@@ -14,29 +13,26 @@ void initController()
 	effectList.add({"Gradient", gradient});
 }
 
-void begin(String newName, int8_t newSpeed)
+void begin(String name)
 {
 	// Check if effect is already running
-	if(effectRunning && effectList.get(effectIndex).name == newName)
+	if(effectRunning && effectList.get(effectIndex).name == name)
 		return;
 
 	// Get effect index from name
 	for(uint8_t i = 0; i < effectList.size(); i++)
 	{
-		if(effectList.get(i).name == newName)
+		if(effectList.get(i).name == name)
 		{
 			effectIndex = i;
+
+			// Save last effect to config
+			// Config.last_effect = name;
+			// Config.save();
+
 			break;
 		}
 	}
-
-	// Save lastEffectIndex to config
-	Config.last_effect = newName;
-	Config.save();
-
-	// Change speed if provided as parameter
-	if(newSpeed >= 0)
-		speed = newSpeed;
 
 	// Start effect
 	effectTicker.detach();
@@ -46,8 +42,10 @@ void begin(String newName, int8_t newSpeed)
 	attachTicker();
 	canBeResumed = false;
 	effectRunning = true;
+	// Broadcast to websocket clients
+	webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
 
-	Serial.println("[EffectController] Started '" + Config.last_effect + "' effect.");
+	Serial.println("[EffectController] Started '" + effectList.get(effectIndex).name + "' effect.");
 }
 
 void cycleEffect()
@@ -69,22 +67,24 @@ void stop()
 	canBeResumed = false;
 	effectRunning = false;
 	effectTicker.detach();
-	effectList.get(effectIndex).configuration.reset();
 	FastLED.clear();
 	FastLED.show();
+	// Broadcast to websocket clients
+	webSocket.broadcastTXT(String("stop").c_str());
 }
 
 void resume()
 {
 	if(!canBeResumed)
 	{
-		//effectList.get(effectIndex).configuration.reset();
 		return;
 	}
 
 	attachTicker();
 	canBeResumed = false;
 	effectRunning = true;
+	// Broadcast to websocket clients
+	webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
 }
 
 void restart()
@@ -98,11 +98,13 @@ void pause()
 	effectTicker.detach();
 	canBeResumed = true;
 	effectRunning = false;
+	// Broadcast to websocket clients
+	webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
 }
 
 void setSpeed(uint8_t newSpeed)
 {
-	speed = newSpeed;
+	Config.speed = newSpeed;
 
 	if(effectRunning)
 	{
@@ -111,9 +113,21 @@ void setSpeed(uint8_t newSpeed)
 	}
 }
 
+void toggle(String name)
+{
+	if(effectRunning && effectList.get(effectIndex).name == name)
+	{
+		pause();
+	}
+	else
+	{
+		begin(name);
+	}
+}
+
 void attachTicker()
 {
-	uint16_t interval = effectList.get(effectIndex).configuration.intervalZeroOffset + speed * effectList.get(effectIndex).configuration.intervalStepSize;
+	uint16_t interval = effectList.get(effectIndex).configuration.intervalZeroOffset + Config.speed * effectList.get(effectIndex).configuration.intervalStepSize;
 
 	effectTicker.attach_ms(interval, effectList.get(effectIndex).configuration.tick);
 }

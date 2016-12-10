@@ -13,13 +13,13 @@ namespace customColorNamespace
 	 ****** START OF EFFECT CODE ******
 	 **********************************/
 
-	CRGB currentCustomColor;
-	CRGB newCustomColor;
+	CRGB currentCustomColor = CRGB::Black;
+	CRGB newCustomColor = CRGB::Black;
 
 	void reset()
 	{
+		// Prepare to use newCustomColor
 		currentCustomColor = CRGB::Black;
-		newCustomColor = CHSV(0, 255, 20); /////////////////// TESTING / Should be Black actually
 	}
 
 	void set(CRGB newColor)
@@ -32,10 +32,11 @@ namespace customColorNamespace
 		if(newCustomColor != currentCustomColor)
 		{
 			fill_solid(strip, NUM_LEDS, newCustomColor);
-			FastLED.show();
 
 			currentCustomColor = newCustomColor;
 		}
+		
+		FastLED.show();
 	}
 
 }

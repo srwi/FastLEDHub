@@ -2,7 +2,7 @@
 
 Ticker inputTicker;
 CRGB strip[NUM_LEDS];
-uint8_t potiSpeed = 0;
+uint8_t brightness = 255;
 bool buttonPushed = false;
 
 void initHardware()
@@ -14,15 +14,15 @@ void initHardware()
 
 void handleInput()
 {
-	// Apply effect speed if poti value has changed
-	uint8_t newPotiSpeed = analogRead(A0) / 100;
-	if(newPotiSpeed != potiSpeed)
-	{
-		setSpeed(newPotiSpeed);
-		potiSpeed = newPotiSpeed;
-	}
+	// // Apply effect speed if poti value has changed
+	// uint8_t newPotiSpeed = analogRead(A0) / 100;
+	// if(newPotiSpeed != potiSpeed)
+	// {
+	// 	setSpeed(newPotiSpeed);
+	// 	potiSpeed = newPotiSpeed;
+	// }
 
-
+	// Push button
 	if(digitalRead(BUTTON_PIN) && !buttonPushed)
 	{
 		// button pushed

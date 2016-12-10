@@ -15,13 +15,21 @@ bool ConfigClass::parseJSON(char* json)
 	if(root.containsKey("latitude"))
 		latitude = root["latitude"];
 	// alarm
+	if(root.containsKey("alarm_enabled"))
+		alarm_enabled = root["alarm_enabled"];
 	if(root.containsKey("alarm_duration"))
 		alarm_duration = root["alarm_duration"];
 	if(root.containsKey("alarm_hour"))
 		alarm_hour = root["alarm_hour"];
 	if(root.containsKey("alarm_minute"))
 		alarm_minute = root["alarm_minute"];
+	if(root.containsKey("alarm_effect"))
+		alarm_effect = root["alarm_effect"].asString();
+	if(root.containsKey("post_alarm_effect"))
+		post_alarm_effect = root["post_alarm_effect"].asString();
 	// sunset
+	if(root.containsKey("sunset_enabled"))
+		sunset_enabled = root["sunset_enabled"];
 	if(root.containsKey("sunset_hour"))
 		sunset_hour = root["sunset_hour"];
 	if(root.containsKey("sunset_minute"))
@@ -30,9 +38,13 @@ bool ConfigClass::parseJSON(char* json)
 		sunset_duration = root["sunset_duration"];
 	if(root.containsKey("sunset_offset"))
 		sunset_offset = root["sunset_offset"];
+	if(root.containsKey("sunset_effect"))
+		sunset_effect = root["sunset_effect"].asString();
 	// other
 	if(root.containsKey("last_effect"))
 		last_effect = root["last_effect"].asString();
+	if(root.containsKey("speed"))
+		speed = root["speed"];
 	
 	return root.success();
 }
@@ -48,16 +60,22 @@ String ConfigClass::getJSON()
 	root["longitude"] = longitude;
 	root["latitude"] = latitude;
 	// alarm
+	root["alarm_enabled"] = alarm_enabled;
 	root["alarm_hour"] = alarm_hour;
 	root["alarm_minute"] = alarm_minute;
 	root["alarm_duration"] = alarm_duration;
+	root["alarm_effect"] = alarm_effect;
+	root["post_alarm_effect"] = post_alarm_effect;
 	// sunset
+	root["sunset_enabled"] = sunset_enabled;
 	root["sunset_hour"] = sunset_hour;
 	root["sunset_minute"] = sunset_minute;
 	root["sunset_duration"] = sunset_duration;
 	root["sunset_offset"] = sunset_offset;
+	root["sunset_effect"] = sunset_effect;
 	// other
 	root["last_effect"] = last_effect;
+	root["speed"] = speed;
 
 	String buffer = "";
 	root.prettyPrintTo(buffer);

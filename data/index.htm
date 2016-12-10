@@ -11,16 +11,16 @@
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 		<!--timepicker-->
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" media="all">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
 
 		<!--touchspin-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css" media="all">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
 
 		<!--slider-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/bootstrap-slider.min.js"></script>
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css" media="all">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
 
 		<!--color picker-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
@@ -28,7 +28,6 @@
 		<title>Lightstrip Controller</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="controlcenter.css">
-
 	</head>
 
 	<body>
@@ -39,30 +38,31 @@
 			<br>
 
 			<div id="effectButtons">
-				<button type="button" class="btn btn-default color no-alpha">Custom Color</button>
-				<button type="button" class="btn btn-success">RGB Rainbow</button>
-				<button type="button" class="btn btn-default">Roy G. Biv</button>
-				<button type="button" class="btn btn-default">Sunset</button>
-				<button type="button" class="btn btn-default">Sunrise</button>
-				<button type="button" class="btn btn-default">Aqua</button>
-				<button type="button" class="btn btn-default">Twinkle Twinkle</button>
-				<button type="button" class="btn btn-default">#borntoparty</button>
-				<button type="button" class="btn btn-danger">Nox</button>
+				<button id="custom_color_button" type="button" class="btn btn-default color no-alpha">Custom Color</button>
+				<button type="button" class="btn btn-danger" onClick="send_text('stop');">Nox</button>
 			</div>
+
+			<br>
+
+			<div class="speed_slider" id="speed"></div>
 
 			<br>
 
 			<div class="panel-group" id="accordion">
 
 				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#wakeupCollapse">
-						<h4 class="panel-title">Wakeup</h4>
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
+						<h4 class="panel-title">Alarm</h4>
 					</div>
-					<div id="wakeupCollapse" class="panel-collapse collapse">
+					<div id="alarmCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
-							<div class="checkbox">
-								<label><input type="checkbox" value="">Enable</label>
-							</div>
+							<label class="switch">
+								<input id="alarm_enabled" type="checkbox">
+								<div class="slider round"></div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
+							</label>
+
+							<br>
 
 							<label for="alarm_timepicker_container">Time</label>
 							<div id="alarm_timepicker_container" class="input-group bootstrap-timepicker timepicker">
@@ -70,26 +70,14 @@
 								<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
 							</div>
 
-							<label for="wakeup_duration">Duration</label>
-							<input id="wakeup_duration" name="wakeup_duration">
+							<label for="alarm_duration">Duration</label>
+							<input id="alarm_duration" name="alarm_duration">
 
-							<label for="wakeup_effect">Wakeup Effect</label>
-							<select class="form-control" id="wakeup_effect">
-								<option>RGB Rainbow</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-							</select>
+							<label for="alarm_effect">Alarm Effect</label>
+							<select class="form-control" id="alarm_effect"></select>
 
-							<label for="post_wakeup_effect">Post Wakeup Effect</label>
-							<select class="form-control" id="post_wakeup_effect">
-								<option>Roy G. Biv</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-							</select>
-
-							<button type="button" class="btn btn-primary">Save</button>
+							<label for="post_alarm_effect">Post Alarm Effect</label>
+							<select class="form-control" id="post_alarm_effect"></select>
 						</div>
 					</div>
 				</div>
@@ -102,9 +90,13 @@
 					</div>
 					<div id="sunsetCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
-							<div class="checkbox">
-								<label><input type="checkbox" value="">Enable</label>
-							</div>
+							<label class="switch">
+								<input id="sunset_enabled" type="checkbox">
+								<div class="slider round"></div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
+							</label>
+
+							<br>
 
 							<label for="longitude">Longitude</label>
 							<input type="text" class="form-control" id="longitude" name="longitude">
@@ -112,32 +104,36 @@
 							<label for="latitude">Latitude</label>
 							<input type="text" class="form-control" id="latitude" name="latitude">
 
+							<label for="sunset_duration">Sunset Duration</label>
+							<input id="sunset_duration" name="sunset_duration">
+
 							<label for="sunset_offset">Sunset Offset</label>
 							<input id="sunset_offset" name="sunset_offset">
 
 							<label for="time_zone">Time Zone</label>
 							<input id="time_zone" name="time_zone">
 
-							<div class="checkbox">
-								<label><input type="checkbox" value="">Summer Time</label>
-							</div>
+							<br>
 
-							<label for="wakeup_effect">Wakeup Effect</label>
-							<select class="form-control" id="wakeup_effect">
-								<option>RGB Rainbow</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-							</select>
+							<label class="switch">
+								<input id="summer_time" type="checkbox">
+								<div class="slider round"></div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summertime</div>
+							</label>
 
-							<button type="button" class="btn btn-primary">Save</button>
+							<br>
+
+							<label for="sunset_effect">Sunset Effect</label>
+							<select class="form-control" id="sunset_effect"></select>
 						</div>
 					</div>
 				</div>
 
 			</div>
 
-			<!-- <center><img style="margin:50px 0px;" src="pusheen_so_fancy.gif"></center> -->
+			<button width="100%" type="button" class="btn btn-primary btn-block">Save</button>
+
+			<br>
 
 		</div>
 
@@ -147,7 +143,7 @@
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 			ga('create', 'UA-88431234-1', 'auto');
 			ga('send', 'pageview');
-			ga('set', 'checkProtocolTask', null); // Disable file protocol checking.
+			ga('set', 'checkProtocolTask', null);
 		</script>
 		
 	</body>
