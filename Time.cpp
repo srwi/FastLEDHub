@@ -102,7 +102,10 @@ time_t getNtpTime()
 {
 	// Don't get time while websocket connection is open (Could cause connection to drop)
 	if(websocketConnectionCount > 0)
+	{
+		Serial.println("[Time] Won't get time because there are active websocket connections.");
 		return now();
+	}
 
 	Serial.print("[Time] Getting time from NTP server...");
 	time_t time = 0;
