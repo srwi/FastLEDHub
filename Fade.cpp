@@ -2,7 +2,7 @@
 
 FadeMode currentFade = NONE;
 Ticker fadeTicker;
-uint8_t fadeStep = 0;
+uint16_t fadeStep = 0;
 
 void handleFade()
 {
@@ -10,19 +10,51 @@ void handleFade()
 	if(currentFade)
 		return;
 
-	fadeStep = 0;
-
 	// Check for alarm
 	if(Config.alarm_enabled && hour() == Config.alarm_hour && minute() == Config.alarm_minute)
 	{
-		currentFade = ALARM;
-		fadeTicker.attach_ms(Config.alarm_duration*60*1000/256, fadeTick);
+		begin("Custom Color");
+		startFade(ALARM);
 	}
 	// Check for sunset
 	else if(Config.sunset_enabled && hour() == Config.sunset_hour && minute() == Config.sunset_minute)
 	{
-		currentFade = SUNSET;
+		begin("Gradient");
+		startFade(SUNSET);
+	}
+}
+
+void startFade(FadeMode fadeMode)
+{
+	if(currentFade)
+		fadeTicker.detach();
+
+	fadeStep = 0;
+	FastLED.setBrightness(0);
+	FastLED.show();
+
+	if(fadeMode == ALARM)
+	{
+		begin(Config.alarm_effect);
+		fadeTicker.attach_ms(Config.alarm_duration*60*1000/256, fadeTick);
+	}
+	else if(fadeMode == SUNSET)
+	{
+		begin(Config.sunset_effect);
 		fadeTicker.attach_ms(Config.sunset_duration*60*1000/256, fadeTick);
+	}
+
+	currentFade = fadeMode;
+}
+
+void stopFade()
+{
+	if(currentFade)
+	{
+		fadeTicker.detach();
+		FastLED.setBrightness(255);
+
+		currentFade = NONE;
 	}
 }
 
@@ -30,18 +62,18 @@ void fadeTick()
 {
 	if(fadeStep > 255)
 	{
-		fadeTicker.detach();
-
 		if(currentFade == ALARM)
 		{
-			// TODO: begin post alarm effect
+			begin(Config.post_alarm_effect);
+		}
+		else
+		{
+			stopFade();
 		}
 
-		currentFade = NONE;
 		return;
 	}
 
 	fadeStep++;
 	FastLED.setBrightness(fadeStep);
-	// TODO: dithering?
 }

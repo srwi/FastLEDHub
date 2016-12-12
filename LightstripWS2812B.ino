@@ -19,12 +19,11 @@ void setup()
 	OTA.init("Lightstrip");
 	
 	Config.init();
-	initWebsocket();
 	initHardware();
-	initTime();
 	initController();
-
 	begin(Config.last_effect);
+	initWebsocket();
+	initTime();
 }
 
 void loop()
@@ -38,7 +37,9 @@ void loop()
 		WebServer.handleClient();
 		OTA.handle();
 		webSocket.loop();
-		
 		handleFade();
+
+		// TODO: only show() if using dither and while fade is active? Or maybe if no websocket connection is open. Or maybe dont show() when using Custom Color effect.
+		FastLED.show();
 	}
 }

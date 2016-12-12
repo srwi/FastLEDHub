@@ -92,6 +92,14 @@ void handleWebsocketText(String text, uint8_t num)
 	{
 		pause();
 	}
+	else if(text == "alarm")
+	{
+		startFade(ALARM);
+	}
+	else if(text == "sunset")
+	{
+		startFade(SUNSET);
+	}
 	else if(text.startsWith("toggle"))
 	{
 		String effectName = text.substring(7);

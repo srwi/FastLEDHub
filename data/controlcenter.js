@@ -196,10 +196,10 @@ function send_effect_button(effect)
 var stepSlider = document.getElementById('speed');
 noUiSlider.create(stepSlider, { start: 20, step: 1, range: {'min':0, 'max':100} });
 $('#alarm_timepicker').timepicker({ showMeridian: false, minuteStep: 5 });
-$('input[name="alarm_duration"]').TouchSpin({ min: 5, max: 999999, postfix: 'minutes' });
+$('input[name="alarm_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
 $('input[name="time_zone"]').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
 $('input[name="summer_time"]').TouchSpin({ max: 1 });
-$('input[name="sunset_duration"]').TouchSpin({ min: 5, max: 999999, postfix: 'minutes' });
+$('input[name="sunset_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
 $('input[name="sunset_offset"]').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
 $('.color').colorPicker({

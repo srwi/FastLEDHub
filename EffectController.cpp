@@ -25,16 +25,12 @@ void begin(String name)
 		if(effectList.get(i).name == name)
 		{
 			effectIndex = i;
-
-			// Save last effect to config
-			// Config.last_effect = name;
-			// Config.save();
-
 			break;
 		}
 	}
 
 	// Start effect
+	stopFade();
 	effectTicker.detach();
 	FastLED.clear();
 	FastLED.show();
@@ -67,6 +63,7 @@ void stop()
 	canBeResumed = false;
 	effectRunning = false;
 	effectTicker.detach();
+	stopFade();
 	FastLED.clear();
 	FastLED.show();
 	// Broadcast to websocket clients
@@ -80,6 +77,7 @@ void resume()
 		return;
 	}
 
+	stopFade();
 	attachTicker();
 	canBeResumed = false;
 	effectRunning = true;

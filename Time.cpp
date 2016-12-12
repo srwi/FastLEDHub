@@ -6,9 +6,6 @@ unsigned int localPort = 2390;//8888;
 const int NTP_PACKET_SIZE = 48;
 byte packetBuffer[NTP_PACKET_SIZE];
 
-Ticker alarmTimer;
-Ticker wakeupTimer;
-Ticker holdTimer;
 myTime sunsetTime;
 
 void initTime()
@@ -17,14 +14,14 @@ void initTime()
 	setSyncProvider(getNtpTime);
 	setTime(hour(),minute(),0,1,1,11);
 	Serial.println("[Time] Current time: " + String(hour()) + ":" + String(minute()));
-	
+
 	sunsetTime = getSunsetTime();
-	Serial.println("[Wakeup] Wakeup time will be: " + String(sunsetTime.hour) + ":" + String(sunsetTime.minute));
+	Serial.println("[Sunset] Sunset time will be: " + String(sunsetTime.hour) + ":" + String(sunsetTime.minute));
 }
 
 myTime getSunsetTime()
 {
-	Serial.print("[Wakeup] Getting sunset time...");
+	Serial.print("[Sunset] Getting sunset time...");
 
 	// Request data via GET request
 	WiFiClient client;
@@ -63,7 +60,7 @@ myTime getSunsetTime()
 	if(sunset == "")
 		return { Config.sunset_hour, Config.sunset_minute };
 
-	// Generate wakeup time from JSON and saved settings
+	// Generate sunset time from JSON and saved settings
 	int8_t hour = 0;
 	int16_t minute = 0;
 	hour = sunset.substring(0, sunset.indexOf(':')).toInt();
@@ -83,7 +80,6 @@ myTime getSunsetTime()
 		minute += 60;
 		hour--;
 	}
-	// TODO: use modulo
 	while(hour >= 24)
 		hour -= 24;
 	while(hour < 0)
@@ -104,7 +100,8 @@ time_t getNtpTime()
 	if(websocketConnectionCount > 0)
 	{
 		Serial.println("[Time] Won't get time because there are active websocket connections.");
-		return now();
+		// Return zero to skip this sync attempt
+		return 0;
 	}
 
 	Serial.print("[Time] Getting time from NTP server...");

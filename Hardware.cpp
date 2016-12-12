@@ -10,6 +10,7 @@ void initHardware()
 	pinMode(BUTTON_PIN, INPUT);
 	inputTicker.attach_ms(10, handleInput);
 	FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(strip, NUM_LEDS);
+	FastLED.setDither(0);
 }
 
 void handleInput()

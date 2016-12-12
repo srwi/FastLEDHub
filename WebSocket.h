@@ -7,6 +7,7 @@
 
 #include "EffectController.h"
 #include "Config.h"
+#include "Fade.h"
 
 extern WebSocketsServer webSocket;
 extern uint8_t websocketConnectionCount;

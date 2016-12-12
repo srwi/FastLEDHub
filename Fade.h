@@ -17,6 +17,8 @@ enum FadeMode
 extern FadeMode currentFade;
 
 void handleFade();
+void startFade(FadeMode fadeMode);
+void stopFade();
 void fadeTick();
 
 #endif
