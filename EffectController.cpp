@@ -1,9 +1,7 @@
 #include "EffectController.h"
 
 Ticker effectTicker;
-
-bool canBeResumed = false;
-bool effectRunning = false;
+EffectStatus status = STOPPED;
 LinkedList<Effect> effectList;
 uint8_t effectIndex = 0;
 
@@ -16,7 +14,7 @@ void initController()
 void begin(String name)
 {
 	// Check if effect is already running
-	if(effectRunning && effectList.get(effectIndex).name == name)
+	if(status == RUNNING && effectList.get(effectIndex).name == name)
 		return;
 
 	// Get effect index from name
@@ -29,60 +27,51 @@ void begin(String name)
 		}
 	}
 
-	// Start effect
-	stopFade();
-	effectTicker.detach();
+	// Reset previous effect
 	FastLED.clear();
 	FastLED.show();
 	effectList.get(effectIndex).configuration.reset();
-	attachTicker();
-	canBeResumed = false;
-	effectRunning = true;
-	// Broadcast to websocket clients
-	webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
 
-	Serial.println("[EffectController] Started '" + effectList.get(effectIndex).name + "' effect.");
+	// Start effect
+	attachTicker();
+	status = RUNNING;
+
+	broadcastStatus();
 }
 
 void cycleEffect()
 {
 	uint8_t nextEffectIndex = effectIndex;
 
-	if(effectRunning)
+	if(status == RUNNING)
 	{
+		// Increment effect index
 		nextEffectIndex++;
 		nextEffectIndex %= effectList.size();
 	}
 
-	stop();
 	begin(effectList.get(nextEffectIndex).name);
 }
 
 void stop()
 {
-	canBeResumed = false;
-	effectRunning = false;
 	effectTicker.detach();
-	stopFade();
 	FastLED.clear();
 	FastLED.show();
-	// Broadcast to websocket clients
-	webSocket.broadcastTXT(String("stop").c_str());
+	status = STOPPED;
+
+	broadcastStatus();
 }
 
 void resume()
 {
-	if(!canBeResumed)
-	{
+	if(status != PAUSED)
 		return;
-	}
 
-	stopFade();
 	attachTicker();
-	canBeResumed = false;
-	effectRunning = true;
-	// Broadcast to websocket clients
-	webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
+	status = RUNNING;
+
+	broadcastStatus();
 }
 
 void restart()
@@ -94,38 +83,48 @@ void restart()
 void pause()
 {
 	effectTicker.detach();
-	canBeResumed = true;
-	effectRunning = false;
-	// Broadcast to websocket clients
-	webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
+	status = PAUSED;
+
+	broadcastStatus();
 }
 
-void setSpeed(uint8_t newSpeed)
+void setSpeed(uint8_t speed)
 {
-	Config.speed = newSpeed;
+	Config.speed = speed;
 
-	if(effectRunning)
-	{
-		effectTicker.detach();
+	if(status == RUNNING)
 		attachTicker();
-	}
 }
 
 void toggle(String name)
 {
-	if(effectRunning && effectList.get(effectIndex).name == name)
-	{
+	if(status == RUNNING && effectList.get(effectIndex).name == name)
 		pause();
-	}
 	else
-	{
 		begin(name);
-	}
 }
 
 void attachTicker()
 {
 	uint16_t interval = effectList.get(effectIndex).configuration.intervalZeroOffset + Config.speed * effectList.get(effectIndex).configuration.intervalStepSize;
-
 	effectTicker.attach_ms(interval, effectList.get(effectIndex).configuration.tick);
+}
+
+void broadcastStatus()
+{
+	if(status == RUNNING)
+	{
+		webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
+		Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'.");
+	}
+	else if(status == PAUSED)
+	{
+		webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
+		Serial.println("[Effect] Paused '" + effectList.get(effectIndex).name + "'.");
+	}
+	else if(status == STOPPED)
+	{
+		webSocket.broadcastTXT(String("stop").c_str());
+		Serial.println("[Effect] Stopped '" + effectList.get(effectIndex).name + "'.");
+	}
 }

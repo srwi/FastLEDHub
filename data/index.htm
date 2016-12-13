@@ -38,8 +38,8 @@
 			<br>
 
 			<div id="effectButtons">
-				<button id="custom_color_button" type="button" class="btn btn-default color no-alpha">Custom Color</button>
-				<button type="button" class="btn btn-danger" onClick="send_text('stop');">Nox</button>
+				<button onClick="send_effect_button('Custom Color');" type="button" class="btn btn-default color no-alpha" id="custom_color_button">Custom Color</button>
+				<button onClick="send_text('stop');" type="button" class="btn btn-danger">Nox</button>
 			</div>
 
 			<br>
@@ -131,7 +131,7 @@
 
 			</div>
 
-			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save</button>
+			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save Settings</button>
 
 			<br>
 

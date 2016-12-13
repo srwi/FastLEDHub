@@ -1,8 +1,8 @@
 #include "Fade.h"
 
 FadeMode currentFade = NONE;
+uint16_t fadeBrightness = 0;
 Ticker fadeTicker;
-uint16_t fadeStep = 0;
 
 void handleFade()
 {
@@ -26,12 +26,12 @@ void handleFade()
 
 void startFade(FadeMode fadeMode)
 {
-	if(currentFade)
-		fadeTicker.detach();
-
-	fadeStep = 0;
-	FastLED.setBrightness(0);
+	// Set fade starting point
+	fadeBrightness = 1;
+	FastLED.setBrightness(fadeBrightness);
 	FastLED.show();
+
+	currentFade = fadeMode;
 
 	if(fadeMode == ALARM)
 	{
@@ -43,37 +43,32 @@ void startFade(FadeMode fadeMode)
 		begin(Config.sunset_effect);
 		fadeTicker.attach_ms(Config.sunset_duration*60*1000/256, fadeTick);
 	}
-
-	currentFade = fadeMode;
 }
 
 void stopFade()
 {
-	if(currentFade)
-	{
-		fadeTicker.detach();
-		FastLED.setBrightness(255);
-
-		currentFade = NONE;
-	}
+	fadeTicker.detach();
+	currentFade = NONE;
 }
 
 void fadeTick()
 {
-	if(fadeStep > 255)
+	if(status == PAUSED)
+		return;
+
+	if(fadeBrightness == 255)
 	{
 		if(currentFade == ALARM)
 		{
 			begin(Config.post_alarm_effect);
 		}
-		else
-		{
-			stopFade();
-		}
 
-		return;
+		fadeTicker.detach();
+	}
+	else
+	{
+		fadeBrightness++;
 	}
 
-	fadeStep++;
-	FastLED.setBrightness(fadeStep);
+	FastLED.setBrightness(fadeBrightness);
 }

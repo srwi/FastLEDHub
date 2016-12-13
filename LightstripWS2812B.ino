@@ -40,6 +40,7 @@ void loop()
 		handleFade();
 
 		// TODO: only show() if using dither and while fade is active? Or maybe if no websocket connection is open. Or maybe dont show() when using Custom Color effect.
+		// Or maybe if brightness != 255
 		FastLED.show();
 	}
 }

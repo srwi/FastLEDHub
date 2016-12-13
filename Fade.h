@@ -6,6 +6,7 @@
 
 #include "Time.h"
 #include "Config.h"
+#include "EffectController.h"
 
 enum FadeMode
 {

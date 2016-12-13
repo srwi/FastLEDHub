@@ -26,10 +26,17 @@ struct Effect
 	EffectConfiguration configuration;
 };
 
+enum EffectStatus
+{
+	STOPPED = 0,
+	PAUSED,
+	RUNNING
+};
+
 #include "Effects/customColor.h"
 #include "Effects/gradient.h"
 
-extern bool effectRunning;
+extern EffectStatus status;
 extern uint8_t effectIndex;
 extern LinkedList<Effect> effectList;
 
@@ -43,5 +50,6 @@ void resume();
 void cycleEffect();
 void setSpeed(uint8_t speed);
 void attachTicker();
+void broadcastStatus();
 
 #endif
