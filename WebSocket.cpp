@@ -118,11 +118,14 @@ void handleWebsocketBinary(uint8_t *binary)
 	{
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
+			begin("Custom Color");
 		break;
 		case 1: // Speed
 			setSpeed(binary[1]);
 		break;
 	}
+
+	webSocket.broadcastTXT(String("pong").c_str());
 }
 
 String byteArrayToString(uint8_t *bytes)

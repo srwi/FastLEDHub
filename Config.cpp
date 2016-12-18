@@ -43,6 +43,8 @@ bool ConfigClass::parseJSON(char* json)
 	// other
 	if(root.containsKey("last_effect"))
 		last_effect = root["last_effect"].asString();
+	if(root.containsKey("custom_color"))
+		custom_color = root["custom_color"].asString();
 	if(root.containsKey("speed"))
 		speed = root["speed"];
 	
@@ -75,6 +77,7 @@ String ConfigClass::getJSON()
 	root["sunset_effect"] = sunset_effect;
 	// other
 	root["last_effect"] = last_effect;
+	root["custom_color"] = custom_color;
 	root["speed"] = speed;
 
 	String buffer = "";

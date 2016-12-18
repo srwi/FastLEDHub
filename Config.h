@@ -5,7 +5,7 @@
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
 
-#define DATA_JSON_SIZE (JSON_OBJECT_SIZE(22))
+#define DATA_JSON_SIZE (JSON_OBJECT_SIZE(24))
 
 class ConfigClass
 {
@@ -31,6 +31,7 @@ class ConfigClass
 		String sunset_effect = "";
 		// other
 		String last_effect = "";
+		String custom_color = "";
 		uint8_t speed = 0;
 
 		bool init();

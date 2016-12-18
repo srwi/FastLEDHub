@@ -1,6 +1,52 @@
+html, body
+{
+    height: 100%;
+}
+
 label
 {
-	margin-top: 6px;
+	margin-top: 5px;
+}
+
+button
+{
+	outline: none !important;
+}
+
+.speed_slider
+{
+	margin: 20px 0px;
+}
+
+#connectingOverlay
+{
+	opacity: 0.85;
+	background: white;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	top: 0;
+	left: 0;
+	position: fixed;
+	padding-top: 160px;
+	text-align: center;
+}
+
+#wrapper
+{
+	margin: auto;
+	padding: 20px;
+	max-width: 450px;
+}
+
+#accordion .panel-default
+{
+	margin-bottom: 20px;
+}
+
+#accordion .panel-body
+{
+	padding-top: 0px;
 }
 
 #accordion .panel-heading
@@ -8,19 +54,15 @@ label
 	cursor: pointer;
 }
 
-#effectButtons button
-{
-	margin: 6px;
-}
-
 #effectButtons
 {
 	text-align: center;
+	margin-top: 20px;
 }
 
-#wrapper
+#effectButtons button
 {
-	 margin: 0px 20px;
+	margin: 6px;
 }
 
 body .cp-disp
@@ -68,16 +110,22 @@ body .cp-color-picker
 	z-index: 9999;
 }
 
-.switch {
+.switch
+{
+	margin-top: 15px;
 	position: relative;
-	display: inline-block;
+	display: block;
 	width: 47px;
 	height: 26px;
 }
 
-.switch input {display:none;}
+.switch input
+{
+	display:none;
+}
 
-.slider {
+.slider
+{
 	position: absolute;
 	cursor: pointer;
 	top: 0;
@@ -89,7 +137,8 @@ body .cp-color-picker
 	transition: .4s;
 }
 
-.slider:before {
+.slider:before
+{
 	position: absolute;
 	content: "";
 	height: 18px;
@@ -101,24 +150,29 @@ body .cp-color-picker
 	transition: .4s;
 }
 
-input:checked + .slider {
+input:checked + .slider
+{
 	background-color: #337ab7;
 }
 
-input:focus + .slider {
+input:focus + .slider
+{
 	box-shadow: 0 0 1px #337ab7;
 }
 
-input:checked + .slider:before {
+input:checked + .slider:before
+{
 	-webkit-transform: translateX(21px);
 	-ms-transform: translateX(21px);
 	transform: translateX(21px);
 }
 
-.slider.round {
+.slider.round
+{
 	border-radius: 34px;
 }
 
-.slider.round:before {
+.slider.round:before
+{
 	border-radius: 50%;
 }

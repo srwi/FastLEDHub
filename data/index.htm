@@ -1,55 +1,34 @@
 <!DOCTYPE html>
-<html>
-
+<html manifest="index.appcache">
 	<head>
-		<!--jquery-->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
-		<!--bootstrap-->
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
-		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-		<!--timepicker-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
-
-		<!--touchspin-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
-
-		<!--slider-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
-
-		<!--color picker-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
-
 		<title>Lightstrip Controller</title>
+		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="controlcenter.css">
+		<meta name="mobile-web-app-capable" content="yes">
+		<link rel="icon" sizes="192x192" href="index.png">
+		<link rel="stylesheet" href="main.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
 	</head>
-
 	<body>
-		<div id="wrapper">
+		<div id="connectingOverlay">
+			<h4 id="connectingOverlayText">Connecting...</h4>
+			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Reconnect!</button>
+		</div>
 
+		<div id="wrapper">
 			<h1 style="text-align: center">Lightstrip</h1>
 
-			<br>
-
 			<div id="effectButtons">
-				<button onClick="send_effect_button('Custom Color');" type="button" class="btn btn-default color no-alpha" id="custom_color_button">Custom Color</button>
+				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Custom Color</button>
 				<button onClick="send_text('stop');" type="button" class="btn btn-danger">Nox</button>
 			</div>
 
-			<br>
-
 			<div class="speed_slider" id="speed"></div>
 
-			<br>
-
 			<div class="panel-group" id="accordion">
-
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
 						<h4 class="panel-title">Alarm</h4>
@@ -61,8 +40,6 @@
 								<div class="slider round"></div>
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
 							</label>
-
-							<br>
 
 							<label for="alarm_timepicker_container">Time</label>
 							<div id="alarm_timepicker_container" class="input-group bootstrap-timepicker timepicker">
@@ -82,8 +59,6 @@
 					</div>
 				</div>
 
-				<br>
-
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
 						<h4 class="panel-title">Sunset</h4>
@@ -95,8 +70,6 @@
 								<div class="slider round"></div>
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
 							</label>
-
-							<br>
 
 							<label for="longitude">Longitude</label>
 							<input type="text" class="form-control" id="longitude" name="longitude">
@@ -113,31 +86,22 @@
 							<label for="time_zone">Time Zone</label>
 							<input id="time_zone" name="time_zone">
 
-							<br>
-
 							<label class="switch">
 								<input id="summer_time" type="checkbox">
 								<div class="slider round"></div>
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summertime</div>
 							</label>
 
-							<br>
-
 							<label for="sunset_effect">Sunset Effect</label>
 							<select class="form-control" id="sunset_effect"></select>
 						</div>
 					</div>
 				</div>
-
 			</div>
 
 			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save Settings</button>
 
-			<br>
-
 		</div>
-
-		<script src="controlcenter.js"></script>
 
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
@@ -145,6 +109,12 @@
 			ga('send', 'pageview');
 			ga('set', 'checkProtocolTask', null);
 		</script>
-		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
+		<script src="main.js"></script>
 	</body>
 </html>

@@ -7,6 +7,8 @@ uint8_t effectIndex = 0;
 
 void initController()
 {
+	customColorNamespace::set(strtol((const char *)&Config.custom_color[0], NULL, 16));
+	
 	effectList.add({"Custom Color", customColor});
 	effectList.add({"Gradient", gradient});
 }
@@ -115,16 +117,16 @@ void broadcastStatus()
 	if(status == RUNNING)
 	{
 		webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
-		Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'.");
+		Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'");
 	}
 	else if(status == PAUSED)
 	{
 		webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
-		Serial.println("[Effect] Paused '" + effectList.get(effectIndex).name + "'.");
+		Serial.println("[Effect] Paused '" + effectList.get(effectIndex).name + "'");
 	}
 	else if(status == STOPPED)
 	{
 		webSocket.broadcastTXT(String("stop").c_str());
-		Serial.println("[Effect] Stopped '" + effectList.get(effectIndex).name + "'.");
+		Serial.println("[Effect] Stopped '" + effectList.get(effectIndex).name + "'");
 	}
 }

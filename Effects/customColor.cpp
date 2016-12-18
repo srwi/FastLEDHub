@@ -18,7 +18,7 @@ namespace customColorNamespace
 
 	void reset()
 	{
-		// Prepare to use newCustomColor
+		// Prepare to use newCustomColor (next tick() iteration will then apply the current newCustomColor, which is the previously used color)
 		currentCustomColor = CRGB::Black;
 	}
 
