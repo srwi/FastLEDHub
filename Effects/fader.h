@@ -1,14 +1,14 @@
-#ifndef _GRADIENT_H
-#define _GRADIENT_H
+#ifndef _FADER_H
+#define _FADER_H
 
 #include <Arduino.h>
 #include <Time.h>
 
 #include "../EffectController.h"
 
-extern EffectConfiguration gradient;
+extern EffectConfiguration fader;
 
-namespace gradientNamespace
+namespace faderNamespace
 {
 	extern void reset();
 	extern void tick();

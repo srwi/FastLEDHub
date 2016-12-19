@@ -2,6 +2,7 @@
 
 WebSocketsServer webSocket = WebSocketsServer(81);
 uint8_t websocketConnectionCount = 0;
+bool liveDataHasChanged = false;
 
 void initWebsocket()
 {
@@ -21,6 +22,12 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 	{
 		case WStype_DISCONNECTED:
 			websocketConnectionCount--;
+			// Save config if live data (custom color or speed) has changed within websocket connection
+			if(liveDataHasChanged)
+			{
+				Config.save();
+				liveDataHasChanged = false;
+			}
 			Serial.printf("[Websocket] [%u] Disconnected!\n", num);
 		break;
 		case WStype_CONNECTED:
@@ -118,6 +125,7 @@ void handleWebsocketBinary(uint8_t *binary)
 	{
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
+			Config.custom_color = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
 			begin("Custom Color");
 		break;
 		case 1: // Speed
@@ -125,6 +133,7 @@ void handleWebsocketBinary(uint8_t *binary)
 		break;
 	}
 
+	liveDataHasChanged = true;
 	webSocket.broadcastTXT(String("pong").c_str());
 }
 

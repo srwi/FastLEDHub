@@ -10,7 +10,15 @@ void initController()
 	customColorNamespace::set(strtol((const char *)&Config.custom_color[0], NULL, 16));
 	
 	effectList.add({"Custom Color", customColor});
-	effectList.add({"Gradient", gradient});
+	effectList.add({"Fader", fader});
+	effectList.add({"Fire", fire});
+	effectList.add({"LeftRightLeftRightLeft", leftRightLeftRightLeft});
+	effectList.add({"RGB Rainbow", rgbRainbow});
+	effectList.add({"RB Rainbow", rbRainbow});
+	effectList.add({"Confetti", confetti});
+	effectList.add({"Pop Fade", popFade});
+	effectList.add({"Alternating Rainbow", alternatingRainbow});
+	effectList.add({"Juggle", juggle});
 }
 
 void begin(String name)

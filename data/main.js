@@ -1,6 +1,7 @@
 var currentEffect = '';
 var currentState = '';
 var currentCustomColor = '';
+var maxSpeed = 14;
 
 var websocketReady = true;
 var ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
@@ -75,7 +76,7 @@ function handle_json_data(data)
 		sunset_offset.value = data.sunset_offset;
 	// other
 	if(data.hasOwnProperty('speed'))
-		document.getElementById('speed').noUiSlider.set(data.speed);
+		document.getElementById('speed').noUiSlider.set(maxSpeed - data.speed);
 	if(data.hasOwnProperty('custom_color'))
 	{
 		$('.color').val(data.custom_color);
@@ -205,7 +206,7 @@ function send_config()
 	config.sunset_offset = sunset_offset.value;
 	config.sunset_effect = $('#sunset_effect').val();
 	// other
-	config.speed = document.getElementById('speed').noUiSlider.get();
+	config.speed = maxSpeed - document.getElementById('speed').noUiSlider.get();
 	config.custom_color = currentCustomColor;
 
 	var json = JSON.stringify(config, null, 2);
@@ -293,9 +294,9 @@ var $customColorPicker = $('.color').colorPicker({
 });
 
 var stepSlider = document.getElementById('speed');
-noUiSlider.create(stepSlider, { start: 20, step: 1, range: {'min':0, 'max':100} });
+noUiSlider.create(stepSlider, { start: 20, step: 1, range: {'min':0, 'max':maxSpeed} });
 stepSlider.noUiSlider.on('update', function( values, handle ) {
-	send_bytes(1, values[handle]);
+	send_bytes(1, maxSpeed - values[handle]);
 });
 
 var idleTime = 0;

@@ -34,7 +34,15 @@ enum EffectStatus
 };
 
 #include "Effects/customColor.h"
-#include "Effects/gradient.h"
+#include "Effects/fader.h"
+#include "Effects/fire.h"
+#include "Effects/leftRightLeftRightLeft.h"
+#include "Effects/rgbRainbow.h"
+#include "Effects/rbRainbow.h"
+#include "Effects/confetti.h"
+#include "Effects/popFade.h"
+#include "Effects/alternatingRainbow.h"
+#include "Effects/juggle.h"
 
 extern EffectStatus status;
 extern uint8_t effectIndex;
