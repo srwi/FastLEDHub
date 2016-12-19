@@ -6,6 +6,7 @@
 #include "Hardware.h"
 #include "Config.h"
 #include "Fade.h"
+#include "WebUpdate.h"
 
 void setup()
 {
@@ -17,6 +18,8 @@ void setup()
 	if(Wifi.isAP())
 		return;
 	OTA.init("Lightstrip");
+
+	initWebUpdate();
 	
 	Config.init();
 	initHardware();

@@ -34,6 +34,7 @@ enum EffectStatus
 };
 
 #include "Effects/customColor.h"
+#include "Effects/nox.h"
 #include "Effects/fader.h"
 #include "Effects/fire.h"
 #include "Effects/leftRightLeftRightLeft.h"

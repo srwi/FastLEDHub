@@ -10,6 +10,7 @@ void initController()
 	customColorNamespace::set(strtol((const char *)&Config.custom_color[0], NULL, 16));
 	
 	effectList.add({"Custom Color", customColor});
+	effectList.add({"Nox", nox});
 	effectList.add({"Fader", fader});
 	effectList.add({"Fire", fire});
 	effectList.add({"LeftRightLeftRightLeft", leftRightLeftRightLeft});

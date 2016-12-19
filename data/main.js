@@ -100,7 +100,12 @@ function handle_json_data(data)
 
 			// Add buttons to button collection except for custom color button
 			if(data.effectList[i] != 'Custom Color')
-				$('<button type="button" class="btn btn-default" onClick="send_effect_button(\'' + data.effectList[i] + '\');">' + data.effectList[i] + '</button>').insertAfter($('#custom_color_button'));
+			{
+				if(data.effectList[i] == 'Nox')
+					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effectList[i] + '\');">' + data.effectList[i] + '</button>').insertAfter($('#custom_color_button'));
+				else
+					$('<button type="button" class="btn btn-default" onClick="send_effect_button(\'' + data.effectList[i] + '\');">' + data.effectList[i] + '</button>').insertAfter($('#custom_color_button'));
+			}
 		}
 		if(data.hasOwnProperty('alarm_effect'))
 			$('#alarm_effect').val(data.alarm_effect);
@@ -136,7 +141,11 @@ function update_buttons_by_command(cmd)
 	{
 		if($(this).text() == argument)
 		{
-			if(argument == 'Custom Color')
+			if(argument == 'Nox')
+			{
+			
+			}
+			else if(argument == 'Custom Color')
 			{
 				if(command == 'start')
 				{
