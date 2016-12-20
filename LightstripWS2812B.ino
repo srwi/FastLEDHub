@@ -12,7 +12,7 @@ void setup()
 {
 	Serial.begin(115200);
 	Serial.println("");
-	
+
 	Wifi.autoConnect("Lightstrip AP (192.168.4.1)");
 	WebServer.init();
 	if(Wifi.isAP())
@@ -20,10 +20,10 @@ void setup()
 	OTA.init("Lightstrip");
 
 	initWebUpdate();
-	
+
 	Config.init();
-	initHardware();
 	initController();
+	initHardware();
 	begin(Config.last_effect);
 	initWebsocket();
 	initTime();

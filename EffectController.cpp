@@ -15,7 +15,7 @@ void initController()
 	effectList.add({"Fire", fire});
 	effectList.add({"LeftRightLeftRightLeft", leftRightLeftRightLeft});
 	effectList.add({"RGB Rainbow", rgbRainbow});
-	effectList.add({"RB Rainbow", rbRainbow});
+	effectList.add({"BUG RAINBOW", rbRainbow});
 	effectList.add({"Confetti", confetti});
 	effectList.add({"Pop Fade", popFade});
 	effectList.add({"Alternating Rainbow", alternatingRainbow});

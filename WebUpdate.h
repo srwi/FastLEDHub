@@ -1,5 +1,5 @@
-#ifndef _WEBUPDATE_H
-#define _WEBUPDATE_H
+#ifndef _WEBUPDATE_H_
+#define _WEBUPDATE_H_
 
 #include <ESPEssentials.h>
 

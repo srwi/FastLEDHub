@@ -22,10 +22,12 @@ void handleInput()
 		if(brightness > 255)
 			brightness = 255;
 		FastLED.setBrightness(brightness);
+
+		Serial.println(String(brightness));
 	}
 
 	// Push button
-	if(digitalRead(BUTTON_PIN) && !buttonPushed)
+	if(!digitalRead(BUTTON_PIN) && !buttonPushed)
 	{
 		// button pushed
 		stopFade();
@@ -33,7 +35,7 @@ void handleInput()
 
 		buttonPushed = true;
 	}
-	else if(!digitalRead(BUTTON_PIN) && buttonPushed)
+	else if(digitalRead(BUTTON_PIN) && buttonPushed)
 	{
 		// button released
 

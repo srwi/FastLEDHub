@@ -3,7 +3,7 @@
 EffectConfiguration rbRainbow = {
 	rbRainbowNamespace::tick,		// tick
 	rbRainbowNamespace::reset,		// reset
-	3,								// intervalZeroOffset
+	5,								// intervalZeroOffset
 	5,								// intervalStepSize
 };
 

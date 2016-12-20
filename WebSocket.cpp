@@ -48,7 +48,7 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 		break;
 		case WStype_BIN:
 			//Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
-			handleWebsocketBinary(payload);
+			handleWebsocketBinary(payload, num);
 		break;
 	}
 }
@@ -119,7 +119,7 @@ void handleWebsocketText(String text, uint8_t num)
 	}
 }
 
-void handleWebsocketBinary(uint8_t *binary)
+void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 {
 	switch(binary[0])
 	{
@@ -131,10 +131,15 @@ void handleWebsocketBinary(uint8_t *binary)
 		case 1: // Speed
 			setSpeed(binary[1]);
 		break;
+		case 2:
+			Config.alarm_hour = binary[1];
+			Config.alarm_minute = binary[2];
+			Config.save();
+		break;
 	}
 
 	liveDataHasChanged = true;
-	webSocket.broadcastTXT(String("pong").c_str());
+	webSocket.sendTXT(num, String("pong").c_str());
 }
 
 String byteArrayToString(uint8_t *bytes)
