@@ -19,14 +19,14 @@ void setup()
 		return;
 	OTA.init("Lightstrip");
 
-	initWebUpdate();
-
 	Config.init();
+	initWebUpdate();
 	initController();
 	initHardware();
-	begin(Config.last_effect);
 	initWebsocket();
 	initTime();
+
+	begin("Nox");
 }
 
 void loop()

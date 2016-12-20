@@ -13,8 +13,12 @@
 #define BUTTON_PIN 4
 
 extern CRGB strip[NUM_LEDS];
+extern int16_t brightness;
+extern uint8_t gammaCorrectedBrightness;
 
 void initHardware();
+int16_t getPotiBrightness();
+void setGammaCorrectedBrightness(uint8_t newBrightness);
 void handleInput();
 
 #endif

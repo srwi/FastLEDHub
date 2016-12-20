@@ -20,7 +20,7 @@ button
 
 #connectingOverlay
 {
-	opacity: 0.85;
+	opacity: 1;
 	background: white;
 	width: 100%;
 	height: 100%;

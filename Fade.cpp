@@ -1,7 +1,9 @@
 #include "Fade.h"
 
 FadeMode currentFade = NONE;
-uint16_t fadeBrightness = 0;
+uint8_t fadeBrightness = 0;
+uint8_t sunsetMaximumBrightness = 0;
+
 Ticker fadeTicker;
 
 void handleFade()
@@ -13,14 +15,31 @@ void handleFade()
 	// Check for alarm
 	if(Config.alarm_enabled && hour() == Config.alarm_hour && minute() == Config.alarm_minute)
 	{
-		begin("Custom Color");
 		startFade(ALARM);
 	}
 	// Check for sunset
 	else if(Config.sunset_enabled && hour() == Config.sunset_hour && minute() == Config.sunset_minute)
 	{
-		begin("Gradient");
-		startFade(SUNSET);
+		// Only start sunset if all leds are off
+		if(gammaCorrectedBrightness == 0)
+		{
+			startFade(SUNSET);
+		}
+		else // gammaCorrectedBrightness > 0
+		{
+			bool stripHasColor = false;
+			for(uint16_t i = 0; i < NUM_LEDS; i++)
+			{
+				if(strip[i] != CRGB(0,0,0))
+				{
+					stripHasColor = true;
+					break;
+				}
+			}
+
+			if(!stripHasColor)
+				startFade(SUNSET);
+		}
 	}
 }
 
@@ -37,11 +56,14 @@ void startFade(FadeMode fadeMode)
 	{
 		begin(Config.alarm_effect);
 		fadeTicker.attach_ms(Config.alarm_duration*60*1000/256, fadeTick);
+		Serial.println("[Fade] Start fade 'Alarm'");
 	}
 	else if(fadeMode == SUNSET)
 	{
 		begin(Config.sunset_effect);
-		fadeTicker.attach_ms(Config.sunset_duration*60*1000/256, fadeTick);
+		sunsetMaximumBrightness = brightness;
+		fadeTicker.attach_ms(Config.sunset_duration*60*1000/sunsetMaximumBrightness, fadeTick);
+		Serial.println("[Fade] Start fade 'Sunset'");
 	}
 }
 
@@ -56,19 +78,27 @@ void fadeTick()
 	if(status == PAUSED)
 		return;
 
-	if(fadeBrightness == 255)
+	if(currentFade == ALARM && fadeBrightness == 255)
 	{
-		if(currentFade == ALARM)
-		{
-			begin(Config.post_alarm_effect);
-		}
-
+		begin(Config.post_alarm_effect);
 		fadeTicker.detach();
+		Serial.println("[Fade] End fade 'Alarm'");
+	}
+	else if(currentFade == SUNSET && fadeBrightness == sunsetMaximumBrightness)
+	{
+		fadeTicker.detach();
+		Serial.println("[Fade] End fade 'Sunset'");
 	}
 	else
 	{
-		fadeBrightness++;
+		if(fadeBrightness < 255)
+			fadeBrightness++;
+		else
+			fadeTicker.detach();
+
+		Serial.println("[Fade] Fade brightness: " + fadeBrightness);
 	}
 
-	FastLED.setBrightness(fadeBrightness);
+	//FastLED.setBrightness(fadeBrightness);
+	setGammaCorrectedBrightness(fadeBrightness);
 }
