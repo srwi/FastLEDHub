@@ -47,7 +47,7 @@ void startFade(FadeMode fadeMode)
 {
 	// Set fade starting point
 	fadeBrightness = 1;
-	FastLED.setBrightness(fadeBrightness);
+	setGammaCorrectedBrightness(fadeBrightness);
 	FastLED.show();
 
 	currentFade = fadeMode;

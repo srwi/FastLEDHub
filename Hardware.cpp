@@ -2,9 +2,8 @@
 
 Ticker inputTicker;
 bool buttonPushed = false;
-bool brightnessLocked = false;
-int16_t brightness = 255;
-float filteredBrightness = 255;
+float filteredBrightness = 255/2;
+uint8_t brightness = 255;
 uint8_t gammaCorrectedBrightness = 255;
 CRGB strip[NUM_LEDS];
 
@@ -37,12 +36,21 @@ void initHardware()
 
 void setGammaCorrectedBrightness(uint8_t newBrightness)
 {
-	FastLED.setBrightness(pgm_read_byte(&gamma8[newBrightness]));
+	brightness = newBrightness;
+	gammaCorrectedBrightness = pgm_read_byte(&gamma8[newBrightness]);
+	FastLED.setBrightness(gammaCorrectedBrightness);
 }
 
-int16_t getPotiBrightness()
+uint8_t getPotiBrightness()
 {
-	return (((1023 - analogRead(A0)) >> 2) - 7) * 1.06;
+	int16_t value = (((1023 - analogRead(A0)) >> 2) - 7) * 1.06;
+
+	if(value > 255)
+		value = 255;
+	if(value < 0)
+		value = 0;
+
+	return value;
 }
 
 void handleInput()
@@ -50,35 +58,16 @@ void handleInput()
 	if(!currentFade)
 	{
 		// Adjust brightness calculation if needed
-		int16_t potiBrightness = getPotiBrightness();
-		if(potiBrightness > 255)
-			potiBrightness = 255;
-		if(potiBrightness < 0)
-			potiBrightness = 0;
+		uint8_t potiBrightness = getPotiBrightness();
 
 		filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
 
-		if(filteredBrightness - 2 < potiBrightness && potiBrightness < filteredBrightness + 2)
-		{
-			// potiBrightness is within potential locking range
-			// If it stays here for 255 cycles, the brightness will be locked.
-
-				brightnessLocked = true;
-				Serial.println("locked");
-		}
-		else
-		{
-			// potiBrightness is outside potential locking range
-			// Make sure to unlock the brightness and reset its counter
-			brightnessLocked = false;
-			Serial.println("unlocked");
-		}
-
-		if(!brightnessLocked)
+		// Only set brightness if it's not near the filtered brightness value which will lag behind
+		if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
 		{
 			//FastLED.setBrightness(brightness);
 			setGammaCorrectedBrightness(potiBrightness);
-			Serial.println("not locked -> apply brightness");
+			Serial.println("Set brightness");
 		}
 	}
 
