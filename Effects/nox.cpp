@@ -3,7 +3,7 @@
 EffectConfiguration nox = {
 	noxNamespace::tick,		// tick
 	noxNamespace::reset,	// reset
-	10,						// intervalZeroOffset
+	25,						// intervalZeroOffset
 	0						// intervalStepSize
 };
 
@@ -22,7 +22,7 @@ namespace noxNamespace
 	void tick()
 	{
 		FastLED.clear();
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

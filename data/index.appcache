@@ -1,18 +1,18 @@
 CACHE MANIFEST
 CACHE:
-#   index.htm
-#   main.css
-#   main.js
+index.htm
+index.css
+index.js
 index.png
-#   https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
-#   http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css
-#   http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js
-#   https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js
-#   https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css
-#   https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js
-#   https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js
-#   https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css
-#   https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css
-#   https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js
+https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
+http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css
+http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js
+https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js
+https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css
+https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js
+https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js
+https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css
+https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css
+https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js
 NETWORK:
 *

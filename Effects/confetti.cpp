@@ -49,7 +49,7 @@ namespace confettiNamespace
 		strip[pos] += CHSV((thishue + random16(huediff))/4 , thissat, thisbri);  // I use 12 bits for hue so that the hue increment isn't too quick.
 		thishue = thishue + thisinc;                                // It increments here.
 
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

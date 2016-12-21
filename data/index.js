@@ -10,7 +10,7 @@ connection.binaryType = 'arraybuffer';
 
 connection.onopen = function(e)
 {
-	$('#connectingOverlayText').html('Waiting for device information...');
+	$('#connectingOverlayText').html('Warte auf Antwort...');
 	$('#connectButton').hide();
 };
 
@@ -21,7 +21,7 @@ connection.onerror = function(e)
 
 connection.onclose = function(e)
 {
-	$('#connectingOverlayText').html('Connection closed.');
+	$('#connectingOverlayText').html('Verbindung unterbrochen.');
 	$('#refreshButton').show();
 	$('#connectingOverlay').fadeIn(140);
 };
@@ -40,7 +40,7 @@ connection.onmessage = function(e)
 	{
 		handle_json_data(JSON.parse(e.data));
 
-		$('#connectingOverlayText').html('Success!');
+		$('#connectingOverlayText').html('Erfolg!');
 		$('#connectingOverlay').fadeOut(140);
 	}
 	catch(f)
@@ -99,7 +99,7 @@ function handle_json_data(data)
 			}));
 
 			// Add buttons to button collection except for custom color button
-			if(data.effectList[i] != 'Custom Color')
+			if(data.effectList[i] != 'Farbe')
 			{
 				if(data.effectList[i] == 'Nox')
 					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effectList[i] + '\');">' + data.effectList[i] + '</button>').insertAfter($('#custom_color_button'));
@@ -108,11 +108,11 @@ function handle_json_data(data)
 			}
 		}
 		if(data.hasOwnProperty('alarm_effect'))
-			$('#alarm_effect').val(data.alarm_effect);
+			$('#alarm_effect').val(data.alarm_effect != '' ? data.alarm_effect : 'Farbe');
 		if(data.hasOwnProperty('post_alarm_effect'))
-			$('#post_alarm_effect').val(data.post_alarm_effect);
+			$('#post_alarm_effect').val(data.post_alarm_effect != '' ? data.post_alarm_effect : 'Farbe');
 		if(data.hasOwnProperty('sunset_effect'))
-			$('#sunset_effect').val(data.sunset_effect);
+			$('#sunset_effect').val(data.sunset_effect != '' ? data.sunset_effect : 'Farbe');
 	}
 }
 
@@ -145,7 +145,7 @@ function update_buttons_by_command(cmd)
 			{
 			
 			}
-			else if(argument == 'Custom Color')
+			else if(argument == 'Farbe')
 			{
 				if(command == 'start')
 				{
@@ -185,7 +185,7 @@ function update_buttons_by_command(cmd)
 			{
 				$(this).attr('class', 'btn btn-default');
 			}
-			if($(this).text() == 'Custom Color')
+			if($(this).text() == 'Farbe')
 			{
 				$(this).css('background-color', 'white');
 				$(this).css('color', 'black');
@@ -282,11 +282,11 @@ var $customColorPicker = $('.color').colorPicker({
 	renderCallback: function($elm, toggled) {
 		if(toggled === true)
 		{
-			update_buttons_by_command('start Custom Color');
+			update_buttons_by_command('start Farbe');
 		}
 		else if(toggled === false)
 		{
-			if(currentEffect != 'Custom Color' || currentState == 'stop')
+			if(currentEffect != 'Farbe' || currentState == 'stop')
 			{
 				$('#custom_color_button').css('background-color','white');
 				$('#custom_color_button').css('color','black');
@@ -309,10 +309,22 @@ stepSlider.noUiSlider.on('update', function( values, handle ) {
 });
 
 var idleTime = 0;
-var idleInterval = setInterval(function () {
+setInterval(function ()
+{
 	idleTime++;
 	if(idleTime > 300)//s
 		connection.close();
 }, 1000);
 $(this).mousemove(function (e) { idleTime = 0; });
 $(this).keypress(function (e) { idleTime = 0; });
+
+document.addEventListener('visibilitychange', function()
+{
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+	{
+		if(document.hidden)
+			connection.close();
+		else
+			location.reload();
+	}
+})

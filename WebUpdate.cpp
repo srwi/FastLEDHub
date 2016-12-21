@@ -47,4 +47,39 @@ void initWebUpdate()
 		}
 		yield();
 	});
+
+	// TODO: Move this somewhere else as well
+	WebServer.on("/command/sunset", HTTP_GET, [&]()
+	{
+		startFade(SUNSET);
+		WebServer.send(200, "text/plain", "Starting sunset.");
+	});
+	WebServer.on("/command/alarm", HTTP_GET, [&]()
+	{
+		startFade(ALARM);
+		WebServer.send(200, "text/plain", "Starting alarm.");
+	});
+	WebServer.on("/command/remove_wifi_credentials", HTTP_GET, [&]()
+	{
+		Wifi.saveCredentials("", "");
+		WebServer.send(200, "text/plain", "Wifi credentials removed. Rebooting...");
+		delay(30);
+		ESP.restart();
+	});
+	WebServer.on("/command/reboot", HTTP_GET, [&]()
+	{
+		ESP.restart();
+		WebServer.send(200, "text/plain", "Rebooting...");
+	});
+	WebServer.on("/command/stop", HTTP_GET, [&]()
+	{
+		stopFade();
+		stop();
+		WebServer.send(200, "text/plain", "Stop.");
+	});
+	WebServer.on("/alarm", HTTP_GET, [&]()
+	{
+		WebServer.handleFileRead("/alarm.htm");
+	});
+	// TODO: Add start command with effect name as argument
 }

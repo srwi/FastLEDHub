@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html manifest="index.appcache">
 	<head>
-		<title>Lightstrip Controller</title>
+		<title>LED-Leiste</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
@@ -14,15 +14,15 @@
 	</head>
 	<body>
 		<div id="connectingOverlay">
-			<h4 id="connectingOverlayText">Connecting...</h4>
-			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Reconnect!</button>
+			<h4 id="connectingOverlayText">Verbinden...</h4>
+			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Verbinden!</button>
 		</div>
 
 		<div id="wrapper">
-			<h1 style="text-align: center">Lightstrip</h1>
+			<h1 style="text-align: center">LED-Leiste</h1>
 
 			<div id="effectButtons">
-				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Custom Color</button>
+				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Farbe</button>
 			</div>
 
 			<div class="speed_slider" id="speed"></div>
@@ -30,29 +30,29 @@
 			<div class="panel-group" id="accordion">
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
-						<h4 class="panel-title">Alarm</h4>
+						<h4 class="panel-title">Wecker</h4>
 					</div>
 					<div id="alarmCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
 							<label class="switch">
 								<input id="alarm_enabled" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Aktivieren</div>
 							</label>
 
-							<label for="alarm_timepicker_container">Time</label>
+							<label for="alarm_timepicker_container">Zeit</label>
 							<div id="alarm_timepicker_container" class="input-group bootstrap-timepicker timepicker">
 								<input id="alarm_timepicker" type="text" class="form-control input-small">
 								<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
 							</div>
 
-							<label for="alarm_duration">Duration</label>
+							<label for="alarm_duration">Dauer</label>
 							<input id="alarm_duration" name="alarm_duration">
 
-							<label for="alarm_effect">Alarm Effect</label>
+							<label for="alarm_effect">Weckanimation</label>
 							<select class="form-control" id="alarm_effect"></select>
 
-							<label for="post_alarm_effect">Post Alarm Effect</label>
+							<label for="post_alarm_effect">Weckanimation (nach Ende)</label>
 							<select class="form-control" id="post_alarm_effect"></select>
 						</div>
 					</div>
@@ -60,54 +60,48 @@
 
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
-						<h4 class="panel-title">Sunset</h4>
+						<h4 class="panel-title">Sonnenuntergang</h4>
 					</div>
 					<div id="sunsetCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
 							<label class="switch">
 								<input id="sunset_enabled" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enable</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Aktivieren</div>
 							</label>
 
-							<label for="longitude">Longitude</label>
+							<label for="longitude">L&auml;ngengrad</label>
 							<input type="text" class="form-control" id="longitude" name="longitude">
 
-							<label for="latitude">Latitude</label>
+							<label for="latitude">Breitengrad</label>
 							<input type="text" class="form-control" id="latitude" name="latitude">
 
-							<label for="sunset_duration">Sunset Duration</label>
+							<label for="sunset_duration">Dauer</label>
 							<input id="sunset_duration" name="sunset_duration">
 
-							<label for="sunset_offset">Sunset Offset</label>
+							<label for="sunset_offset">Zeitlicher Abstand</label>
 							<input id="sunset_offset" name="sunset_offset">
 
-							<label for="time_zone">Time Zone</label>
+							<label for="time_zone">Zeitzone</label>
 							<input id="time_zone" name="time_zone">
 
 							<label class="switch">
 								<input id="summer_time" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summertime</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Sommerzeit</div>
 							</label>
 
-							<label for="sunset_effect">Sunset Effect</label>
+							<label for="sunset_effect">Animation</label>
 							<select class="form-control" id="sunset_effect"></select>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save Settings</button>
+			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Speichern!</button>
 
 		</div>
 
-		<script>
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-			ga('create', 'UA-88431234-1', 'auto');
-			ga('send', 'pageview');
-			ga('set', 'checkProtocolTask', null);
-		</script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>

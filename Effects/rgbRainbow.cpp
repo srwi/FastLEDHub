@@ -28,7 +28,7 @@ namespace rgbRainbowNamespace
 			strip[i] = strip[i + 1];
 		}
 	
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

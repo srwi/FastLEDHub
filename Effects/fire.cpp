@@ -3,7 +3,7 @@
 EffectConfiguration fire = {
 	fireNamespace::tick,			// tick
 	fireNamespace::reset,			// reset
-	4,								// intervalZeroOffset
+	5,								// intervalZeroOffset
 	4,								// intervalStepSize
 };
 

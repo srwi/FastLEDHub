@@ -3,7 +3,7 @@
 EffectConfiguration leftRightLeftRightLeft = {
 	leftRightLeftRightLeftNamespace::tick,			// tick
 	leftRightLeftRightLeftNamespace::reset,			// reset
-	2,												// intervalZeroOffset
+	5,												// intervalZeroOffset
 	4,												// intervalStepSize
 };
 

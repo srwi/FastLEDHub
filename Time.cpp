@@ -6,8 +6,6 @@ unsigned int localPort = 2390;//8888;
 const int NTP_PACKET_SIZE = 48;
 byte packetBuffer[NTP_PACKET_SIZE];
 
-myTime sunsetTime;
-
 void initTime()
 {
 	Udp.begin(localPort);
@@ -15,11 +13,11 @@ void initTime()
 	setTime(hour(),minute(),0,1,1,11);
 	Serial.println("[Time] Current time: " + String(hour()) + ":" + String(minute()));
 
-	sunsetTime = getSunsetTime();
-	Serial.println("[Sunset] Sunset time will be: " + String(sunsetTime.hour) + ":" + String(sunsetTime.minute));
+	getSunsetTime(); // Stores in Config
+	Serial.println("[Sunset] Sunset time will be: " + String(Config.sunset_hour) + ":" + String(Config.sunset_minute));
 }
 
-myTime getSunsetTime()
+void getSunsetTime()
 {
 	Serial.print("[Sunset] Getting sunset time...");
 
@@ -30,7 +28,7 @@ myTime getSunsetTime()
 	if (!client.connect(host, 80))
 	{
 		Serial.println("failed!\nUsing fallback time.");
-		return { Config.sunset_hour, Config.sunset_minute };
+		return;
 	}
 	client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
 	unsigned long timeout = millis();
@@ -40,7 +38,7 @@ myTime getSunsetTime()
 		{
 			Serial.println("failed!\nUsing fallback time.");
 			client.stop();
-			return { Config.sunset_hour, Config.sunset_minute };
+			return;
 		}
 	}
 
@@ -58,7 +56,7 @@ myTime getSunsetTime()
 	String sunset = root["results"]["sunset"];
 
 	if(sunset == "")
-		return { Config.sunset_hour, Config.sunset_minute };
+		return;
 
 	// Generate sunset time from JSON and saved settings
 	int8_t hour = 0;
@@ -91,7 +89,6 @@ myTime getSunsetTime()
 	Config.save();
 
 	Serial.println("ok!");
-	return myTime {hour, minute};
 }
 
 time_t getNtpTime()

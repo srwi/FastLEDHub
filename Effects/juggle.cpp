@@ -25,6 +25,7 @@ namespace juggleNamespace
 	
 	void reset()
 	{
+		
 	}
 
 	void tick()
@@ -48,7 +49,7 @@ namespace juggleNamespace
 			curhue += hueinc;
 		}
 
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

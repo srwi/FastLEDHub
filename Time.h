@@ -9,14 +9,8 @@
 #include "EffectController.h"
 #include "Config.h"
 
-struct myTime
-{
-	int8_t hour;
-	int8_t minute;
-};
-
 void initTime();
-myTime getSunsetTime();
+void getSunsetTime();
 time_t getNtpTime();
 void sendNTPpacket(IPAddress &address);
 

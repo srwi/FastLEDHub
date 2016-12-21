@@ -23,7 +23,7 @@ namespace faderNamespace
 	void tick()
 	{
 		fill_solid(strip, NUM_LEDS, CHSV(hue++,255,255));
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

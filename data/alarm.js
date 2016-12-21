@@ -7,7 +7,7 @@ connection.binaryType = 'arraybuffer';
 
 connection.onopen = function(e)
 {
-	$('#connectingOverlayText').html('Waiting for device information...');
+	$('#connectingOverlayText').html('Warte auf Antwort...');
 	$('#connectButton').hide();
 };
 
@@ -18,7 +18,7 @@ connection.onerror = function(e)
 
 connection.onclose = function(e)
 {
-	$('#connectingOverlayText').html('Connection closed.');
+	$('#connectingOverlayText').html('Verbindung unterbrochen.');
 	$('#refreshButton').show();
 	$('#connectingOverlay').fadeIn(140);
 };
@@ -27,9 +27,14 @@ connection.onmessage = function(e)
 {
 	console.log('Received: ', e.data);
 
-	if(e.data == 'pong')
+	if(e.data == 'alarm set')
 	{
 		showConfirmation();
+		return;
+	}
+	else if(e.data == 'alarm disabled')
+	{
+		$('#disable_alarm_button').addClass('disabled');
 		return;
 	}
 
@@ -37,7 +42,7 @@ connection.onmessage = function(e)
 	{
 		var data = JSON.parse(e.data);
 
-		$('#connectingOverlayText').html('Success!');
+		$('#connectingOverlayText').html('Erfolg!');
 		$('#connectingOverlay').fadeOut(140);
 
 		if(data.hasOwnProperty('alarm_enabled'))
@@ -82,6 +87,11 @@ function send_text(text)
 	}
 }
 
+function disable_alarm()
+{
+	send_bytes(3);
+}
+
 function send_alarm()
 {
 	time = $('#alarm_time').val().split(':');
@@ -90,10 +100,31 @@ function send_alarm()
 
 function showConfirmation()
 {
-	$('#confirmationOverlayText').html('See you at ' + $('#alarm_time').val() + '! :)');
+	$('#confirmationOverlayText').html($('#alarm_time').val() + ' Uhr');
 	$('#confirmationOverlay').fadeIn(140);
 	connection.close();
 }
 
 
 $('.clockpicker').clockpicker().find('input').change(function(){});
+
+var idleTime = 0;
+setInterval(function ()
+{
+	idleTime++;
+	if(idleTime > 300)//s
+		connection.close();
+}, 1000);
+$(this).mousemove(function (e) { idleTime = 0; });
+$(this).keypress(function (e) { idleTime = 0; });
+
+document.addEventListener('visibilitychange', function()
+{
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+	{
+		if(document.hidden)
+			connection.close();
+		else
+			location.reload();
+	}
+})

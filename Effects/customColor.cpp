@@ -36,7 +36,7 @@ namespace customColorNamespace
 			currentCustomColor = newCustomColor;
 		}
 		
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }

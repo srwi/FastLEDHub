@@ -21,13 +21,13 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 	switch(type)
 	{
 		case WStype_DISCONNECTED:
-			websocketConnectionCount--;
 			// Save config if live data (custom color or speed) has changed within websocket connection
 			if(liveDataHasChanged)
 			{
 				Config.save();
 				liveDataHasChanged = false;
 			}
+			websocketConnectionCount--;
 			Serial.printf("[Websocket] [%u] Disconnected!\n", num);
 		break;
 		case WStype_CONNECTED:
@@ -37,6 +37,7 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 			Serial.printf("[Websocket] [%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 
 			// Send information to websocket client
+			// TODO: Send these as one message
 			webSocket.sendTXT(num, Config.getJSON().c_str());
 			webSocket.sendTXT(num, getEffectSettingsJSON().c_str());
 			broadcastStatus();
@@ -83,30 +84,11 @@ void handleWebsocketText(String text, uint8_t num)
 
 	if(Config.parseJSON(textArray))
 	{
-		// TODO: this should actually come directly from the web ui itself
-		Config.last_effect = effectList.get(effectIndex).name;
 		Config.save();
 		return;
 	}
 
-	if(text == "reboot")
-	{
-		ESP.restart();
-	}
-	else if(text == "stop")
-	{
-		stopFade();
-		stop();
-	}
-	else if(text == "alarm")
-	{
-		startFade(ALARM);
-	}
-	else if(text == "sunset")
-	{
-		startFade(SUNSET);
-	}
-	else if(text.startsWith("toggle"))
+	if(text.startsWith("toggle"))
 	{
 		String effectName = text.substring(7);
 
@@ -126,19 +108,35 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
 			Config.custom_color = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
-			begin("Custom Color");
+			begin("Farbe");
+
+			liveDataHasChanged = true;
 		break;
 		case 1: // Speed
 			setSpeed(binary[1]);
+
+			liveDataHasChanged = true;
 		break;
-		case 2:
+		case 2: // Set alarm
 			Config.alarm_hour = binary[1];
 			Config.alarm_minute = binary[2];
+			Config.alarm_enabled = true;
 			Config.save();
+			webSocket.sendTXT(num, String("alarm set").c_str());
+		break;
+		case 3: // Disable alarm
+			Config.alarm_enabled = false;
+			Config.save();
+			webSocket.sendTXT(num, String("alarm disabled").c_str());
+		break;
+		case 4: // Spectroscope data
+			for(uint16_t i = 0; i < NUM_LEDS; i++)
+			{
+				strip[i] = CRGB(binary[1 + i*3], binary[2 + i*3], binary[3 + i*3]);
+			}
 		break;
 	}
 
-	liveDataHasChanged = true;
 	webSocket.sendTXT(num, String("pong").c_str());
 }
 

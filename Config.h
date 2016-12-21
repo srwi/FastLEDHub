@@ -30,7 +30,6 @@ class ConfigClass
 		int16_t sunset_offset = 0;
 		String sunset_effect = "";
 		// other
-		String last_effect = "";
 		String custom_color = "";
 		uint8_t speed = 0;
 

@@ -7,19 +7,20 @@ uint8_t effectIndex = 0;
 
 void initController()
 {
+	// Load saved color from Config
 	customColorNamespace::set(strtol((const char *)&Config.custom_color[0], NULL, 16));
 	
-	effectList.add({"Custom Color", customColor});
+	effectList.add({"Farbe", customColor});
 	effectList.add({"Nox", nox});
-	effectList.add({"Fader", fader});
-	effectList.add({"Fire", fire});
-	effectList.add({"LeftRightLeftRightLeft", leftRightLeftRightLeft});
-	effectList.add({"RGB Rainbow", rgbRainbow});
-	effectList.add({"BUG RAINBOW", rbRainbow});
-	effectList.add({"Confetti", confetti});
-	effectList.add({"Pop Fade", popFade});
-	effectList.add({"Alternating Rainbow", alternatingRainbow});
-	effectList.add({"Juggle", juggle});
+	effectList.add({"Farbfade", fader});
+	effectList.add({"Feuerwehr", fire});
+	effectList.add({"Schiffchen", leftRightLeftRightLeft});
+	effectList.add({"Rainbow", rgbRainbow});
+	effectList.add({"Huiii", rbRainbow});
+	effectList.add({"Konfetti", confetti});
+	effectList.add({"#borntoparty", popFade});
+	effectList.add({"Chillimilli", alternatingRainbow});
+	effectList.add({"Zirkus Zirkus", juggle});
 }
 
 void begin(String name)

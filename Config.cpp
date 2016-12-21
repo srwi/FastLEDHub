@@ -41,8 +41,6 @@ bool ConfigClass::parseJSON(char* json)
 	if(root.containsKey("sunset_effect"))
 		sunset_effect = root["sunset_effect"].asString();
 	// other
-	if(root.containsKey("last_effect"))
-		last_effect = root["last_effect"].asString();
 	if(root.containsKey("custom_color"))
 		custom_color = root["custom_color"].asString();
 	if(root.containsKey("speed"))
@@ -76,7 +74,6 @@ String ConfigClass::getJSON()
 	root["sunset_offset"] = sunset_offset;
 	root["sunset_effect"] = sunset_effect;
 	// other
-	root["last_effect"] = last_effect;
 	root["custom_color"] = custom_color;
 	root["speed"] = speed;
 

@@ -13,20 +13,21 @@ void setup()
 	Serial.begin(115200);
 	Serial.println("");
 
-	Wifi.autoConnect("Lightstrip AP (192.168.4.1)");
-	WebServer.init();
-	if(Wifi.isAP())
-		return;
-	OTA.init("Lightstrip");
-
 	Config.init();
-	initWebUpdate();
 	initController();
 	initHardware();
-	initWebsocket();
-	initTime();
-
 	begin("Nox");
+
+	Wifi.autoConnect("Lightstrip AP (192.168.4.1)");
+	WebServer.init();
+	
+	initTime();
+	if(!Wifi.isAP())
+	{
+		OTA.init("Lightstrip");
+		initWebsocket();
+		initWebUpdate();
+	}
 }
 
 void loop()
@@ -40,8 +41,8 @@ void loop()
 		WebServer.handleClient();
 		OTA.handle();
 		webSocket.loop();
-		handleFade();
-
-		FastLED.show();
 	}
+
+	FastLED.show();
+	handleFade();
 }

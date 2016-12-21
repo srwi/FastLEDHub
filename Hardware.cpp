@@ -67,7 +67,6 @@ void handleInput()
 		{
 			//FastLED.setBrightness(brightness);
 			setGammaCorrectedBrightness(potiBrightness);
-			Serial.println("Set brightness");
 		}
 	}
 
@@ -77,6 +76,8 @@ void handleInput()
 		// button pushed
 		stopFade();
 		cycleEffect();
+
+		Serial.println("Button pushed.");
 
 		buttonPushed = true;
 	}

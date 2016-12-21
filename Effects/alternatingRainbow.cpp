@@ -31,7 +31,7 @@ namespace alternatingRainbowNamespace
 			fill_gradient(strip, NUM_LEDS, CHSV(starthue,255,255), CHSV(endhue,255,255), BACKWARD_HUES);
 		}
 
-		FastLED.show();
+		//FastLED.show();
 	}
 
 }
