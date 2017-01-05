@@ -187,8 +187,8 @@ function update_buttons_by_command(cmd)
 			}
 			if($(this).text() == 'Farbe')
 			{
-				$(this).css('background-color', 'white');
-				$(this).css('color', 'black');
+				$(this).css('background-color', '#464545');
+				$(this).css('color', 'white');
 			}
 		}
 	});
@@ -288,8 +288,8 @@ var $customColorPicker = $('.color').colorPicker({
 		{
 			if(currentEffect != 'Farbe' || currentState == 'stop')
 			{
-				$('#custom_color_button').css('background-color','white');
-				$('#custom_color_button').css('color','black');
+				$('#custom_color_button').css('background-color','#464545');
+				$('#custom_color_button').css('color','white');
 			}
 		}
 		var newColor = this.color.colors.HEX + ''; // dereference by appending ''
