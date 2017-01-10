@@ -32,17 +32,13 @@ void setup()
 
 void loop()
 {
-	if(Wifi.isAP())
+	if(!Wifi.isAP())
 	{
-		WebServer.handleClient();
-	}
-	else
-	{
-		WebServer.handleClient();
 		OTA.handle();
 		webSocket.loop();
 	}
 
+	WebServer.handleClient();
 	FastLED.show();
 	handleFade();
 }

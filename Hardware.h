@@ -8,8 +8,8 @@
 #include "EffectController.h"
 #include "Fade.h"
 
-#define NUM_LEDS 87
-#define LIGHTSTRIP_PIN 1 // corresponds to pin 5
+#define NUM_LEDS 201 // Marly: 87
+#define LIGHTSTRIP_PIN 5 // Pin 1 on NodeMCU; Pin 5 on Generic/Weemos D1 Mini
 #define BUTTON_PIN 4
 
 extern CRGB strip[NUM_LEDS];

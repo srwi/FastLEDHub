@@ -24,7 +24,7 @@ namespace rbRainbowNamespace
 
 	void tick()
 	{
-		// Shift all leds by one position
+		// Shift all leds by one
 		strip[NUM_LEDS - 1] = strip[0];
 		for(int i = 0; i < NUM_LEDS - 1; i++)
 		{

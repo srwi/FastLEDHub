@@ -3,7 +3,7 @@ var currentState = '';
 var currentCustomColor = '';
 var maxSpeed = 14;
 
-var websocketReady = true;
+var websocketReady = false;
 var ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
 var connection = new WebSocket(ws_uri, ['arduino']);
 connection.binaryType = 'arraybuffer';
@@ -30,7 +30,7 @@ connection.onmessage = function(e)
 {
 	console.log('Received: ', e.data);
 
-	if(e.data == 'pong')
+	if(e.data == 'ok')
 	{
 		websocketReady = true;
 		return;

@@ -49,6 +49,7 @@ void begin(String name)
 	status = RUNNING;
 
 	broadcastStatus();
+	Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'");
 }
 
 void cycleEffect()
@@ -73,6 +74,7 @@ void stop()
 	status = STOPPED;
 
 	broadcastStatus();
+	Serial.println("[Effect] Stopped '" + effectList.get(effectIndex).name + "'");
 }
 
 void resume()
@@ -84,6 +86,7 @@ void resume()
 	status = RUNNING;
 
 	broadcastStatus();
+	Serial.println("[Effect] Resumed '" + effectList.get(effectIndex).name + "'");
 }
 
 void restart()
@@ -98,6 +101,7 @@ void pause()
 	status = PAUSED;
 
 	broadcastStatus();
+	Serial.println("[Effect] Paused '" + effectList.get(effectIndex).name + "'");
 }
 
 void setSpeed(uint8_t speed)
@@ -127,16 +131,13 @@ void broadcastStatus()
 	if(status == RUNNING)
 	{
 		webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
-		Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'");
 	}
 	else if(status == PAUSED)
 	{
 		webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
-		Serial.println("[Effect] Paused '" + effectList.get(effectIndex).name + "'");
 	}
 	else if(status == STOPPED)
 	{
 		webSocket.broadcastTXT(String("stop").c_str());
-		Serial.println("[Effect] Stopped '" + effectList.get(effectIndex).name + "'");
 	}
 }

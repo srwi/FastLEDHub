@@ -41,6 +41,7 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 			webSocket.sendTXT(num, Config.getJSON().c_str());
 			webSocket.sendTXT(num, getEffectSettingsJSON().c_str());
 			broadcastStatus();
+			webSocket.sendTXT(num, "ok");
 		}
 		break;
 		case WStype_TEXT:
@@ -111,11 +112,13 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 			begin("Farbe");
 
 			liveDataHasChanged = true;
+			webSocket.sendTXT(num, String("ok").c_str());
 		break;
 		case 1: // Speed
 			setSpeed(binary[1]);
 
 			liveDataHasChanged = true;
+			webSocket.sendTXT(num, String("ok").c_str());
 		break;
 		case 2: // Set alarm
 			Config.alarm_hour = binary[1];
@@ -130,14 +133,14 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 			webSocket.sendTXT(num, String("alarm disabled").c_str());
 		break;
 		case 4: // Spectroscope data
+			if(status != STOPPED)
+				stop();
 			for(uint16_t i = 0; i < NUM_LEDS; i++)
 			{
 				strip[i] = CRGB(binary[1 + i*3], binary[2 + i*3], binary[3 + i*3]);
 			}
 		break;
 	}
-
-	webSocket.sendTXT(num, String("pong").c_str());
 }
 
 String byteArrayToString(uint8_t *bytes)

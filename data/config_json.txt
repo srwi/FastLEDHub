@@ -1,0 +1,20 @@
+{
+  "time_zone": 1,
+  "summer_time": 0,
+  "longitude": 0.00,
+  "latitude": 0.00,
+  "alarm_enabled": false,
+  "alarm_hour": 0,
+  "alarm_minute": 0,
+  "alarm_duration": 0,
+  "alarm_effect": "Farbe",
+  "post_alarm_effect": "Farbe",
+  "sunset_enabled": false,
+  "sunset_hour": 18,
+  "sunset_minute": 9,
+  "sunset_duration": 0,
+  "sunset_offset": 0,
+  "sunset_effect": "Farbe",
+  "custom_color": "ffffff",
+  "speed": 5
+}
