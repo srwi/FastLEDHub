@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "Fade.h"
 #include "WebUpdate.h"
+#include "Observer.h"
 
 void setup()
 {
@@ -27,6 +28,7 @@ void setup()
 		OTA.init("Lightstrip");
 		initWebsocket();
 		initWebUpdate();
+		initObserver();
 	}
 }
 

@@ -33,5 +33,4 @@ namespace alternatingRainbowNamespace
 
 		//FastLED.show();
 	}
-
 }

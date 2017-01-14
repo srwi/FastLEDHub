@@ -43,13 +43,21 @@ bool ConfigClass::parseJSON(char* json)
 	// other
 	if(root.containsKey("custom_color"))
 		custom_color = root["custom_color"].asString();
+	if(root.containsKey("desktop_ip"))
+		desktop_ip = root["desktop_ip"].asString();
+	if(root.containsKey("mobile_ip"))
+		mobile_ip = root["mobile_ip"].asString();
 	if(root.containsKey("speed"))
 		speed = root["speed"];
+	if(root.containsKey("status"))
+		status = root["status"];
+	if(root.containsKey("current_effect"))
+		current_effect = root["current_effect"].asString();
 	
 	return root.success();
 }
 
-String ConfigClass::getJSON()
+String ConfigClass::getJSON(bool includeInfo)
 {
 	StaticJsonBuffer<DATA_JSON_SIZE> jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
@@ -75,7 +83,17 @@ String ConfigClass::getJSON()
 	root["sunset_effect"] = sunset_effect;
 	// other
 	root["custom_color"] = custom_color;
+	root["desktop_ip"] = desktop_ip;
+	root["mobile_ip"] = mobile_ip;
 	root["speed"] = speed;
+	root["status"] = (int)status;
+	root["current_effect"] = effectList.get(effectIndex).name;
+	// effect list
+	JsonArray& data = root.createNestedArray("effect_list");
+	for(uint8_t i = 0; i < effectList.size(); i++)
+	{
+		data.add(effectList.get(i).name);
+	}
 
 	String buffer = "";
 	root.prettyPrintTo(buffer);

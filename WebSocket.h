@@ -16,7 +16,7 @@ void initWebsocket();
 void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
 void handleWebsocketText(String text, uint8_t num);
 void handleWebsocketBinary(uint8_t *binary, uint8_t num);
-String getEffectSettingsJSON();
+void broadcastStatus();
 String byteArrayToString(uint8_t *bytes);
 
 #endif

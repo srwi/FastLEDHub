@@ -16,7 +16,7 @@ void initController()
 	effectList.add({"Feuerwehr", fire});
 	effectList.add({"Schiffchen", leftRightLeftRightLeft});
 	effectList.add({"Rainbow", rgbRainbow});
-	effectList.add({"Huiii", rbRainbow});
+	effectList.add({"Huiii (broken)", rbRainbow});
 	effectList.add({"Konfetti", confetti});
 	effectList.add({"#borntoparty", popFade});
 	effectList.add({"Chillimilli", alternatingRainbow});
@@ -126,18 +126,18 @@ void attachTicker()
 	effectTicker.attach_ms(interval, effectList.get(effectIndex).configuration.tick);
 }
 
-void broadcastStatus()
+String getStatus()
 {
 	if(status == RUNNING)
 	{
-		webSocket.broadcastTXT(String("start " + effectList.get(effectIndex).name).c_str());
+		return "start " + effectList.get(effectIndex).name;
 	}
 	else if(status == PAUSED)
 	{
-		webSocket.broadcastTXT(String("pause " + effectList.get(effectIndex).name).c_str());
+		return "pause " + effectList.get(effectIndex).name;
 	}
-	else if(status == STOPPED)
+	else
 	{
-		webSocket.broadcastTXT(String("stop").c_str());
+		return "stop";
 	}
 }

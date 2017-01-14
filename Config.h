@@ -5,7 +5,9 @@
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
 
-#define DATA_JSON_SIZE (JSON_OBJECT_SIZE(24))
+#include "EffectController.h"
+
+#define DATA_JSON_SIZE (JSON_OBJECT_SIZE(100))
 
 class ConfigClass
 {
@@ -31,12 +33,16 @@ class ConfigClass
 		String sunset_effect = "";
 		// other
 		String custom_color = "";
+		String mobile_ip = "";
+		String desktop_ip = "";
+		String current_effect = "";
 		uint8_t speed = 0;
+		uint8_t status = 0;
 
 		bool init();
 		bool save();
 		bool parseJSON(char* json);
-		String getJSON();
+		String getJSON(bool includeInfo = false);
 
 	private:
 		const String config_filename = "/config_json.txt";

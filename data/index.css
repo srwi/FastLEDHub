@@ -170,7 +170,7 @@ body .bootstrap-timepicker-widget table td a
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #151515;
+	background-color: #222;
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -190,12 +190,12 @@ body .bootstrap-timepicker-widget table td a
 
 input:checked + .slider
 {
-	background-color: #337ab7;
+	background-color: #375a7f;
 }
 
 input:focus + .slider
 {
-	box-shadow: 0 0 1px #337ab7;
+	box-shadow: 0 0 1px #375a7f;
 }
 
 input:checked + .slider:before

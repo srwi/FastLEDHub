@@ -59,6 +59,6 @@ void resume();
 void cycleEffect();
 void setSpeed(uint8_t speed);
 void attachTicker();
-void broadcastStatus();
+String getStatus();
 
 #endif

@@ -3,6 +3,7 @@
 WebSocketsServer webSocket = WebSocketsServer(81);
 uint8_t websocketConnectionCount = 0;
 bool liveDataHasChanged = false;
+String ipString;
 
 void initWebsocket()
 {
@@ -10,7 +11,7 @@ void initWebsocket()
 	webSocket.onEvent(websocketEvent);
 	if(MDNS.begin("lightstrip"))
 	{
-		Serial.println("[Websocket] MDNS responder started");
+		Serial.println("[Wifi] MDNS responder started");
 	}
 	MDNS.addService("http", "tcp", 80);
 	MDNS.addService("ws", "tcp", 81);
@@ -34,48 +35,19 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 		{
 			websocketConnectionCount++;
 			IPAddress ip = webSocket.remoteIP(num);
+			ipString = String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
 			Serial.printf("[Websocket] [%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
-
-			// Send information to websocket client
-			// TODO: Send these as one message
-			webSocket.sendTXT(num, Config.getJSON().c_str());
-			webSocket.sendTXT(num, getEffectSettingsJSON().c_str());
-			broadcastStatus();
-			webSocket.sendTXT(num, "ok");
 		}
 		break;
 		case WStype_TEXT:
-			//Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
+			Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
 			handleWebsocketText(byteArrayToString(payload), num);
 		break;
 		case WStype_BIN:
-			//Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
+			Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
 			handleWebsocketBinary(payload, num);
 		break;
 	}
-}
-
-String getEffectSettingsJSON()
-{
-	// TODO: maybe use dynamic buffer?
-	StaticJsonBuffer<JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(255)> jsonBuffer;
-
-	JsonObject& root = jsonBuffer.createObject();
-
-	root["alarm_effect"] = Config.alarm_effect;
-	root["post_alarm_effect"] = Config.post_alarm_effect;
-	root["sunset_effect"] = Config.sunset_effect;
-
-	JsonArray& data = root.createNestedArray("effectList");
-	for(uint8_t i = 0; i < effectList.size(); i++)
-	{
-		data.add(effectList.get(i).name);
-	}
-
-	String output = "";
-	root.prettyPrintTo(output);
-
-	return output;
 }
 
 void handleWebsocketText(String text, uint8_t num)
@@ -95,6 +67,26 @@ void handleWebsocketText(String text, uint8_t num)
 
 		stopFade();
 		toggle(effectName);
+	}
+	else if(text == "mobile")
+	{
+		webSocket.sendTXT(num, Config.getJSON(true).c_str());
+		if(Config.mobile_ip != ipString)
+		{
+			Config.mobile_ip = ipString;
+			Config.save();
+			Serial.println("Got new mobile IP: " + ipString);
+		}
+	}
+	else if(text == "desktop")
+	{
+		webSocket.sendTXT(num, Config.getJSON(true).c_str());
+		if(Config.desktop_ip != ipString)
+		{
+			Config.desktop_ip = ipString;
+			Config.save();
+			Serial.println("Got new desktop IP: " + ipString);
+		}
 	}
 	else
 	{
@@ -152,4 +144,11 @@ String byteArrayToString(uint8_t *bytes)
 	}
 	s += '\0';
 	return s;
+}
+
+void broadcastStatus()
+{
+	// Send status as JSON
+	String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_effect\": \"" + effectList.get(effectIndex).name + "\"\n}";
+	webSocket.broadcastTXT(msg.c_str());
 }
