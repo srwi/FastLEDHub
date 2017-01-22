@@ -43,6 +43,7 @@ enum EffectStatus
 #include "Effects/confetti.h"
 #include "Effects/popFade.h"
 #include "Effects/alternatingRainbow.h"
+#include "Effects/cremeRainbow.h"
 #include "Effects/juggle.h"
 
 extern EffectStatus status;

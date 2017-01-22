@@ -37,6 +37,7 @@ class ConfigClass
 		String desktop_ip = "";
 		String current_effect = "";
 		uint8_t speed = 0;
+		uint8_t saturation = 255;
 		uint8_t status = 0;
 
 		bool init();

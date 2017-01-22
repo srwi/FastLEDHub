@@ -1,6 +1,8 @@
 #ifndef _WEBSOCKET_H
 #define _WEBSOCKET_H
 
+#include <Arduino.h>
+#include <Hash.h>
 #include <WebSocketsServer.h>
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>

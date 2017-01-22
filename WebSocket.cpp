@@ -132,6 +132,12 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 				strip[i] = CRGB(binary[1 + i*3], binary[2 + i*3], binary[3 + i*3]);
 			}
 		break;
+		case 5: // Saturation
+			Config.saturation = binary[1];
+
+			liveDataHasChanged = true;
+			webSocket.sendTXT(num, String("ok").c_str());
+		break;
 	}
 }
 

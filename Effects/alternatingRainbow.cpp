@@ -3,7 +3,7 @@
 EffectConfiguration alternatingRainbow = {
 	alternatingRainbowNamespace::tick,	// tick
 	alternatingRainbowNamespace::reset,	// reset
-	5,									// intervalZeroOffset
+	10,									// intervalZeroOffset
 	0									// intervalStepSize
 };
 
@@ -15,22 +15,29 @@ namespace alternatingRainbowNamespace
 
 	void reset()
 	{
+		
 	}
 
 	void tick()
 	{
-		uint16_t starthue = beatsin16(1, 0, 255);
-		uint16_t endhue = beatsin16(3, 0, 255);
+		// beatsin88 takes BMP in multiples of 256, so 120BPM = 120*256
+		uint16_t startHue = beatsin88((15 - Config.speed) * 256/5, 0, 1535);
+		uint16_t endHue = beatsin88((15 - Config.speed) * 256/2, 0, 1535);
 
-		if (starthue < endhue)
+		if (startHue < endHue)
 		{
-			fill_gradient(strip, NUM_LEDS, CHSV(starthue,255,255), CHSV(endhue,255,255), FORWARD_HUES);
+			for(int16_t i = 0; i < NUM_LEDS; i++)
+			{
+				strip[i] = betterHue(startHue + (endHue - startHue) * i/NUM_LEDS, Config.saturation);
+			}
 		}
 		else
 		{
-			fill_gradient(strip, NUM_LEDS, CHSV(starthue,255,255), CHSV(endhue,255,255), BACKWARD_HUES);
-		}
-
-		//FastLED.show();
+			for(int16_t i = NUM_LEDS - 1; i >= 0; i--)
+			{
+				strip[i] = betterHue(startHue + (endHue - startHue) * i/NUM_LEDS, Config.saturation);
+			}
+		}	
 	}
+	
 }

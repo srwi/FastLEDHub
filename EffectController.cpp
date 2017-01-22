@@ -8,7 +8,6 @@ uint8_t effectIndex = 0;
 void initController()
 {
 	// Load saved color from Config
-	customColorNamespace::set(strtol((const char *)&Config.custom_color[0], NULL, 16));
 	
 	effectList.add({"Farbe", customColor});
 	effectList.add({"Nox", nox});
@@ -16,10 +15,11 @@ void initController()
 	effectList.add({"Feuerwehr", fire});
 	effectList.add({"Schiffchen", leftRightLeftRightLeft});
 	effectList.add({"Rainbow", rgbRainbow});
-	effectList.add({"Huiii (broken)", rbRainbow});
+	effectList.add({"Huiii", rbRainbow});
 	effectList.add({"Konfetti", confetti});
 	effectList.add({"#borntoparty", popFade});
 	effectList.add({"Chillimilli", alternatingRainbow});
+	effectList.add({"Creme", cremeRainbow});
 	effectList.add({"Zirkus Zirkus", juggle});
 }
 
@@ -116,6 +116,8 @@ void toggle(String name)
 {
 	if(status == RUNNING && effectList.get(effectIndex).name == name)
 		pause();
+	else if(status == PAUSED && effectList.get(effectIndex).name == name)
+		resume();
 	else
 		begin(name);
 }

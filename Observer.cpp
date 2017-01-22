@@ -58,5 +58,6 @@ void pingTick()
 
 	ping_start(&ping_options);
 
+	// TODO: what??????
 	delay(2000);
 }

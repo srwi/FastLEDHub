@@ -25,6 +25,21 @@ const uint8_t PROGMEM gamma8[] = {
   177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
 
+CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val) // TODO: add s v support and web ui slider
+{
+	// fract1535 is a number from 0 to 1535
+	uint8_t fractHue = fract1535 / 6;
+	uint8_t fractBlend = fract1535 % 6;
+	if(sat == -1)
+		sat = 255;
+
+	CRGB leftColor, rightColor;
+	hsv2rgb_rainbow(CHSV(fractHue, sat, val), leftColor);
+	hsv2rgb_rainbow(CHSV(fractHue+1, sat, val), rightColor);
+
+	return blend(leftColor, rightColor, 42*fractBlend);
+}
+
 void initHardware()
 {
 	pinMode(BUTTON_PIN, INPUT);

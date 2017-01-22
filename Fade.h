@@ -1,6 +1,7 @@
 #ifndef _FADE_H
 #define _FADE_H
 
+#include <Arduino.h>
 #include <Ticker.h>
 #include "FastLED.h"
 

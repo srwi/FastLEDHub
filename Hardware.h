@@ -17,6 +17,7 @@ extern uint8_t brightness;
 extern uint8_t gammaCorrectedBrightness;
 
 void initHardware();
+CRGB betterHue(uint16_t fract1535, int16_t sat = -1, uint8_t val = 255);
 uint8_t getPotiBrightness();
 void setGammaCorrectedBrightness(uint8_t newBrightness);
 void handleInput();

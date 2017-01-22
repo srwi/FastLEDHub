@@ -49,8 +49,10 @@ bool ConfigClass::parseJSON(char* json)
 		mobile_ip = root["mobile_ip"].asString();
 	if(root.containsKey("speed"))
 		speed = root["speed"];
+	if(root.containsKey("saturation"))
+		saturation = root["saturation"];
 	if(root.containsKey("status"))
-		status = root["status"];
+		speed = root["speed"];
 	if(root.containsKey("current_effect"))
 		current_effect = root["current_effect"].asString();
 	
@@ -86,6 +88,7 @@ String ConfigClass::getJSON(bool includeInfo)
 	root["desktop_ip"] = desktop_ip;
 	root["mobile_ip"] = mobile_ip;
 	root["speed"] = speed;
+	root["saturation"] = saturation;
 	root["status"] = (int)status;
 	root["current_effect"] = effectList.get(effectIndex).name;
 	// effect list

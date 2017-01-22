@@ -51,9 +51,6 @@ connection.onmessage = function(e)
 
 function handle_json_data(data)
 {
-	// Update buttons list
-	if(data.hasOwnProperty('status') && data.hasOwnProperty('current_effect'))
-		update_buttons(data.status, data.current_effect);
 	// Populate effect list selectors and button collection
 	if(data.hasOwnProperty('effect_list'))
 	{
@@ -79,6 +76,9 @@ function handle_json_data(data)
 			}
 		}
 	}
+	// Update buttons list
+	if(data.hasOwnProperty('status') && data.hasOwnProperty('current_effect'))
+		update_buttons(data.status, data.current_effect);
 	// Select effects
 	if(data.hasOwnProperty('alarm_effect'))
 		$('#alarm_effect').val(data.alarm_effect != '' ? data.alarm_effect : 'Farbe');
@@ -109,6 +109,8 @@ function handle_json_data(data)
 		sunset_offset.value = data.sunset_offset;
 	if(data.hasOwnProperty('speed'))
 		document.getElementById('speed').noUiSlider.set(maxSpeed - data.speed);
+	if(data.hasOwnProperty('saturation'))
+		document.getElementById('saturation').noUiSlider.set(data.saturation);
 	if(data.hasOwnProperty('custom_color'))
 	{
 		$('.color').val(data.custom_color);
@@ -201,6 +203,7 @@ function send_config()
 	config.sunset_effect = $('#sunset_effect').val();
 	// other
 	config.speed = maxSpeed - document.getElementById('speed').noUiSlider.get();
+	config.saturation = document.getElementById('saturation').noUiSlider.get();
 	config.custom_color = currentCustomColor;
 
 	var json = JSON.stringify(config, null, 2);
@@ -287,10 +290,15 @@ var $customColorPicker = $('.color').colorPicker({
 	}
 });
 
-var stepSlider = document.getElementById('speed');
-noUiSlider.create(stepSlider, { start: 20, step: 1, range: {'min':0, 'max':maxSpeed} });
-stepSlider.noUiSlider.on('update', function( values, handle ) {
+var speedStepSlider = document.getElementById('speed');
+noUiSlider.create(speedStepSlider, { start: 10, step: 1, range: {'min':0, 'max':maxSpeed} });
+speedStepSlider.noUiSlider.on('update', function( values, handle ) {
 	send_bytes(1, maxSpeed - values[handle]);
+});
+var saturationStepSlider = document.getElementById('saturation');
+noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: {'min':150, 'max':255} });
+saturationStepSlider.noUiSlider.on('update', function( values, handle ) {
+	send_bytes(5, values[handle]);
 });
 
 var idleTime = 0;

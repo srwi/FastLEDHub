@@ -44,10 +44,10 @@ namespace confettiNamespace
 			}
 		}
 
-		fadeToBlackBy(strip, NUM_LEDS, thisfade);                    // Low values = slower fade.
-		int pos = random16(NUM_LEDS);                               // Pick an LED at random.
-		strip[pos] += CHSV((thishue + random16(huediff))/4 , thissat, thisbri);  // I use 12 bits for hue so that the hue increment isn't too quick.
-		thishue = thishue + thisinc;                                // It increments here.
+		fadeToBlackBy(strip, NUM_LEDS, thisfade);                 					   // Low values = slower fade.
+		int pos = random16(NUM_LEDS);                            					   // Pick an LED at random.
+		strip[pos] += CHSV((thishue + random16(huediff))/4 , thissat, thisbri);  	   // I use 12 bits for hue so that the hue increment isn't too quick.
+		thishue = thishue + thisinc;                              					   // It increments here.
 	}
 
 }

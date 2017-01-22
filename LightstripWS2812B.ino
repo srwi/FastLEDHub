@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <ESPEssentials.h>
 
 #include "WebSocket.h"
@@ -28,7 +29,7 @@ void setup()
 		OTA.init("Lightstrip");
 		initWebsocket();
 		initWebUpdate();
-		initObserver();
+		//initObserver();
 	}
 }
 
@@ -41,6 +42,6 @@ void loop()
 	}
 
 	WebServer.handleClient();
-	FastLED.show();
 	handleFade();
+	FastLED.show();
 }

@@ -1,10 +1,10 @@
 #include "fader.h"
 
 EffectConfiguration fader = {
-	faderNamespace::tick,		// tick
-	faderNamespace::reset,		// reset
-	10,							// intervalZeroOffset
-	7,							// intervalStepSize
+	faderNamespace::tick,       // tick
+	faderNamespace::reset,      // reset
+	4,                          // intervalZeroOffset
+	5,                          // intervalStepSize
 };
 
 namespace faderNamespace
@@ -13,17 +13,20 @@ namespace faderNamespace
 	 ****** START OF EFFECT CODE ******
 	 **********************************/
 
-	uint8_t hue = 0;
+	uint16_t hue1535 = 0;
 
 	void reset()
 	{
-		hue = 0;
+		hue1535 = 0;
 	}
 
 	void tick()
 	{
-		fill_solid(strip, NUM_LEDS, CHSV(hue++,255,255));
-		//FastLED.show();
+		if(hue1535 > 1535)
+			hue1535 = 0;
+
+		fill_solid(strip, NUM_LEDS, betterHue(hue1535, Config.saturation));
+		hue1535++;
 	}
 
 }

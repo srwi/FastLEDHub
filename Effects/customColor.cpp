@@ -3,7 +3,7 @@
 EffectConfiguration customColor = {
 	customColorNamespace::tick,		// tick
 	customColorNamespace::reset,	// reset
-	5,								// intervalZeroOffset
+	100,							// intervalZeroOffset
 	0,								// intervalStepSize
 };
 
@@ -14,29 +14,22 @@ namespace customColorNamespace
 	 **********************************/
 
 	CRGB currentCustomColor = CRGB::Black;
-	CRGB newCustomColor = CRGB::Black;
 
 	void reset()
 	{
-		// Prepare to use newCustomColor (next tick() iteration will then apply the current newCustomColor, which is the previously used color)
-		currentCustomColor = CRGB::Black;
+		currentCustomColor = strtol((const char *)&Config.custom_color[0], NULL, 16);
+		set(currentCustomColor);
 	}
 
 	void set(CRGB newColor)
 	{
-		newCustomColor = newColor;
+		currentCustomColor = newColor;
+		fill_solid(strip, NUM_LEDS, currentCustomColor);
 	}
 
 	void tick()
 	{
-		if(newCustomColor != currentCustomColor)
-		{
-			fill_solid(strip, NUM_LEDS, newCustomColor);
 
-			currentCustomColor = newCustomColor;
-		}
-		
-		//FastLED.show();
 	}
 
 }
