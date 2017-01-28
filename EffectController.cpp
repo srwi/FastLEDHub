@@ -68,6 +68,9 @@ void cycleEffect()
 
 void stop()
 {
+	if(status == STOPPED)
+		return;
+
 	effectTicker.detach();
 	FastLED.clear();
 	FastLED.show();

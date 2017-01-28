@@ -40,11 +40,11 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 		}
 		break;
 		case WStype_TEXT:
-			Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
+			//Serial.printf("[Websocket] [%u] get Text: %s\n", num, payload);
 			handleWebsocketText(byteArrayToString(payload), num);
 		break;
 		case WStype_BIN:
-			Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
+			//Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
 			handleWebsocketBinary(payload, num);
 		break;
 	}
@@ -96,6 +96,7 @@ void handleWebsocketText(String text, uint8_t num)
 
 void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 {
+			uint8_t spec[23] = {0};
 	switch(binary[0])
 	{
 		case 0: // Custom Color
@@ -137,6 +138,12 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
+		break;
+		case 6: // linearSpectroscope data
+			linearSpectroscope(binary+1);
+		break;
+		case 7: // symmetricalSpectroscope data
+			symmetricalSpectroscope(binary+1);
 		break;
 	}
 }

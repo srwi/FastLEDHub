@@ -10,6 +10,7 @@
 #include "EffectController.h"
 #include "Config.h"
 #include "Fade.h"
+#include "Spectroscope.h"
 
 extern WebSocketsServer webSocket;
 extern uint8_t websocketConnectionCount;
