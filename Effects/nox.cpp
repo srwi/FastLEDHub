@@ -9,9 +9,6 @@ EffectConfiguration nox = {
 
 namespace noxNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 	
 	void reset()
 	{

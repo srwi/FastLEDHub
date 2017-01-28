@@ -9,9 +9,6 @@ EffectConfiguration cremeRainbow = {
 
 namespace cremeRainbowNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	void reset()
 	{

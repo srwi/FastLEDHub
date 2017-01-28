@@ -27,7 +27,7 @@ const uint8_t PROGMEM gamma8[] = {
 
 CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val) // TODO: add s v support and web ui slider
 {
-	// fract1535 is a number from 0 to 1535
+	// fract1535 is a number from 0 to 1535 (MAX_BETTER_HUE)
 	uint8_t fractHue = fract1535 / 6;
 	uint8_t fractBlend = fract1535 % 6;
 	if(sat == -1)

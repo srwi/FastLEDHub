@@ -9,9 +9,6 @@ EffectConfiguration confetti = {
 
 namespace confettiNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 	
 	uint8_t  thisfade = 8;		// How quickly does it fade? Lower = slower fade rate.
 	int       thishue = 50;		// Starting hue.

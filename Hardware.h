@@ -8,6 +8,7 @@
 #include "EffectController.h"
 #include "Fade.h"
 
+#define MAX_BETTER_HUE 1535
 #define NUM_LEDS 201 // Marly: 87
 #define LIGHTSTRIP_PIN 5 // Pin 1 on NodeMCU; Pin 5 on Generic/Weemos D1 Mini
 #define BUTTON_PIN 4

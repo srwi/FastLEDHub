@@ -9,9 +9,6 @@ EffectConfiguration customColor = {
 
 namespace customColorNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	CRGB currentCustomColor = CRGB::Black;
 
@@ -21,9 +18,9 @@ namespace customColorNamespace
 		set(currentCustomColor);
 	}
 
-	void set(CRGB newColor)
+	void set(CRGB color)
 	{
-		currentCustomColor = newColor;
+		currentCustomColor = color;
 		fill_solid(strip, NUM_LEDS, currentCustomColor);
 	}
 

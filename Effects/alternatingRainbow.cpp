@@ -9,9 +9,6 @@ EffectConfiguration alternatingRainbow = {
 
 namespace alternatingRainbowNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	void reset()
 	{

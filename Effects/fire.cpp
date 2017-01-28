@@ -9,9 +9,6 @@ EffectConfiguration fire = {
 
 namespace fireNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	byte heat[NUM_LEDS] = { 0 };
 	uint8_t SPARKING = 120;

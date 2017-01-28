@@ -9,9 +9,7 @@ EffectConfiguration popFade = {
 
 namespace popFadeNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
+
 	int ranamount = NUM_LEDS;                                           // The higher the number, lowers the chance for a pixel to light up.
 	uint8_t thisdelay = 50;                                       // Standard delay value.
 	bool boolcolours = 1;                                         // True = random, False = array of colours (up to 10)
@@ -22,6 +20,7 @@ namespace popFadeNamespace
 
 	void reset()
 	{
+
 	}
 
 	void tick()

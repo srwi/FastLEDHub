@@ -3,34 +3,47 @@
 EffectConfiguration rbRainbow = {
 	rbRainbowNamespace::tick,		// tick
 	rbRainbowNamespace::reset,		// reset
-	1,								// intervalZeroOffset
-	0,								// intervalStepSize
+	2,								// intervalZeroOffset
+	2,								// intervalStepSize
 };
 
 namespace rbRainbowNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
+
+	CRGB get_cyclic_color(uint16_t index)
+	{
+		if(index < MAX_BETTER_HUE * 1/3)
+		{
+			return betterHue(MAX_BETTER_HUE * 2/3 + index, Config.saturation);
+		}
+		else
+		{
+			return betterHue(MAX_BETTER_HUE - (index - MAX_BETTER_HUE * 1/3), Config.saturation);
+		}
+	}
+
+	// Division will leave a small remainder but won't be noticable
+	uint8_t led_div = 2.0/3 * MAX_BETTER_HUE / NUM_LEDS;
+	uint16_t step;
 
 	void reset()
 	{
-		uint8_t fullRedWidth = 87/27;
-		fill_gradient(strip, 0, CHSV(160,255,255), 87/2 - fullRedWidth, CHSV(0,255,255));
-		for(uint8_t i = 87/2 - fullRedWidth + 1; i < 87/2 + fullRedWidth; i++)
-			strip[i] = CRGB::Red;
-		fill_gradient(strip, 87/2 + fullRedWidth, CHSV(0,255,255), 87, CHSV(160,255,255));
+		step = 0;
 	}
 
 	void tick()
 	{
-		// Shift all leds by one
-		strip[87 - 1] = strip[0];
-		for(int i = 0; i < 87 - 1; i++)
+		// [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] // Exemplary hue steps
+		// []            []            []            []            []		  // Exemplary led count
+		
+		for(uint16_t i = 0; i < NUM_LEDS; i++)
 		{
-			strip[i] = strip[i + 1];
+			strip[i] = get_cyclic_color((led_div * i + step) % (MAX_BETTER_HUE * 2/3));
 		}
-	
-		//FastLED.show();
+
+		step++;
+		if(step == MAX_BETTER_HUE * 2/3)
+			step = 0;
 	}
+
 }

@@ -9,9 +9,6 @@ EffectConfiguration juggle = {
 
 namespace juggleNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 	
 	// Routine specific variables
 	uint8_t    numdots =   4;                                     // Number of dots in use.

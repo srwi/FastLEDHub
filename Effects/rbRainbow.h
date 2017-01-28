@@ -10,6 +10,7 @@ extern EffectConfiguration rbRainbow;
 
 namespace rbRainbowNamespace
 {
+	CRGB get_cyclic_color(uint16_t index);
 	extern void reset();
 	extern void tick();
 }

@@ -9,9 +9,6 @@ EffectConfiguration leftRightLeftRightLeft = {
 
 namespace leftRightLeftRightLeftNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	uint8_t hue = 0;
 	bool left = true;
@@ -26,7 +23,7 @@ namespace leftRightLeftRightLeftNamespace
 
 	void tick()
 	{
-		strip[currentLed] = CHSV(hue++, 255, 255);
+		strip[currentLed] = CHSV(hue++, Config.saturation, 255);
 		for(int i = 0; i < NUM_LEDS; i++)
 			strip[i].nscale8(250);
 		currentLed += left ? 1 : -1;

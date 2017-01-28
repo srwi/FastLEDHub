@@ -9,9 +9,6 @@ EffectConfiguration fader = {
 
 namespace faderNamespace
 {
-	/**********************************
-	 ****** START OF EFFECT CODE ******
-	 **********************************/
 
 	uint16_t hue1535 = 0;
 
