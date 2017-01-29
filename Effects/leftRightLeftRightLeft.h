@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration leftRightLeftRightLeft;
+extern Effect leftRightLeftRightLeft;
 
 namespace leftRightLeftRightLeftNamespace
 {

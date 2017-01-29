@@ -1,6 +1,7 @@
 #include "leftRightLeftRightLeft.h"
 
-EffectConfiguration leftRightLeftRightLeft = {
+Effect leftRightLeftRightLeft = {
+	"Schiffchen",
 	leftRightLeftRightLeftNamespace::tick,			// tick
 	leftRightLeftRightLeftNamespace::reset,			// reset
 	5,												// intervalZeroOffset

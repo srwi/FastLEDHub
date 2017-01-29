@@ -1,6 +1,7 @@
 #include "fire.h"
 
-EffectConfiguration fire = {
+Effect fire = {
+	"Feuerwehr",
 	fireNamespace::tick,			// tick
 	fireNamespace::reset,			// reset
 	5,								// intervalZeroOffset

@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration alternatingRainbow;
+extern Effect alternatingRainbow;
 
 namespace alternatingRainbowNamespace
 {

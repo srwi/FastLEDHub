@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration nox;
+extern Effect nox;
 
 namespace noxNamespace
 {

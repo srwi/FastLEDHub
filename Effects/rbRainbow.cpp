@@ -1,6 +1,7 @@
 #include "rbRainbow.h"
 
-EffectConfiguration rbRainbow = {
+Effect rbRainbow = {
+	"Huii",
 	rbRainbowNamespace::tick,		// tick
 	rbRainbowNamespace::reset,		// reset
 	2,								// intervalZeroOffset

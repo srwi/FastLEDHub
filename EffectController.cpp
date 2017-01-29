@@ -7,42 +7,47 @@ uint8_t effectIndex = 0;
 
 void initController()
 {
-	// Load saved color from Config
-	
-	effectList.add({"Farbe", customColor});
-	effectList.add({"Nox", nox});
-	effectList.add({"Farbfade", fader});
-	effectList.add({"Feuerwehr", fire});
-	effectList.add({"Schiffchen", leftRightLeftRightLeft});
-	effectList.add({"Rainbow", rgbRainbow});
-	effectList.add({"Huiii", rbRainbow});
-	effectList.add({"Konfetti", confetti});
-	effectList.add({"#borntoparty", popFade});
-	effectList.add({"Chillimilli", alternatingRainbow});
-	effectList.add({"Creme", cremeRainbow});
-	effectList.add({"Zirkus Zirkus", juggle});
+	effectList.add(customColor);
+	effectList.add(nox);
+	effectList.add(fader);
+	effectList.add(fire);
+	effectList.add(leftRightLeftRightLeft);
+	effectList.add(rgbRainbow);
+	effectList.add(rbRainbow);
+	effectList.add(confetti);
+	effectList.add(popFade);
+	effectList.add(alternatingRainbow);
+	effectList.add(cremeRainbow);
+	effectList.add(juggle);
 }
 
 void begin(String name)
 {
-	// Check if effect is already running
-	if(status == RUNNING && effectList.get(effectIndex).name == name)
-		return;
-
 	// Get effect index from name
+	uint8_t index = 0;
 	for(uint8_t i = 0; i < effectList.size(); i++)
 	{
 		if(effectList.get(i).name == name)
 		{
-			effectIndex = i;
+			index = i;
 			break;
 		}
 	}
 
+	begin(index);
+}
+
+void begin(uint8_t index)
+{
+	if(status == RUNNING && effectIndex == index)
+		return;
+
+	effectIndex = index;
+
 	// Reset previous effect
 	FastLED.clear();
 	FastLED.show();
-	effectList.get(effectIndex).configuration.reset();
+	effectList.get(index).reset();
 
 	// Start effect
 	attachTicker();
@@ -52,18 +57,23 @@ void begin(String name)
 	Serial.println("[Effect] Started '" + effectList.get(effectIndex).name + "'");
 }
 
+void begin(Effect effect)
+{
+	begin(effect.name);
+}
+
 void cycleEffect()
 {
-	uint8_t nextEffectIndex = effectIndex;
+	uint8_t index = effectIndex;
 
 	if(status == RUNNING)
 	{
 		// Increment effect index
-		nextEffectIndex++;
-		nextEffectIndex %= effectList.size();
+		index++;
+		index %= effectList.size();
 	}
 
-	begin(effectList.get(nextEffectIndex).name);
+	begin(index);
 }
 
 void stop()
@@ -95,7 +105,7 @@ void resume()
 void restart()
 {
 	stop();
-	begin(effectList.get(effectIndex).name);
+	begin(effectIndex);
 }
 
 void pause()
@@ -127,8 +137,8 @@ void toggle(String name)
 
 void attachTicker()
 {
-	uint16_t interval = effectList.get(effectIndex).configuration.intervalZeroOffset + Config.speed * effectList.get(effectIndex).configuration.intervalStepSize;
-	effectTicker.attach_ms(interval, effectList.get(effectIndex).configuration.tick);
+	uint16_t interval = effectList.get(effectIndex).intervalZeroOffset + Config.speed * effectList.get(effectIndex).intervalStepSize;
+	effectTicker.attach_ms(interval, effectList.get(effectIndex).tick);
 }
 
 String getStatus()

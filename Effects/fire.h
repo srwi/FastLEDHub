@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration fire;
+extern Effect fire;
 
 namespace fireNamespace
 {

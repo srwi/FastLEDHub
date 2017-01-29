@@ -12,18 +12,13 @@
 
 typedef void (*func_ptr)();
 
-struct EffectConfiguration
+struct Effect
 {
+	String name;
 	func_ptr tick;
 	func_ptr reset;
 	uint16_t intervalZeroOffset;
 	uint16_t intervalStepSize;
-};
-
-struct Effect
-{
-	String name;
-	EffectConfiguration configuration;
 };
 
 enum EffectStatus
@@ -52,6 +47,8 @@ extern LinkedList<Effect> effectList;
 
 void initController();
 void begin(String name);
+void begin(uint8_t index);
+void begin(Effect effect);
 void toggle(String name);
 void stop();
 void pause();

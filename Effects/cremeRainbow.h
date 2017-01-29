@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration cremeRainbow;
+extern Effect cremeRainbow;
 
 namespace cremeRainbowNamespace
 {

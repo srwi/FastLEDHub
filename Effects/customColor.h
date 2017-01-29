@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration customColor;
+extern Effect customColor;
 
 namespace customColorNamespace
 {

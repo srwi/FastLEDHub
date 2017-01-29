@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration sunrise;
+extern Effect sunrise;
 
 namespace sunriseNamespace
 {

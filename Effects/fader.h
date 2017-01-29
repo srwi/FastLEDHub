@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration fader;
+extern Effect fader;
 
 namespace faderNamespace
 {

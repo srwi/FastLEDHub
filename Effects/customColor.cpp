@@ -1,6 +1,7 @@
 #include "customColor.h"
 
-EffectConfiguration customColor = {
+Effect customColor = {
+	"Farbe",
 	customColorNamespace::tick,		// tick
 	customColorNamespace::reset,	// reset
 	100,							// intervalZeroOffset

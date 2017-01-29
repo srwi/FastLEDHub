@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration confetti;
+extern Effect confetti;
 
 namespace confettiNamespace
 {

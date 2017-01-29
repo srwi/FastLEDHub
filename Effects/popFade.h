@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration popFade;
+extern Effect popFade;
 
 namespace popFadeNamespace
 {

@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration juggle;
+extern Effect juggle;
 
 namespace juggleNamespace
 {

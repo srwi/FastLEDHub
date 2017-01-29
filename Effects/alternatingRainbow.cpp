@@ -1,6 +1,7 @@
 #include "alternatingRainbow.h"
 
-EffectConfiguration alternatingRainbow = {
+Effect alternatingRainbow = {
+	"Chillimilli",
 	alternatingRainbowNamespace::tick,	// tick
 	alternatingRainbowNamespace::reset,	// reset
 	10,									// intervalZeroOffset

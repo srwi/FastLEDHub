@@ -6,7 +6,7 @@
 
 #include "../EffectController.h"
 
-extern EffectConfiguration rgbRainbow;
+extern Effect rgbRainbow;
 
 namespace rgbRainbowNamespace
 {

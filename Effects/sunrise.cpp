@@ -1,6 +1,7 @@
 #include "sunrise.h"
 
-EffectConfiguration sunrise = {
+Effect sunrise = {
+	"Sonnenaufgang",
 	sunriseNamespace::tick,			// tick
 	sunriseNamespace::reset,		// reset
 	10,								// intervalZeroOffset

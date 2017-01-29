@@ -1,6 +1,7 @@
 #include "cremeRainbow.h"
 
-EffectConfiguration cremeRainbow = {
+Effect cremeRainbow = {
+	"Creme",
 	cremeRainbowNamespace::tick,		// tick
 	cremeRainbowNamespace::reset,		// reset
 	10,									// intervalZeroOffset

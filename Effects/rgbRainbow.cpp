@@ -1,6 +1,7 @@
 #include "rgbRainbow.h"
 
-EffectConfiguration rgbRainbow = {
+Effect rgbRainbow = {
+	"Regenbogen",
 	rgbRainbowNamespace::tick,		// tick
 	rgbRainbowNamespace::reset,		// reset
 	1,								// intervalZeroOffset

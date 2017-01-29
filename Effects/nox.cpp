@@ -1,6 +1,7 @@
 #include "nox.h"
 
-EffectConfiguration nox = {
+Effect nox = {
+	"Nox",
 	noxNamespace::tick,		// tick
 	noxNamespace::reset,	// reset
 	25,						// intervalZeroOffset
