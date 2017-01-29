@@ -59,7 +59,7 @@ bool ConfigClass::parseJSON(char* json)
 	return root.success();
 }
 
-String ConfigClass::getJSON(bool includeInfo)
+String ConfigClass::getJSON()
 {
 	StaticJsonBuffer<DATA_JSON_SIZE> jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
@@ -84,9 +84,11 @@ String ConfigClass::getJSON(bool includeInfo)
 	root["sunset_offset"] = sunset_offset;
 	root["sunset_effect"] = sunset_effect;
 	// other
-	root["custom_color"] = custom_color;
+	IPAddress ip = Wifi.localIP();
+	root["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
 	root["desktop_ip"] = desktop_ip;
 	root["mobile_ip"] = mobile_ip;
+	root["custom_color"] = custom_color;
 	root["speed"] = speed;
 	root["saturation"] = saturation;
 	root["status"] = (int)status;

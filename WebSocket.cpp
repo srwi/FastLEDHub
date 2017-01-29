@@ -70,7 +70,7 @@ void handleWebsocketText(String text, uint8_t num)
 	}
 	else if(text == "mobile")
 	{
-		webSocket.sendTXT(num, Config.getJSON(true).c_str());
+		webSocket.sendTXT(num, Config.getJSON().c_str());
 		if(Config.mobile_ip != ipString)
 		{
 			Config.mobile_ip = ipString;
@@ -80,7 +80,7 @@ void handleWebsocketText(String text, uint8_t num)
 	}
 	else if(text == "desktop")
 	{
-		webSocket.sendTXT(num, Config.getJSON(true).c_str());
+		webSocket.sendTXT(num, Config.getJSON().c_str());
 		if(Config.desktop_ip != ipString)
 		{
 			Config.desktop_ip = ipString;
@@ -96,20 +96,17 @@ void handleWebsocketText(String text, uint8_t num)
 
 void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 {
-			uint8_t spec[23] = {0};
 	switch(binary[0])
 	{
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
 			Config.custom_color = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
 			begin("Farbe");
-
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
 		break;
 		case 1: // Speed
 			setSpeed(binary[1]);
-
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
 		break;
@@ -135,7 +132,6 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 		break;
 		case 5: // Saturation
 			Config.saturation = binary[1];
-
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
 		break;

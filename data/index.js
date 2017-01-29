@@ -116,6 +116,8 @@ function handle_json_data(data)
 		$('.color').val(data.custom_color);
 		currentCustomColor = data.custom_color;
 	}
+	if(data.hasOwnProperty('own_ip'))
+		own_ip.value = data.own_ip;
 }
 
 function update_buttons(status, effect)

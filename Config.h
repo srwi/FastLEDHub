@@ -43,7 +43,7 @@ class ConfigClass
 		bool init();
 		bool save();
 		bool parseJSON(char* json);
-		String getJSON(bool includeInfo = false);
+		String getJSON();
 
 	private:
 		const String config_filename = "/config_json.txt";

@@ -72,17 +72,32 @@
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Aktivieren</div>
 							</label>
 
-							<label for="longitude">L&auml;ngengrad</label>
-							<input type="text" class="form-control" id="longitude" name="longitude">
-
-							<label for="latitude">Breitengrad</label>
-							<input type="text" class="form-control" id="latitude" name="latitude">
-
 							<label for="sunset_duration">Dauer</label>
 							<input id="sunset_duration" name="sunset_duration">
 
 							<label for="sunset_offset">Zeitlicher Abstand</label>
 							<input id="sunset_offset" name="sunset_offset">
+
+							<label for="sunset_effect">Animation</label>
+							<select class="form-control" id="sunset_effect"></select>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel panel-default">
+					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#settingsCollapse">
+						<h4 class="panel-title">Einstellungen</h4>
+					</div>
+					<div id="settingsCollapse" class="panel-collapse collapse">
+						<div class="panel-body">
+							<label for="own_ip">Eigene IP</label>
+							<input type="text" class="form-control" id="own_ip" name="own_ip" readonly>
+
+							<label for="longitude">L&auml;ngengrad</label>
+							<input type="text" class="form-control" id="longitude" name="longitude">
+
+							<label for="latitude">Breitengrad</label>
+							<input type="text" class="form-control" id="latitude" name="latitude">
 
 							<label for="time_zone">Zeitzone</label>
 							<input id="time_zone" name="time_zone">
@@ -92,9 +107,6 @@
 								<div class="slider round"></div>
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Sommerzeit</div>
 							</label>
-
-							<label for="sunset_effect">Animation</label>
-							<select class="form-control" id="sunset_effect"></select>
 						</div>
 					</div>
 				</div>

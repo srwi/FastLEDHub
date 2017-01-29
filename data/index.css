@@ -6,7 +6,7 @@ html, body
 
 label
 {
-	margin-top: 5px;
+	margin-top: 16px;
 }
 
 button
@@ -14,7 +14,7 @@ button
 	outline: none !important;
 }
 
-.speed_slider
+.speed_slider, .saturation_slider
 {
 	margin: 20px 0px;
 }
@@ -137,6 +137,12 @@ body .form-control
 	color: white;
 }
 
+body .form-control[readonly]
+{
+	background-color: #222;
+	color: #585858;
+}
+
 body input, body textarea
 {
     background-color: #151515;
@@ -150,11 +156,12 @@ body .bootstrap-timepicker-widget table td a
 
 .switch
 {
-	margin-top: 15px;
-	position: relative;
-	display: block;
-	width: 47px;
-	height: 26px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    position: relative;
+    display: block;
+    width: 47px;
+    height: 26px;
 }
 
 .switch input

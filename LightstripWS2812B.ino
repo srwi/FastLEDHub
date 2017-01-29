@@ -29,7 +29,7 @@ void setup()
 		OTA.init("Lightstrip");
 		initWebsocket();
 		initWebUpdate();
-		//initObserver();
+		initObserver();
 	}
 }
 

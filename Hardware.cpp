@@ -25,7 +25,7 @@ const uint8_t PROGMEM gamma8[] = {
   177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
 
-CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val) // TODO: add s v support and web ui slider
+CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val)
 {
 	// fract1535 is a number from 0 to 1535 (MAX_BETTER_HUE)
 	uint8_t fractHue = fract1535 / 6;
