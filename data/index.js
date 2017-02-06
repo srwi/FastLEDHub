@@ -67,7 +67,7 @@ function handle_json_data(data)
 			}));
 
 			// Add buttons to button collection except for custom color button
-			if(data.effect_list[i] != 'Farbe')
+			if(data.effect_list[i] != 'Farbe' && data.effect_list[i] != 'Sonnenaufgang')
 			{
 				if(data.effect_list[i] == 'Nox')
 					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color_button'));

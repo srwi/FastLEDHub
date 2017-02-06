@@ -11,8 +11,8 @@ Effect sunrise = {
 namespace sunriseNamespace
 {
 	uint32_t step = 0;
-	uint16_t duration = 0;
-	uint8_t delay_counter = 0;
+	uint32_t duration = 0;
+	uint32_t delay_counter = 0;
 	CRGB innerColor, outerColor;
 
 	void reset()

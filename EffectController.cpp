@@ -46,8 +46,8 @@ void begin(uint8_t index)
 	effectIndex = index;
 
 	// Reset previous effect
-	FastLED.clear();
-	FastLED.show();
+	clear();
+	betterShow();
 	effectList.get(index).reset();
 
 	// Start effect
@@ -83,8 +83,8 @@ void stop()
 		return;
 
 	effectTicker.detach();
-	FastLED.clear();
-	FastLED.show();
+	clear();
+	betterShow();
 	status = STOPPED;
 
 	broadcastStatus();

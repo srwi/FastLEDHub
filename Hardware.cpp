@@ -3,27 +3,61 @@
 Ticker inputTicker;
 bool buttonPushed = false;
 float filteredBrightness = 255/2;
-uint8_t brightness = 255;
-uint8_t gammaCorrectedBrightness = 255;
+int16_t brightness10 = 1023;
 CRGB strip[NUM_LEDS];
+CRGB brightness_corrected_strip[NUM_LEDS];
 
-const uint8_t PROGMEM gamma8[] = {
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
-    1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,
-    2,  3,  3,  3,  3,  3,  3,  3,  4,  4,  4,  4,  4,  5,  5,  5,
-    5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  9,  9,  9, 10,
-   10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
-   17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
-   25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
-   37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
-   51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
-   69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
-   90, 92, 93, 95, 96, 98, 99,101,102,104,105,107,109,110,112,114,
-  115,117,119,120,122,124,126,127,129,131,133,135,137,138,140,142,
-  144,146,148,150,152,154,156,158,160,162,164,167,169,171,173,175,
-  177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
-  215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
+void clear()
+{
+	for(uint16_t i = 0; i < NUM_LEDS; i++)
+	{
+		strip[i] = CRGB::Black;
+	}
+}
+
+void betterShow(int16_t bright10)
+{
+	if(bright10 != -1)
+		brightness10 = bright10;
+
+	int16_t gamma_corrected_brightness = round((float)brightness10 * brightness10 / 1023);
+	uint8_t bright8 = gamma_corrected_brightness / 4;
+	uint8_t fract2 = bright8 != 255 ? gamma_corrected_brightness % 4 : 0;
+
+	for(uint16_t i = 0; i < NUM_LEDS; i++)
+	{
+		brightness_corrected_strip[i] = strip[i];
+		switch(fract2)
+		{
+			case 0:
+				brightness_corrected_strip[i].nscale8(bright8);
+			break;
+			case 2:
+				if(i % 2)
+				{
+					brightness_corrected_strip[i].nscale8(bright8);
+				}
+				else
+				{
+					brightness_corrected_strip[i].nscale8(bright8 + 1);
+				}
+			break;
+			case 1:
+			case 3:
+				if(i % 4 < fract2)
+				{
+					brightness_corrected_strip[i].nscale8(bright8 + 1);
+				}
+				else
+				{
+					brightness_corrected_strip[i].nscale8(bright8);
+				}
+			break;
+		}
+	}
+
+	FastLED.show();
+}
 
 CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val)
 {
@@ -44,24 +78,18 @@ void initHardware()
 {
 	pinMode(BUTTON_PIN, INPUT);
 	inputTicker.attach_ms(10, handleInput);
-	FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(strip, NUM_LEDS);
-	FastLED.setDither(1);
+	FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(brightness_corrected_strip, NUM_LEDS);
+	FastLED.setDither(0);
 	FastLED.setTemperature(Tungsten100W);
+	FastLED.setBrightness(255);
 }
 
-void setGammaCorrectedBrightness(uint8_t newBrightness)
+uint16_t getPotiBrightness()
 {
-	brightness = newBrightness;
-	gammaCorrectedBrightness = pgm_read_byte(&gamma8[newBrightness]);
-	FastLED.setBrightness(gammaCorrectedBrightness);
-}
+	int16_t value = (1023 - analogRead(A0) - 29) * 1.06;
 
-uint8_t getPotiBrightness()
-{
-	int16_t value = (((1023 - analogRead(A0)) >> 2) - 7) * 1.06;
-
-	if(value > 255)
-		value = 255;
+	if(value > 1023)
+		value = 1023;
 	if(value < 0)
 		value = 0;
 
@@ -73,15 +101,14 @@ void handleInput()
 	if(!currentFade)
 	{
 		// Adjust brightness calculation if needed
-		uint8_t potiBrightness = getPotiBrightness();
+		uint16_t potiBrightness = getPotiBrightness();
 
 		filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
 
 		// Only set brightness if it's not near the filtered brightness value which will lag behind
 		if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
 		{
-			//FastLED.setBrightness(brightness);
-			setGammaCorrectedBrightness(potiBrightness);
+			brightness10 = (float)potiBrightness * potiBrightness / 1023;
 		}
 	}
 

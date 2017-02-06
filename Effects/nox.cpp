@@ -13,14 +13,12 @@ namespace noxNamespace
 	
 	void reset()
 	{
-		FastLED.clear();
-		FastLED.show();
+		clear();
 	}
 
 	void tick()
 	{
-		FastLED.clear();
-		//FastLED.show();
+		clear();
 	}
 
 }

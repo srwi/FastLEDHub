@@ -46,8 +46,6 @@ namespace juggleNamespace
 			strip[beatsin16(basebeat+i+numdots,0,NUM_LEDS)] += CHSV(curhue, thissat, thisbright);   //beat16 is a FastLED 3.1 function
 			curhue += hueinc;
 		}
-
-		//FastLED.show();
 	}
 
 }

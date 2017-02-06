@@ -14,13 +14,14 @@
 #define BUTTON_PIN 4
 
 extern CRGB strip[NUM_LEDS];
-extern uint8_t brightness;
-extern uint8_t gammaCorrectedBrightness;
+extern CRGB brightness_corrected_strip[NUM_LEDS];
+extern int16_t brightness10;
 
 void initHardware();
+void clear();
+void betterShow(int16_t newBrightness = -1);
 CRGB betterHue(uint16_t fract1535, int16_t sat = -1, uint8_t val = 255);
-uint8_t getPotiBrightness();
-void setGammaCorrectedBrightness(uint8_t newBrightness);
+uint16_t getPotiBrightness();
 void handleInput();
 
 #endif

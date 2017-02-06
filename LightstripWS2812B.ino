@@ -22,7 +22,7 @@ void setup()
 
 	Wifi.autoConnect("Lightstrip AP (192.168.4.1)");
 	WebServer.init();
-	
+
 	initTime();
 	if(!Wifi.isAP())
 	{
@@ -40,10 +40,8 @@ void loop()
 		OTA.handle();
 		webSocket.loop();
 	}
-
 	WebServer.handleClient();
+	
 	handleFade();
-	FastLED.show(); /////////////////////////////////////////
-
-	Serial.println(String(millis()));
+	betterShow();
 }
