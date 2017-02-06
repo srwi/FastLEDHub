@@ -43,5 +43,7 @@ void loop()
 
 	WebServer.handleClient();
 	handleFade();
-	FastLED.show();
+	FastLED.show(); /////////////////////////////////////////
+
+	Serial.println(String(millis()));
 }

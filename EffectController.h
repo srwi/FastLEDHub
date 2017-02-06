@@ -40,6 +40,7 @@ enum EffectStatus
 #include "Effects/alternatingRainbow.h"
 #include "Effects/cremeRainbow.h"
 #include "Effects/juggle.h"
+#include "Effects/sunrise.h"
 
 extern EffectStatus status;
 extern uint8_t effectIndex;

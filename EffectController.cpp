@@ -19,6 +19,7 @@ void initController()
 	effectList.add(alternatingRainbow);
 	effectList.add(cremeRainbow);
 	effectList.add(juggle);
+	effectList.add(sunrise);
 }
 
 void begin(String name)
