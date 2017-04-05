@@ -2,22 +2,26 @@
 
 ping_option ping_options;
 bool ping_active = false;
+bool lastMobilePingResult = false;
+bool lastDesktopPingResult = false;
+bool observer_send_flag = false;
 PingStatus current_ping = DESKTOP;
 Ticker pingTicker;
+WiFiClient observerClient;
+String apiKey = "YDYOL94VS56UMQ78";
+const char* server = "api.thingspeak.com";
 
 void pingCallback(void* arg, void *pdata)
 {
 	struct ping_resp *pingrsp = (struct ping_resp *)pdata;
 
-	if (pingrsp->bytes > 0)
-	{
-		Serial.println("Success: " + String((int)current_ping));
-	}
+	if(current_ping == DESKTOP)
+		lastDesktopPingResult = pingrsp->bytes > 0;
 	else
-	{
-		Serial.println("Timeout: " + String((int)current_ping));
-	}
+		lastMobilePingResult = pingrsp->bytes > 0;
 
+	current_ping = current_ping == DESKTOP ? MOBILE : DESKTOP;
+	observer_send_flag = current_ping == DESKTOP;
 	ping_active = false;
 }
 
@@ -45,16 +49,67 @@ void pingTick()
 			IPAddress remote_addr;
 			WiFi.hostByName(Config.desktop_ip.c_str(), remote_addr);
 			ping_options.ip = uint32_t(remote_addr);
-			current_ping = MOBILE;
 		}
 		else
 		{
 			IPAddress remote_addr;
 			WiFi.hostByName(Config.mobile_ip.c_str(), remote_addr);
 			ping_options.ip = uint32_t(remote_addr);
-			current_ping = DESKTOP;
 		}
 	}
 
 	ping_start(&ping_options);
+}
+
+void handleObserver()
+{
+	if(!observer_send_flag || ping_active || websocketConnectionCount || WebServer.isBusy())
+		return;
+
+	observer_send_flag = false;
+
+	if (observerClient.connect(server,80))
+	{
+		String postStr = apiKey;
+		postStr +="&field1=";
+		postStr += lastMobilePingResult ? "1" : "0";
+		postStr +="&field2=";
+		postStr += lastDesktopPingResult ? "1" : "0";
+		postStr +="&field3=";
+		postStr += Config.alarm_enabled ? (String(Config.alarm_hour) + "." + String(Config.alarm_minute)) : "-1";
+		postStr +="&field4=";
+		postStr += String(effectIndex);
+		postStr += "\r\n\r\n";
+
+		betterShow();
+		observerClient.print("POST /update HTTP/1.1\n");
+		betterShow();
+		observerClient.print("Host: api.thingspeak.com\n");
+		betterShow();
+		observerClient.print("Connection: close\n");
+		betterShow();
+		observerClient.print("X-THINGSPEAKAPIKEY: " + apiKey + "\n");
+		betterShow();
+		observerClient.print("Content-Type: application/x-www-form-urlencoded\n");
+		betterShow();
+		observerClient.print("Content-Length: ");
+		betterShow();
+		observerClient.print(postStr.length());
+		betterShow();
+		observerClient.print("\n\n");
+		betterShow();
+		observerClient.print(postStr);
+		betterShow();
+
+		betterShow();
+		observerClient.print("POST /update HTTP/1.1\nHost: api.thingspeak.com\nConnection: close\nX-THINGSPEAKAPIKEY: " + apiKey + "\nContent-Type: application/x-www-form-urlencoded\nContent-Length: " + String(postStr.length()) + "\n\n" + postStr);
+		betterShow();
+
+		Serial.println("Sending");
+	}
+	else
+	{
+		Serial.println("Not sending :(");
+	}
+	observerClient.stop();
 }

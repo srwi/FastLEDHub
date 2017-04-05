@@ -33,12 +33,12 @@ class ConfigClass
 		String sunset_effect = "";
 		// other
 		String custom_color = "";
+		String custom_color2 = "";
 		String mobile_ip = "";
 		String desktop_ip = "";
 		String current_effect = "";
 		uint8_t speed = 0;
 		uint8_t saturation = 255;
-		uint8_t status = 0;
 
 		bool init();
 		bool save();

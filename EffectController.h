@@ -24,11 +24,12 @@ struct Effect
 enum EffectStatus
 {
 	STOPPED = 0,
-	PAUSED,
-	RUNNING
+	PAUSED = 1,
+	RUNNING = 2
 };
 
 #include "Effects/customColor.h"
+#include "Effects/customColor2.h"
 #include "Effects/nox.h"
 #include "Effects/fader.h"
 #include "Effects/fire.h"

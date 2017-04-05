@@ -7,6 +7,7 @@ uint8_t effectIndex = 0;
 
 void initController()
 {
+	effectList.add(customColor2);
 	effectList.add(customColor);
 	effectList.add(nox);
 	effectList.add(fader);
@@ -19,6 +20,7 @@ void initController()
 	effectList.add(alternatingRainbow);
 	effectList.add(cremeRainbow);
 	effectList.add(juggle);
+	// Keep sunrise at bottom of list
 	effectList.add(sunrise);
 }
 
@@ -71,7 +73,8 @@ void cycleEffect()
 	{
 		// Increment effect index
 		index++;
-		index %= effectList.size();
+		// (- 1) because sunrise (which should stay at the end of effectList) should be skipped when cycling.
+		index %= effectList.size() - 1;
 	}
 
 	begin(index);

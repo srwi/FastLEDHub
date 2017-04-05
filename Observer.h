@@ -13,8 +13,8 @@ extern "C" {
 #include "os_type.h"
 
 
-#define PING_INTERVAL 15 // Seconds
-#define TIMEOUT_TIME 1
+#define PING_INTERVAL 8 //s
+#define TIMEOUT_TIME 7 //s
 
 enum PingStatus
 {
@@ -25,5 +25,6 @@ enum PingStatus
 void pingCallback(void* arg, void *pdata);
 void initObserver();
 void pingTick();
+void handleObserver();
 
 #endif

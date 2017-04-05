@@ -43,6 +43,8 @@ bool ConfigClass::parseJSON(char* json)
 	// other
 	if(root.containsKey("custom_color"))
 		custom_color = root["custom_color"].asString();
+	if(root.containsKey("custom_color2"))
+		custom_color2 = root["custom_color2"].asString();
 	if(root.containsKey("desktop_ip"))
 		desktop_ip = root["desktop_ip"].asString();
 	if(root.containsKey("mobile_ip"))
@@ -89,9 +91,10 @@ String ConfigClass::getJSON()
 	root["desktop_ip"] = desktop_ip;
 	root["mobile_ip"] = mobile_ip;
 	root["custom_color"] = custom_color;
+	root["custom_color2"] = custom_color2;
 	root["speed"] = speed;
 	root["saturation"] = saturation;
-	root["status"] = (int)status;
+	root["status"] = String(status);
 	root["current_effect"] = effectList.get(effectIndex).name;
 	// effect list
 	JsonArray& data = root.createNestedArray("effect_list");

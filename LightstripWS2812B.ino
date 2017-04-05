@@ -43,5 +43,6 @@ void loop()
 	WebServer.handleClient();
 	
 	handleFade();
+	handleObserver();
 	betterShow();
 }

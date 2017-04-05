@@ -101,7 +101,7 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
 			Config.custom_color = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
-			begin("Farbe");
+			begin(customColor);
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
 		break;
@@ -140,6 +140,13 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 		break;
 		case 7: // symmetricalSpectroscope data
 			symmetricalSpectroscope(binary+1);
+		break;
+		case 8: // Custom Color 2
+			customColor2Namespace::set(CRGB(binary[1], binary[2], binary[3]));
+			Config.custom_color2 = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
+			begin(customColor2);
+			liveDataHasChanged = true;
+			webSocket.sendTXT(num, String("ok").c_str());
 		break;
 	}
 }

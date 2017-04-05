@@ -16,7 +16,7 @@ button
 
 .speed_slider, .saturation_slider
 {
-	margin: 20px 0px;
+	margin: 28px 40px;
 }
 
 #connectingOverlay
@@ -117,6 +117,19 @@ body .noUi-target
   background-color: #222;
   box-shadow: none;
   border-width: 0px;
+}
+
+body .noUi-handle:after, body .noUi-handle:before
+{
+  display: none;
+}
+
+body .noUi-horizontal .noUi-handle
+{
+  width: 80px;
+  left: -40px;
+  padding-top: 3px;
+  text-align: center;
 }
 
 body .noUi-handle

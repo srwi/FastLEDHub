@@ -1,6 +1,7 @@
 var currentEffect = '';
 var currentStatus = 0;
 var currentCustomColor = '';
+var currentCustomColor2 = '';
 var maxSpeed = 14;
 
 var websocketReady = false;
@@ -67,12 +68,12 @@ function handle_json_data(data)
 			}));
 
 			// Add buttons to button collection except for custom color button
-			if(data.effect_list[i] != 'Farbe' && data.effect_list[i] != 'Sonnenaufgang')
+			if(data.effect_list[i] != 'Farbe' && data.effect_list[i] != 'Farbe 2' && data.effect_list[i] != 'Sonnenaufgang')
 			{
 				if(data.effect_list[i] == 'Nox')
-					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color_button'));
+					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color2_button'));
 				else
-					$('<button type="button" class="btn btn-default" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color_button'));
+					$('<button type="button" class="btn btn-default" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color2_button'));
 			}
 		}
 	}
@@ -113,8 +114,13 @@ function handle_json_data(data)
 		document.getElementById('saturation').noUiSlider.set(data.saturation);
 	if(data.hasOwnProperty('custom_color'))
 	{
-		$('.color').val(data.custom_color);
+		$('#custom_color_button').val(data.custom_color);
 		currentCustomColor = data.custom_color;
+	}
+	if(data.hasOwnProperty('custom_color2'))
+	{
+		$('#custom_color2_button').val(data.custom_color2);
+		currentCustomColor2 = data.custom_color2;
 	}
 	if(data.hasOwnProperty('own_ip'))
 		own_ip.value = data.own_ip;
@@ -143,6 +149,17 @@ function update_buttons(status, effect)
 					colors.HEX = currentCustomColor;
 					colorInstance.setColor(null, 'HEX');
 					$(this).val('#' + currentCustomColor).css({'background-color': '#' + colors.HEX, 'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd'});
+				}
+			}
+			else if(effect == 'Farbe 2')
+			{
+				if(status == 2)
+				{
+					var colorInstance = $customColor2Picker.colorPicker.color; // TODO
+					var colors = colorInstance.colors;
+					colors.HEX = currentCustomColor2;
+					colorInstance.setColor(null, 'HEX');
+					$(this).val('#' + currentCustomColor2).css({'background-color': '#' + colors.HEX, 'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd'});
 				}
 			}
 			else if(status == 1)
@@ -179,6 +196,11 @@ function update_buttons(status, effect)
 				$(this).css('background-color', '#464545');
 				$(this).css('color', 'white');
 			}
+			if($(this).text() == 'Farbe 2')
+			{
+				$(this).css('background-color', '#464545');
+				$(this).css('color', 'white');
+			}
 		}
 	});
 }
@@ -207,6 +229,7 @@ function send_config()
 	config.speed = maxSpeed - document.getElementById('speed').noUiSlider.get();
 	config.saturation = document.getElementById('saturation').noUiSlider.get();
 	config.custom_color = currentCustomColor;
+	config.custom_color2 = currentCustomColor2;
 
 	var json = JSON.stringify(config, null, 2);
 	send_text(json);
@@ -245,11 +268,6 @@ function send_text(text)
 	}
 }
 
-function send_color(r, g, b)
-{
-	send_bytes(0, r, g, b);
-}
-
 function send_effect_button(effect)
 {
 	send_text('toggle ' + effect);
@@ -265,10 +283,10 @@ $('input[name="summer_time"]').TouchSpin({ max: 1 });
 $('input[name="sunset_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
 $('input[name="sunset_offset"]').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
-var $customColorPicker = $('.color').colorPicker({
+var $customColorPicker = $('#custom_color_button').colorPicker({
 	opacity:false,
 	preventFocus: true,
-	buildCallback: function($elm) { $('.color').on('click', function(e) { e.preventDefault && e.preventDefault(); }); },
+	buildCallback: function($elm) { $('#custom_color_button').on('click', function(e) { e.preventDefault && e.preventDefault(); }); },
 	renderCallback: function($elm, toggled) {
 		if(toggled === true)
 		{
@@ -291,17 +309,45 @@ var $customColorPicker = $('.color').colorPicker({
 		}
 	}
 });
+var $customColor2Picker = $('#custom_color2_button').colorPicker({
+	opacity:false,
+	preventFocus: true,
+	buildCallback: function($elm) { $('#custom_color2_button').on('click', function(e) { e.preventDefault && e.preventDefault(); }); },
+	renderCallback: function($elm, toggled) {
+		if(toggled === true)
+		{
+			update_buttons(2, 'Farbe 2');
+		}
+		else if(toggled === false)
+		{
+			if(currentEffect != 'Farbe 2' || currentStatus == 0)
+			{
+				$('#custom_color2_button').css('background-color','#464545');
+				$('#custom_color2_button').css('color','white');
+			}
+		}
+		var newColor = this.color.colors.HEX + ''; // dereference by appending ''
+		if(currentCustomColor2 != newColor || toggled === true)
+		{
+			var newColorRGB = this.color.colors.RND.rgb;
+			send_bytes(8, newColorRGB.r, newColorRGB.g, newColorRGB.b);
+			currentCustomColor2 = newColor;
+		}
+	}
+});
 
 var speedStepSlider = document.getElementById('speed');
 noUiSlider.create(speedStepSlider, { start: 10, step: 1, range: {'min':0, 'max':maxSpeed} });
 speedStepSlider.noUiSlider.on('update', function( values, handle ) {
 	send_bytes(1, maxSpeed - values[handle]);
 });
+$('#speed .noUi-handle').html("Geschw.");
 var saturationStepSlider = document.getElementById('saturation');
 noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: {'min':150, 'max':255} });
 saturationStepSlider.noUiSlider.on('update', function( values, handle ) {
 	send_bytes(5, values[handle]);
 });
+$('#saturation .noUi-handle').html("S&auml;tt.");
 
 var idleTime = 0;
 setInterval(function ()
