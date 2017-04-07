@@ -162,9 +162,22 @@ body input, body textarea
     color: white;
 }
 
-body .bootstrap-timepicker-widget table td a
+body .form-control
 {
+	background-color: #222;
 	color: white;
+}
+
+body .clockpicker-popover .popover-title,
+body .clockpicker-popover .popover-content
+{
+	background: none;
+}
+
+body .clockpicker-plate
+{
+	background-color: #222222;
+	border: 1px solid #464545;
 }
 
 .switch

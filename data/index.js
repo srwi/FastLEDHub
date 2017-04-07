@@ -110,7 +110,7 @@ function handle_json_data(data)
 	if(data.hasOwnProperty('alarm_duration'))
 		alarm_duration.value = data.alarm_duration;
 	if(data.hasOwnProperty('alarm_hour') && data.hasOwnProperty('alarm_minute'))
-		$('#alarm_timepicker').timepicker('setTime', data.alarm_hour + ':' + data.alarm_minute);
+		$('#alarm_time').val((data.alarm_hour < 10 ? '0' + data.alarm_hour.toString() : data.alarm_hour) + ':' + (data.alarm_minute < 10 ? '0' + data.alarm_minute.toString() : data.alarm_minute));
 	if(data.hasOwnProperty('sunset_enabled'))
 		$('#sunset_enabled').prop('checked', data.sunset_enabled);
 	if(data.hasOwnProperty('sunset_duration'))
@@ -224,8 +224,9 @@ function send_config()
 	config.latitude = latitude.value;
 	// alarm
 	config.alarm_enabled = $('#alarm_enabled').is(':checked');
-	config.alarm_hour = $('#alarm_timepicker').data('timepicker').hour;
-	config.alarm_minute = $('#alarm_timepicker').data('timepicker').minute;
+	var time = $('#alarm_time').val().split(':');
+	config.alarm_hour = time[0];
+	config.alarm_minute = time[1];
 	config.alarm_duration = alarm_duration.value;
 	config.alarm_effect = $('#alarm_effect').val();
 	config.post_alarm_effect = $('#post_alarm_effect').val();
@@ -285,7 +286,7 @@ function send_effect_button(effect)
 
 
 
-$('#alarm_timepicker').timepicker({ showMeridian: false, minuteStep: 5 });
+$('.clockpicker').clockpicker().find('input').change(function(){});
 $('input[name="alarm_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
 $('input[name="time_zone"]').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
 $('input[name="summer_time"]').TouchSpin({ max: 1 });
