@@ -3,6 +3,8 @@ var currentStatus = 0;
 var currentCustomColor = '';
 var currentCustomColor2 = '';
 var maxSpeed = 14;
+var _w = Math.max( $(window).width(), $(window).height() );
+var _h = Math.min( $(window).width(), $(window).height() );
 
 var websocketReady = false;
 var ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
@@ -11,10 +13,15 @@ connection.binaryType = 'arraybuffer';
 
 connection.onopen = function(e)
 {
-	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-		send_text('mobile');
-	else
-		send_text('desktop');
+	if(!((_w < 1290 && _w > 1270) || (_w > 790 && _w < 810)))
+	{
+		if( /Silk|silk|mazon|indle/i.test(navigator.userAgent) )
+			console.log("");
+		else if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
+			send_text('mobile');
+		else
+			send_text('desktop');
+	}
 
 	$('#connectingOverlayText').html('Warte auf Antwort...');
 	$('#connectButton').hide();
@@ -79,7 +86,9 @@ function handle_json_data(data)
 	}
 	// Update buttons list
 	if(data.hasOwnProperty('status') && data.hasOwnProperty('current_effect'))
+	{
 		update_buttons(data.status, data.current_effect);
+	}
 	// Select effects
 	if(data.hasOwnProperty('alarm_effect'))
 		$('#alarm_effect').val(data.alarm_effect != '' ? data.alarm_effect : 'Farbe');
@@ -358,6 +367,13 @@ setInterval(function ()
 }, 1000);
 $(this).mousemove(function (e) { idleTime = 0; });
 $(this).keypress(function (e) { idleTime = 0; });
+
+var updateCounter = 0;
+setInterval(function() {
+	if(updateCounter < 10)
+		update_buttons(currentStatus, currentEffect);
+	updateCounter++;
+}, 200);
 
 document.addEventListener('visibilitychange', function()
 {
