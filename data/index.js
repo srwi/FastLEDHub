@@ -353,7 +353,7 @@ speedStepSlider.noUiSlider.on('update', function( values, handle ) {
 });
 $('#speed .noUi-handle').html("Geschw.");
 var saturationStepSlider = document.getElementById('saturation');
-noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: {'min':150, 'max':255} });
+noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: {'min':110, 'max':255} });
 saturationStepSlider.noUiSlider.on('update', function( values, handle ) {
 	send_bytes(5, values[handle]);
 });
@@ -368,13 +368,6 @@ setInterval(function ()
 }, 1000);
 $(this).mousemove(function (e) { idleTime = 0; });
 $(this).keypress(function (e) { idleTime = 0; });
-
-var updateCounter = 0;
-setInterval(function() {
-	if(updateCounter < 10)
-		update_buttons(currentStatus, currentEffect);
-	updateCounter++;
-}, 200);
 
 document.addEventListener('visibilitychange', function()
 {

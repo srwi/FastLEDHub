@@ -13,19 +13,10 @@
 #define LIGHTSTRIP_PIN 5
 #define BUTTON_PIN 4
 
-
-
-
-
-#define TIMER1_TICKS_PER_US (APB_CLK_FREQ / 1000000L)
-#define TRANSMIT_INTERVAL_US 7000
-
-
-
-
 extern CRGB strip[NUM_LEDS];
 extern CRGB brightness_corrected_strip[NUM_LEDS];
 extern int16_t brightness10;
+extern float filteredBrightness;
 
 void initHardware();
 void clear();

@@ -5,7 +5,7 @@ Effect fire = {
 	fireNamespace::tick,			// tick
 	fireNamespace::reset,			// reset
 	5,								// intervalZeroOffset
-	4,								// intervalStepSize
+	2,								// intervalStepSize
 };
 
 namespace fireNamespace

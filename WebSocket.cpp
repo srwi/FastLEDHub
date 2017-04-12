@@ -94,13 +94,35 @@ void handleWebsocketText(String text, uint8_t num)
 	}
 }
 
+String rgbToHex(uint8_t r, uint8_t g, uint8_t b)
+{
+	String output = "";
+	
+	if(r == 0)
+		output += "00";
+	else
+		output += (r < 16 ? "0" : "") + String(r, HEX);
+
+	if(g == 0)
+		output += "00";
+	else
+		output += (g < 16 ? "0" : "") + String(g, HEX);
+
+	if(b == 0)
+		output += "00";
+	else
+		output += (b < 16 ? "0" : "") + String(b, HEX);
+
+	return output;
+}
+
 void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 {
 	switch(binary[0])
 	{
 		case 0: // Custom Color
 			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
-			Config.custom_color = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
+			Config.custom_color = rgbToHex(binary[1], binary[2], binary[3]);
 			begin(customColor);
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
@@ -143,7 +165,7 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 		break;
 		case 8: // Custom Color 2
 			customColor2Namespace::set(CRGB(binary[1], binary[2], binary[3]));
-			Config.custom_color2 = String(binary[1], HEX) + String(binary[2], HEX) + String(binary[3], HEX);
+			Config.custom_color2 = rgbToHex(binary[1], binary[2], binary[3]);
 			begin(customColor2);
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());

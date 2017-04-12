@@ -116,8 +116,8 @@ void handleInput()
 	if(!digitalRead(BUTTON_PIN) && !buttonPushed)
 	{
 		// button pushed
-		stopFade();
 		cycleEffect();
+		stopFade();
 
 		Serial.println("Button pushed.");
 

@@ -24,8 +24,8 @@ struct Effect
 enum EffectStatus
 {
 	STOPPED = 0,
-	PAUSED = 1,
-	RUNNING = 2
+	PAUSED,
+	RUNNING
 };
 
 #include "Effects/customColor.h"

@@ -53,8 +53,6 @@ bool ConfigClass::parseJSON(char* json)
 		speed = root["speed"];
 	if(root.containsKey("saturation"))
 		saturation = root["saturation"];
-	if(root.containsKey("status"))
-		speed = root["speed"];
 	if(root.containsKey("current_effect"))
 		current_effect = root["current_effect"].asString();
 	

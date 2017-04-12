@@ -71,6 +71,13 @@ void cycleEffect()
 
 	if(status == RUNNING)
 	{
+		if(currentFade)
+		{
+			filteredBrightness = 0;
+			begin(nox);
+			return;
+		}
+
 		// Increment effect index
 		index++;
 		// (- 1) because sunrise (which should stay at the end of effectList) should be skipped when cycling.

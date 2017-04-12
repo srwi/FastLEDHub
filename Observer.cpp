@@ -4,7 +4,7 @@ ping_option ping_options;
 bool ping_active = false;
 bool lastMobilePingResult = false;
 bool lastDesktopPingResult = false;
-bool observer_send_flag = false;
+uint8_t observer_counter = 0;
 PingStatus current_ping = DESKTOP;
 Ticker pingTicker;
 WiFiClient observerClient;
@@ -21,7 +21,7 @@ void pingCallback(void* arg, void *pdata)
 		lastMobilePingResult = pingrsp->bytes > 0;
 
 	current_ping = current_ping == DESKTOP ? MOBILE : DESKTOP;
-	observer_send_flag = current_ping == DESKTOP;
+	observer_counter++;
 	ping_active = false;
 }
 
@@ -63,10 +63,16 @@ void pingTick()
 
 void handleObserver()
 {
-	if(!observer_send_flag || ping_active || websocketConnectionCount || WebServer.isBusy())
+	static uint8_t observer_counter_limit = 2;
+	if(status == RUNNING && effectIndex != 2) // Running and not "Nox"
+		observer_counter_limit = 14;
+	else
+		observer_counter_limit = 2;
+
+	if(observer_counter < observer_counter_limit || ping_active || websocketConnectionCount || WebServer.isBusy())
 		return;
 
-	observer_send_flag = false;
+	observer_counter = 0;
 
 	if (observerClient.connect(server,80))
 	{

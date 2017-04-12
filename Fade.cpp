@@ -3,13 +3,15 @@
 FadeMode currentFade = NONE;
 uint16_t fadeBrightness = 0;
 uint16_t sunsetMaximumBrightness = 0;
+Ticker hasBeenStartedResetTicker;
+bool hasBeenStarted = false;
 
 Ticker fadeTicker;
 
 void handleFade()
 {
 	// Return if fading is running
-	if(currentFade)
+	if(currentFade || hasBeenStarted)
 		return;
 
 	// Check for alarm
@@ -50,6 +52,8 @@ void startFade(FadeMode fadeMode)
 	betterShow(fadeBrightness);
 
 	currentFade = fadeMode;
+	hasBeenStarted = true;
+	hasBeenStartedResetTicker.attach(90, [&](){ hasBeenStarted = false; });
 
 	if(fadeMode == ALARM)
 	{

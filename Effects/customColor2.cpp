@@ -18,6 +18,7 @@ namespace customColor2Namespace
 	void reset()
 	{
 		currentCustomColor = strtol((const char *)&Config.custom_color2[0], NULL, 16);
+		set(currentCustomColor);
 	}
 
 	void set(CRGB color)

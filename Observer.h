@@ -13,8 +13,8 @@ extern "C" {
 #include "os_type.h"
 
 
-#define PING_INTERVAL 30 //s
-#define TIMEOUT_TIME 20 //s
+#define PING_INTERVAL 8 //s
+#define TIMEOUT_TIME 7 //s
 
 enum PingStatus
 {
