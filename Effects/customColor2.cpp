@@ -1,7 +1,7 @@
 #include "customColor.h"
 
 Effect customColor2 = {
-	"Farbe 2",
+	"Color 2",
 	customColor2Namespace::tick,	// tick
 	customColor2Namespace::reset,	// reset
 	5,								// intervalZeroOffset

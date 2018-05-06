@@ -68,25 +68,9 @@ void handleWebsocketText(String text, uint8_t num)
 		stopFade();
 		toggle(effectName);
 	}
-	else if(text == "mobile")
+	else if(text == "requesting_config")
 	{
 		webSocket.sendTXT(num, Config.getJSON().c_str());
-		if(Config.mobile_ip != ipString)
-		{
-			Config.mobile_ip = ipString;
-			Config.save();
-			Serial.println("Got new mobile IP: " + ipString);
-		}
-	}
-	else if(text == "desktop")
-	{
-		webSocket.sendTXT(num, Config.getJSON().c_str());
-		if(Config.desktop_ip != ipString)
-		{
-			Config.desktop_ip = ipString;
-			Config.save();
-			Serial.println("Got new desktop IP: " + ipString);
-		}
 	}
 	else
 	{

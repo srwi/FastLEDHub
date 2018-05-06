@@ -1,10 +1,10 @@
 #include "rgbRainbow.h"
 
 Effect rgbRainbow = {
-	"Regenbogen",
+	"RGB Rainbow",
 	rgbRainbowNamespace::tick,		// tick
 	rgbRainbowNamespace::reset,		// reset
-	1,								// intervalZeroOffset
+	3,								// intervalZeroOffset
 	1,								// intervalStepSize
 };
 

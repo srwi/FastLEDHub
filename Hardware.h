@@ -9,7 +9,7 @@
 #include "Fade.h"
 
 #define MAX_BETTER_HUE 1535
-#define NUM_LEDS 87 // Marly: 87
+#define NUM_LEDS 201
 #define LIGHTSTRIP_PIN 5
 #define BUTTON_PIN 4
 

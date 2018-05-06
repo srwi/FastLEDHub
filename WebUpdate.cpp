@@ -81,5 +81,18 @@ void initWebUpdate()
 	{
 		WebServer.handleFileRead("/alarm.htm");
 	});
-	// TODO: Add start command with effect name as argument
+	WebServer.on("/command/begin", handleEffectCommand);
+}
+
+void handleEffectCommand()
+{
+	if(WebServer.hasArg("effect"))
+	{
+		WebServer.send(200, "text/plain", "Starting effect #" + String(WebServer.arg("effect")) + "...");
+		begin(String(WebServer.arg("effect")).toInt());
+	}
+	else
+	{
+		WebServer.send(404, "text/plain", "Oops, you forgot something!");
+	}
 }

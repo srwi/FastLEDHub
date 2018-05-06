@@ -1,7 +1,7 @@
 #include "cremeRainbow.h"
 
 Effect cremeRainbow = {
-	"Creme",
+	"Creme Rainbow",
 	cremeRainbowNamespace::tick,		// tick
 	cremeRainbowNamespace::reset,		// reset
 	10,									// intervalZeroOffset

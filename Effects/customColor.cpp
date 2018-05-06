@@ -1,11 +1,11 @@
 #include "customColor.h"
 
 Effect customColor = {
-	"Farbe",
+	"Color",
 	customColorNamespace::tick,		// tick
 	customColorNamespace::reset,	// reset
-	100,							// intervalZeroOffset
-	0,								// intervalStepSize
+	5,								// intervalZeroOffset
+	3,								// intervalStepSize
 };
 
 namespace customColorNamespace
@@ -22,12 +22,14 @@ namespace customColorNamespace
 	void set(CRGB color)
 	{
 		currentCustomColor = color;
-		fill_solid(strip, NUM_LEDS, currentCustomColor);
 	}
 
 	void tick()
 	{
-
+		for(int i=0; i<NUM_LEDS; i++)
+		{
+			strip[i] = currentCustomColor;
+		}
 	}
 
 }

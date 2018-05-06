@@ -1,7 +1,7 @@
 #include "rbRainbow.h"
 
 Effect rbRainbow = {
-	"Huii",
+	"RG Rainbow",
 	rbRainbowNamespace::tick,		// tick
 	rbRainbowNamespace::reset,		// reset
 	2,								// intervalZeroOffset

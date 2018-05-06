@@ -42,7 +42,7 @@ void begin(String name)
 
 void begin(uint8_t index)
 {
-	if(status == RUNNING && effectIndex == index)
+	if((status == RUNNING && effectIndex == index) || index >= effectList.size())
 		return;
 
 	effectIndex = index;

@@ -1,7 +1,7 @@
 #include "juggle.h"
 
 Effect juggle = {
-	"Zirkus Zirkus",
+	"Juggle",
 	juggleNamespace::tick,	// tick
 	juggleNamespace::reset,	// reset
 	5,						// intervalZeroOffset

@@ -1,7 +1,7 @@
 #include "fader.h"
 
 Effect fader = {
-	"Farbfade",
+	"Color Fader",
 	faderNamespace::tick,       // tick
 	faderNamespace::reset,      // reset
 	4,                          // intervalZeroOffset

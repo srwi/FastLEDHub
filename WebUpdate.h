@@ -7,6 +7,7 @@
 #include "EffectController.h"
 #include "Fade.h"
 
+void handleEffectCommand();
 void initWebUpdate();
 
 #endif

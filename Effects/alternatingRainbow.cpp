@@ -1,7 +1,7 @@
 #include "alternatingRainbow.h"
 
 Effect alternatingRainbow = {
-	"Chillimilli",
+	"Alternating Rainbow",
 	alternatingRainbowNamespace::tick,	// tick
 	alternatingRainbowNamespace::reset,	// reset
 	10,									// intervalZeroOffset

@@ -2,7 +2,7 @@
 
 bool ConfigClass::parseJSON(char* json)
 {
-	StaticJsonBuffer<DATA_JSON_SIZE> jsonBuffer;
+	DynamicJsonBuffer jsonBuffer;
 	JsonObject& root = jsonBuffer.parseObject(json);
 
 	// time specific
@@ -41,14 +41,12 @@ bool ConfigClass::parseJSON(char* json)
 	if(root.containsKey("sunset_effect"))
 		sunset_effect = root["sunset_effect"].asString();
 	// other
+	if(root.containsKey("startup_effect"))
+		startup_effect = root["startup_effect"].asString();
 	if(root.containsKey("custom_color"))
 		custom_color = root["custom_color"].asString();
 	if(root.containsKey("custom_color2"))
 		custom_color2 = root["custom_color2"].asString();
-	if(root.containsKey("desktop_ip"))
-		desktop_ip = root["desktop_ip"].asString();
-	if(root.containsKey("mobile_ip"))
-		mobile_ip = root["mobile_ip"].asString();
 	if(root.containsKey("speed"))
 		speed = root["speed"];
 	if(root.containsKey("saturation"))
@@ -61,7 +59,7 @@ bool ConfigClass::parseJSON(char* json)
 
 String ConfigClass::getJSON()
 {
-	StaticJsonBuffer<DATA_JSON_SIZE> jsonBuffer;
+	DynamicJsonBuffer jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
 
 	// time specific
@@ -86,8 +84,7 @@ String ConfigClass::getJSON()
 	// other
 	IPAddress ip = Wifi.localIP();
 	root["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
-	root["desktop_ip"] = desktop_ip;
-	root["mobile_ip"] = mobile_ip;
+	root["startup_effect"] = startup_effect;
 	root["custom_color"] = custom_color;
 	root["custom_color2"] = custom_color2;
 	root["speed"] = speed;

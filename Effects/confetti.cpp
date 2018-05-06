@@ -1,7 +1,7 @@
 #include "confetti.h"
 
 Effect confetti = {
-	"Konfetti",
+	"Confetti",
 	confettiNamespace::tick,	// tick
 	confettiNamespace::reset,	// reset
 	5,							// intervalZeroOffset

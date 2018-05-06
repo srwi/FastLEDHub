@@ -7,8 +7,6 @@
 
 #include "EffectController.h"
 
-#define DATA_JSON_SIZE (JSON_OBJECT_SIZE(100))
-
 class ConfigClass
 {
 	public:
@@ -32,10 +30,9 @@ class ConfigClass
 		int16_t sunset_offset = 0;
 		String sunset_effect = "";
 		// other
+		String startup_effect = "";
 		String custom_color = "";
 		String custom_color2 = "";
-		String mobile_ip = "";
-		String desktop_ip = "";
 		String current_effect = "";
 		uint8_t speed = 0;
 		uint8_t saturation = 255;

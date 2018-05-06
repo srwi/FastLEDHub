@@ -8,7 +8,6 @@
 #include "Config.h"
 #include "Fade.h"
 #include "WebUpdate.h"
-#include "Observer.h"
 
 void setup()
 {
@@ -18,7 +17,7 @@ void setup()
 	Config.init();
 	initController();
 	initHardware();
-	begin("Nox");
+	begin(Config.startup_effect);
 
 	Wifi.autoConnect("Lightstrip AP (192.168.4.1)");
 	WebServer.init();
@@ -29,7 +28,6 @@ void setup()
 		OTA.init("Lightstrip");
 		initWebsocket();
 		initWebUpdate();
-		initObserver();
 	}
 }
 
@@ -43,6 +41,5 @@ void loop()
 	WebServer.handleClient();
 	
 	handleFade();
-	handleObserver();
 	betterShow();
 }

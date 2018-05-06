@@ -1,7 +1,7 @@
 #include "popFade.h"
 
 Effect popFade = {
-	"#borntoparty",
+	"Pop Fade",
 	popFadeNamespace::tick,	// tick
 	popFadeNamespace::reset,	// reset
 	10,							// intervalZeroOffset

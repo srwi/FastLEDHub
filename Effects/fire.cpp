@@ -1,7 +1,7 @@
 #include "fire.h"
 
 Effect fire = {
-	"Feuerwehr",
+	"Fire",
 	fireNamespace::tick,			// tick
 	fireNamespace::reset,			// reset
 	5,								// intervalZeroOffset

@@ -1,7 +1,7 @@
 #include "sunrise.h"
 
 Effect sunrise = {
-	"Sonnenaufgang",
+	"Sunrise",
 	sunriseNamespace::tick,			// tick
 	sunriseNamespace::reset,		// reset
 	1,								// intervalZeroOffset

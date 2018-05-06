@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
-		<link rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css">
+		<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.min.css">
 	</head>
 	<body>
 		<div id="connectingOverlay">
@@ -23,8 +23,8 @@
 			<h1 style="text-align: center">LED-Leiste</h1>
 
 			<div id="effectButtons">
-				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Farbe</button>
-				<button type="button" class="btn btn-default color no-alpha" id="custom_color2_button">Farbe 2</button>
+				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Color</button>
+				<button type="button" class="btn btn-default color no-alpha" id="custom_color2_button">Color 2</button>
 			</div>
 
 			<div class="speed_slider" id="speed"></div>
@@ -110,6 +110,9 @@
 								<div class="slider round"></div>
 								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Sommerzeit</div>
 							</label>
+
+							<label for="startup_effect">Startanimation</label>
+							<select class="form-control" id="startup_effect"></select>
 						</div>
 					</div>
 				</div>

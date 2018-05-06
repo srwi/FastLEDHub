@@ -3,8 +3,6 @@ var currentStatus = 0;
 var currentCustomColor = '';
 var currentCustomColor2 = '';
 var maxSpeed = 14;
-var _w = Math.max( $(window).width(), $(window).height() );
-var _h = Math.min( $(window).width(), $(window).height() );
 
 var websocketReady = false;
 var ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
@@ -13,15 +11,7 @@ connection.binaryType = 'arraybuffer';
 
 connection.onopen = function(e)
 {
-	if(!((_w < 1290 && _w > 1270) || (_w > 790 && _w < 810)))
-	{
-		if( /Silk|silk|mazon|indle/i.test(navigator.userAgent) )
-			console.log("");
-		else if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
-			send_text('mobile');
-		else
-			send_text('desktop');
-	}
+	send_text('requesting_config');
 
 	$('#connectingOverlayText').html('Warte auf Antwort...');
 	$('#connectButton').hide();
@@ -73,9 +63,12 @@ function handle_json_data(data)
 			$('#sunset_effect').append($('<option>', {
 				text: data.effect_list[i]
 			}));
+			$('#startup_effect').append($('<option>', {
+				text: data.effect_list[i]
+			}));
 
 			// Add buttons to button collection except for custom color button
-			if(data.effect_list[i] != 'Farbe' && data.effect_list[i] != 'Farbe 2' && data.effect_list[i] != 'Sonnenaufgang')
+			if(data.effect_list[i] != 'Color' && data.effect_list[i] != 'Color 2' && data.effect_list[i] != 'Sunrise')
 			{
 				if(data.effect_list[i] == 'Nox')
 					$('<button type="button" class="btn btn-danger" onClick="send_effect_button(\'' + data.effect_list[i] + '\');">' + data.effect_list[i] + '</button>').insertAfter($('#custom_color2_button'));
@@ -91,11 +84,13 @@ function handle_json_data(data)
 	}
 	// Select effects
 	if(data.hasOwnProperty('alarm_effect'))
-		$('#alarm_effect').val(data.alarm_effect != '' ? data.alarm_effect : 'Farbe');
+		$('#alarm_effect').val(data.alarm_effect != '' ? data.alarm_effect : 'Color');
 	if(data.hasOwnProperty('post_alarm_effect'))
-		$('#post_alarm_effect').val(data.post_alarm_effect != '' ? data.post_alarm_effect : 'Farbe');
+		$('#post_alarm_effect').val(data.post_alarm_effect != '' ? data.post_alarm_effect : 'Color');
 	if(data.hasOwnProperty('sunset_effect'))
-		$('#sunset_effect').val(data.sunset_effect != '' ? data.sunset_effect : 'Farbe');
+		$('#sunset_effect').val(data.sunset_effect != '' ? data.sunset_effect : 'Color');
+	if(data.hasOwnProperty('startup_effect'))
+		$('#startup_effect').val(data.startup_effect != '' ? data.startup_effect : 'Color');
 	// Settings
 	if(data.hasOwnProperty('time_zone'))
 		time_zone.value = data.time_zone;
@@ -149,7 +144,7 @@ function update_buttons(status, effect)
 			{
 			
 			}
-			else if(effect == 'Farbe')
+			else if(effect == 'Color')
 			{
 				if(status == 2)
 				{
@@ -160,7 +155,7 @@ function update_buttons(status, effect)
 					$(this).val('#' + currentCustomColor).css({'background-color': '#' + colors.HEX, 'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd'});
 				}
 			}
-			else if(effect == 'Farbe 2')
+			else if(effect == 'Color 2')
 			{
 				if(status == 2)
 				{
@@ -200,12 +195,12 @@ function update_buttons(status, effect)
 			{
 				$(this).attr('class', 'btn btn-default');
 			}
-			if($(this).text() == 'Farbe')
+			if($(this).text() == 'Color')
 			{
 				$(this).css('background-color', '#464545');
 				$(this).css('color', 'white');
 			}
-			if($(this).text() == 'Farbe 2')
+			if($(this).text() == 'Color 2')
 			{
 				$(this).css('background-color', '#464545');
 				$(this).css('color', 'white');
@@ -236,6 +231,7 @@ function send_config()
 	config.sunset_offset = sunset_offset.value;
 	config.sunset_effect = $('#sunset_effect').val();
 	// other
+	config.startup_effect = $('#startup_effect').val();
 	config.speed = maxSpeed - document.getElementById('speed').noUiSlider.get();
 	config.saturation = document.getElementById('saturation').noUiSlider.get();
 	config.custom_color = currentCustomColor;
@@ -300,11 +296,11 @@ var $customColorPicker = $('#custom_color_button').colorPicker({
 	renderCallback: function($elm, toggled) {
 		if(toggled === true)
 		{
-			update_buttons(2, 'Farbe');
+			update_buttons(2, 'Color');
 		}
 		else if(toggled === false)
 		{
-			if(currentEffect != 'Farbe' || currentStatus == 0)
+			if(currentEffect != 'Color' || currentStatus == 0)
 			{
 				$('#custom_color_button').css('background-color','#464545');
 				$('#custom_color_button').css('color','white');
@@ -326,11 +322,11 @@ var $customColor2Picker = $('#custom_color2_button').colorPicker({
 	renderCallback: function($elm, toggled) {
 		if(toggled === true)
 		{
-			update_buttons(2, 'Farbe 2');
+			update_buttons(2, 'Color 2');
 		}
 		else if(toggled === false)
 		{
-			if(currentEffect != 'Farbe 2' || currentStatus == 0)
+			if(currentEffect != 'Color 2' || currentStatus == 0)
 			{
 				$('#custom_color2_button').css('background-color','#464545');
 				$('#custom_color2_button').css('color','white');
