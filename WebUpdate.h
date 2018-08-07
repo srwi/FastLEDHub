@@ -5,7 +5,6 @@
 #include <ESPEssentials.h>
 
 #include "EffectController.h"
-#include "Fade.h"
 
 void handleEffectCommand();
 void initWebUpdate();

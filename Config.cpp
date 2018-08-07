@@ -5,42 +5,6 @@ bool ConfigClass::parseJSON(char* json)
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& root = jsonBuffer.parseObject(json);
 
-	// time specific
-	if(root.containsKey("time_zone"))
-		time_zone = root["time_zone"];
-	if(root.containsKey("summer_time"))
-		summer_time = root["summer_time"];
-	if(root.containsKey("longitude"))
-		longitude = root["longitude"];
-	if(root.containsKey("latitude"))
-		latitude = root["latitude"];
-	// alarm
-	if(root.containsKey("alarm_enabled"))
-		alarm_enabled = root["alarm_enabled"];
-	if(root.containsKey("alarm_duration"))
-		alarm_duration = root["alarm_duration"];
-	if(root.containsKey("alarm_hour"))
-		alarm_hour = root["alarm_hour"];
-	if(root.containsKey("alarm_minute"))
-		alarm_minute = root["alarm_minute"];
-	if(root.containsKey("alarm_effect"))
-		alarm_effect = root["alarm_effect"].asString();
-	if(root.containsKey("post_alarm_effect"))
-		post_alarm_effect = root["post_alarm_effect"].asString();
-	// sunset
-	if(root.containsKey("sunset_enabled"))
-		sunset_enabled = root["sunset_enabled"];
-	if(root.containsKey("sunset_hour"))
-		sunset_hour = root["sunset_hour"];
-	if(root.containsKey("sunset_minute"))
-		sunset_minute = root["sunset_minute"];
-	if(root.containsKey("sunset_duration"))
-		sunset_duration = root["sunset_duration"];
-	if(root.containsKey("sunset_offset"))
-		sunset_offset = root["sunset_offset"];
-	if(root.containsKey("sunset_effect"))
-		sunset_effect = root["sunset_effect"].asString();
-	// other
 	if(root.containsKey("startup_effect"))
 		startup_effect = root["startup_effect"].asString();
 	if(root.containsKey("custom_color"))
@@ -62,26 +26,6 @@ String ConfigClass::getJSON()
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
 
-	// time specific
-	root["time_zone"] = time_zone;
-	root["summer_time"] = summer_time;
-	root["longitude"] = longitude;
-	root["latitude"] = latitude;
-	// alarm
-	root["alarm_enabled"] = alarm_enabled;
-	root["alarm_hour"] = alarm_hour;
-	root["alarm_minute"] = alarm_minute;
-	root["alarm_duration"] = alarm_duration;
-	root["alarm_effect"] = alarm_effect;
-	root["post_alarm_effect"] = post_alarm_effect;
-	// sunset
-	root["sunset_enabled"] = sunset_enabled;
-	root["sunset_hour"] = sunset_hour;
-	root["sunset_minute"] = sunset_minute;
-	root["sunset_duration"] = sunset_duration;
-	root["sunset_offset"] = sunset_offset;
-	root["sunset_effect"] = sunset_effect;
-	// other
 	IPAddress ip = Wifi.localIP();
 	root["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
 	root["startup_effect"] = startup_effect;

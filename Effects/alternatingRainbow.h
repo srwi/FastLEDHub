@@ -2,7 +2,6 @@
 #define _ALTERNATINGRAINBOW_H
 
 #include <Arduino.h>
-#include <Time.h>
 
 #include "../EffectController.h"
 

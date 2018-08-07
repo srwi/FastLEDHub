@@ -2,7 +2,6 @@
 #define _CUSTOMCOLOR2_
 
 #include <Arduino.h>
-#include <Time.h>
 
 #include "../EffectController.h"
 

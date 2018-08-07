@@ -49,16 +49,6 @@ void initWebUpdate()
 	});
 
 	// TODO: Move this somewhere else as well
-	WebServer.on("/command/sunset", HTTP_GET, [&]()
-	{
-		startFade(SUNSET);
-		WebServer.send(200, "text/plain", "Starting sunset.");
-	});
-	WebServer.on("/command/alarm", HTTP_GET, [&]()
-	{
-		startFade(ALARM);
-		WebServer.send(200, "text/plain", "Starting alarm.");
-	});
 	WebServer.on("/command/remove_wifi_credentials", HTTP_GET, [&]()
 	{
 		Wifi.saveCredentials("", "");
@@ -73,13 +63,8 @@ void initWebUpdate()
 	});
 	WebServer.on("/command/stop", HTTP_GET, [&]()
 	{
-		stopFade();
 		stop();
 		WebServer.send(200, "text/plain", "Stop.");
-	});
-	WebServer.on("/alarm", HTTP_GET, [&]()
-	{
-		WebServer.handleFileRead("/alarm.htm");
 	});
 	WebServer.on("/command/begin", handleEffectCommand);
 }

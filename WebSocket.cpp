@@ -65,7 +65,6 @@ void handleWebsocketText(String text, uint8_t num)
 	{
 		String effectName = text.substring(7);
 
-		stopFade();
 		toggle(effectName);
 	}
 	else if(text == "requesting_config")
@@ -115,18 +114,6 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 			setSpeed(binary[1]);
 			liveDataHasChanged = true;
 			webSocket.sendTXT(num, String("ok").c_str());
-		break;
-		case 2: // Set alarm
-			Config.alarm_hour = binary[1];
-			Config.alarm_minute = binary[2];
-			Config.alarm_enabled = true;
-			Config.save();
-			webSocket.sendTXT(num, String("alarm set").c_str());
-		break;
-		case 3: // Disable alarm
-			Config.alarm_enabled = false;
-			Config.save();
-			webSocket.sendTXT(num, String("alarm disabled").c_str());
 		break;
 		case 4: // Spectroscope data
 			if(status != STOPPED)

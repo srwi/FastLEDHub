@@ -5,7 +5,6 @@ CRGB color1, color2 = CRGB::Red;
 
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
-	stopFade();
 	stop();
 	
 	// Spectrum

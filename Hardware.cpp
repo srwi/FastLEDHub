@@ -97,19 +97,16 @@ uint16_t getPotiBrightness()
 }
 
 void handleInput()
-{
-	if(!currentFade)
+{	
+	// Adjust brightness calculation if needed
+	uint16_t potiBrightness = getPotiBrightness();
+
+	filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
+
+	// Only set brightness if it's not near the filtered brightness value which will lag behind
+	if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
 	{
-		// Adjust brightness calculation if needed
-		uint16_t potiBrightness = getPotiBrightness();
-
-		filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
-
-		// Only set brightness if it's not near the filtered brightness value which will lag behind
-		if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
-		{
-			brightness10 = (float)potiBrightness * potiBrightness / 1023;
-		}
+		brightness10 = (float)potiBrightness * potiBrightness / 1023;
 	}
 
 	// Push button
@@ -117,16 +114,11 @@ void handleInput()
 	{
 		// button pushed
 		cycleEffect();
-		stopFade();
-
-		Serial.println("Button pushed.");
-
 		buttonPushed = true;
 	}
 	else if(digitalRead(BUTTON_PIN) && buttonPushed)
 	{
 		// button released
-
 		buttonPushed = false;
 	}
 }

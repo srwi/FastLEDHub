@@ -20,8 +20,6 @@ void initController()
 	effectList.add(alternatingRainbow);
 	effectList.add(cremeRainbow);
 	effectList.add(juggle);
-	// Keep sunrise at bottom of list
-	effectList.add(sunrise);
 }
 
 void begin(String name)
@@ -71,17 +69,9 @@ void cycleEffect()
 
 	if(status == RUNNING)
 	{
-		if(currentFade)
-		{
-			filteredBrightness = 0;
-			begin(nox);
-			return;
-		}
-
 		// Increment effect index
 		index++;
-		// (- 1) because sunrise (which should stay at the end of effectList) should be skipped when cycling.
-		index %= effectList.size() - 1;
+		index %= effectList.size();
 	}
 
 	begin(index);

@@ -6,7 +6,6 @@
 #include "FastLED.h"
 
 #include "EffectController.h"
-#include "Fade.h"
 
 #define MAX_BETTER_HUE 1535
 #define NUM_LEDS 201
