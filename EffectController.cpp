@@ -51,6 +51,8 @@ void begin(uint8_t index)
 	effectList.get(index).reset();
 
 	// Start effect
+	effectList.get(effectIndex).tick();
+	betterShow();
 	attachTicker();
 	status = RUNNING;
 
