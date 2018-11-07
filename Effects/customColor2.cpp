@@ -4,7 +4,7 @@ Effect customColor2 = {
 	"Color 2",
 	customColor2Namespace::tick,	// tick
 	customColor2Namespace::reset,	// reset
-	5,								// intervalZeroOffset
+	8,								// intervalZeroOffset
 	3,								// intervalStepSize
 };
 
