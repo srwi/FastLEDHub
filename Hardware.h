@@ -8,7 +8,7 @@
 #include "EffectController.h"
 
 #define MAX_BETTER_HUE 1535
-#define NUM_LEDS 201
+#define NUM_LEDS 6
 #define LIGHTSTRIP_PIN 5
 #define BUTTON_PIN 4
 

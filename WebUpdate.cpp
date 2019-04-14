@@ -51,7 +51,7 @@ void initWebUpdate()
 	// TODO: Move this somewhere else as well
 	WebServer.on("/command/remove_wifi_credentials", HTTP_GET, [&]()
 	{
-		Wifi.saveCredentials("", "");
+		// TODO: Wifi.saveCredentials("", "");
 		WebServer.send(200, "text/plain", "Wifi credentials removed. Rebooting...");
 		delay(30);
 		ESP.restart();

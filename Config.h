@@ -1,9 +1,10 @@
-#ifndef _CONFIG_H
-#define _CONFIG_H
+#ifndef _CONFIG_H_423414
+#define _CONFIG_H_423414
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
+#include <ESP8266WiFi.h>
 
 #include "EffectController.h"
 

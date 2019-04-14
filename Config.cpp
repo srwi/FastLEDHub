@@ -26,7 +26,7 @@ String ConfigClass::getJSON()
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& root = jsonBuffer.createObject();
 
-	IPAddress ip = Wifi.localIP();
+	IPAddress ip = WiFi.localIP();
 	root["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
 	root["startup_effect"] = startup_effect;
 	root["custom_color"] = custom_color;

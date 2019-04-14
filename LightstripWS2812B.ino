@@ -1,14 +1,11 @@
 #include <Arduino.h>
 #include <ESPEssentials.h>
-#include <WiFiManager.h>
 
 #include "WebSocket.h"
 #include "EffectController.h"
 #include "Hardware.h"
 #include "Config.h"
 #include "WebUpdate.h"
-
-WiFiManager wifiManager;
 
 void setup()
 {
@@ -20,7 +17,7 @@ void setup()
 	initHardware();
 	begin(Config.startup_effect);
 
-	wifiManager.autoConnect("Lightstrip AP");
+	initESPEssentials("Lightstrip");
 	WebServer.init();
 
 	OTA.init("Lightstrip");
@@ -30,8 +27,7 @@ void setup()
 
 void loop()
 {
-	OTA.handle();
+	handleESPEssentials();
 	webSocket.loop();
-	WebServer.handleClient();	
 	betterShow();
 }

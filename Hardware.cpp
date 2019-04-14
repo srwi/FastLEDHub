@@ -17,8 +17,6 @@ void clear()
 
 void betterShow(int16_t bright10)
 {
-	Serial.println("SHOWING..........................");
-
 	if(bright10 != -1)
 		brightness10 = bright10;
 
