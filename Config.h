@@ -7,22 +7,22 @@
 
 class ConfigClass
 {
-	public:
-		// other
-		String startup_effect = "";
-		String custom_color = "";
-		String custom_color2 = "";
-		String current_effect = "";
-		uint8_t speed = 0;
-		uint8_t saturation = 255;
+  public:
+    // other
+    String startup_effect = "";
+    String custom_color = "";
+    String custom_color2 = "";
+    String current_effect = "";
+    uint8_t speed = 0;
+    uint8_t saturation = 255;
 
-		bool init();
-		bool save();
-		bool parseJSON(char* input);
-		String getJSON();
+    bool init();
+    bool save();
+    bool parseJSON(char* input);
+    String getJSON();
 
-	private:
-		const String config_filename = "/config_json.txt";
+  private:
+    const String config_filename = "/config_json.txt";
 };
 
 extern ConfigClass Config;

@@ -9,17 +9,18 @@
 
 void setup()
 {
-	initESPEssentials("Lightstrip");
-	Config.init();
-	initHardware();
-	initWebsocket();
-	initWebUpdate();
-	registerAnimations();
+  initESPEssentials("Lightstrip");
+  Config.init();
+  initHardware();
+  initWebsocket();
+  initWebUpdate();
+  registerAnimations();
 }
 
 void loop()
 {
-	handleESPEssentials();
-	webSocket.loop();
-	betterShow();
+  handleESPEssentials();
+  webSocket.loop();
+  Animation::current->loop();
+  betterShow();
 }

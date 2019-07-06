@@ -29,7 +29,7 @@ class AlternatingRainbow : public Animation
 				{
 					strip[i] = betterHue(startHue + (endHue - startHue) * i/NUM_LEDS, Config.saturation);
 				}
-			}	
+			}
 		}
 };
 

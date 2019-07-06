@@ -9,43 +9,35 @@
 
 enum AnimationStatus
 {
-	STOPPED = 0,
-	PAUSED,
-	RUNNING
+  STOPPED = 0,
+  PAUSED,
+  RUNNING
 };
 
 class Animation
 {
-	public:
-		Animation() = default;
-		Animation(String _name, uint8_t _intervalZeroOffset, uint8_t _intervalStepSize);
+  public:
+    Animation() = default;
+    Animation(String _name);
 
-		void begin();
-		void toggle();
-		void stop();
-		void pause();
-		void restart();
-		void resume();
+    void begin();
+    void toggle();
+    void stop();
+    void pause();
+    void restart();
+    void resume();
+    String getName();
 
-		virtual void loop() = 0;
-		virtual void reset() = 0;
+    virtual void loop() = 0;
+    virtual void reset() = 0;
 
-		static AnimationStatus getStatus();
-		static String getCurrent();
-		//static void cycleEffect();
+    static AnimationStatus getStatus();
+    static Animation* current;
 
-	private:
-		String name;
-		int intervalZeroOffset;
-		int intervalStepSize;
-
-		static Ticker ticker;
-		static Animation* current;
-		static AnimationStatus status;
-
-		void loopAndShow();
-		void clearAndReset();
-		void attachTicker();
+  private:
+    String name;
+    
+    static AnimationStatus status;
 };
 
 // Include animations here:
