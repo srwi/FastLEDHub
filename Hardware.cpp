@@ -7,13 +7,13 @@ int16_t brightness10 = 1023;
 CRGB strip[NUM_LEDS];
 CRGB brightness_corrected_strip[NUM_LEDS];
 
-void clear()
-{
-	for(uint16_t i = 0; i < NUM_LEDS; i++)
-	{
-		strip[i] = CRGB::Black;
-	}
-}
+// void clear()
+// {
+// 	// for(uint16_t i = 0; i < NUM_LEDS; i++)
+// 	// {
+// 	// 	strip[i] = CRGB::Black;
+// 	// }
+// }
 
 void betterShow(int16_t bright10)
 {
@@ -97,7 +97,7 @@ uint16_t getPotiBrightness()
 }
 
 void handleInput()
-{	
+{
 	// Adjust brightness calculation if needed
 	uint16_t potiBrightness = getPotiBrightness();
 
@@ -113,7 +113,7 @@ void handleInput()
 	if(!digitalRead(BUTTON_PIN) && !buttonPushed)
 	{
 		// button pushed
-		cycleEffect();
+		// TODO: cycleEffect();
 		buttonPushed = true;
 	}
 	else if(digitalRead(BUTTON_PIN) && buttonPushed)

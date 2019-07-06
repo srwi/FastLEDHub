@@ -63,7 +63,7 @@ void initWebUpdate()
 	});
 	WebServer.on("/command/stop", HTTP_GET, [&]()
 	{
-		stop();
+		//stop();
 		WebServer.send(200, "text/plain", "Stop.");
 	});
 	WebServer.on("/command/begin", handleEffectCommand);
@@ -74,7 +74,7 @@ void handleEffectCommand()
 	if(WebServer.hasArg("effect"))
 	{
 		WebServer.send(200, "text/plain", "Starting effect #" + String(WebServer.arg("effect")) + "...");
-		begin(String(WebServer.arg("effect")).toInt());
+		// TODO: begin(String(WebServer.arg("effect")).toInt());
 	}
 	else
 	{

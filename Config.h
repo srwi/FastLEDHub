@@ -1,12 +1,9 @@
-#ifndef _CONFIG_H_423414
-#define _CONFIG_H_423414
+#pragma once
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
 #include <ESP8266WiFi.h>
-
-#include "EffectController.h"
 
 class ConfigClass
 {
@@ -21,7 +18,7 @@ class ConfigClass
 
 		bool init();
 		bool save();
-		bool parseJSON(char* json);
+		bool parseJSON(char* input);
 		String getJSON();
 
 	private:
@@ -29,5 +26,3 @@ class ConfigClass
 };
 
 extern ConfigClass Config;
-
-#endif

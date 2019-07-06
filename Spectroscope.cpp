@@ -1,11 +1,11 @@
 #include "Spectroscope.h"
 
 uint8_t spectroscopeData[22] = { 0 };
-CRGB color1, color2 = CRGB::Red;
+CRGB color_1, color_2 = CRGB::Red;
 
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
-	stop();
+	// TODO: stop();
 	
 	// Spectrum
 	for(uint8_t i = 0; i < 16; i++)
@@ -13,8 +13,8 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 		spectroscopeData[i] = arr[i];
 	}
 	// Colors
-	color1 = CRGB(arr[16], arr[17], arr[18]);
-	color2 = CRGB(arr[19], arr[20], arr[21]);
+	color_1 = CRGB(arr[16], arr[17], arr[18]);
+	color_2 = CRGB(arr[19], arr[20], arr[21]);
 
 	uint16_t stripe_width = isSymmetrical ? NUM_LEDS/32 : NUM_LEDS/16;
 	uint16_t current_led = 0;
@@ -22,9 +22,9 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 	{
 		for (int j = 0; j < stripe_width; j++)
 		{
-			strip[current_led].red = color1.red * spectroscopeData[i]/255 * (15-i)/15 + color2.red * spectroscopeData[i]/255 * i/15;
-			strip[current_led].green = color1.green * spectroscopeData[i]/255 * (15-i)/15 + color2.green * spectroscopeData[i]/255 * i/15;
-			strip[current_led].blue = color1.blue * spectroscopeData[i]/255 * (15-i)/15 + color2.blue * spectroscopeData[i]/255 * i/15;
+			strip[current_led].red = color_1.red * spectroscopeData[i]/255 * (15-i)/15 + color_2.red * spectroscopeData[i]/255 * i/15;
+			strip[current_led].green = color_1.green * spectroscopeData[i]/255 * (15-i)/15 + color_2.green * spectroscopeData[i]/255 * i/15;
+			strip[current_led].blue = color_1.blue * spectroscopeData[i]/255 * (15-i)/15 + color_2.blue * spectroscopeData[i]/255 * i/15;
 			// Copy to second half
 			if(isSymmetrical)
 			{

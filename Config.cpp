@@ -1,49 +1,48 @@
 #include "Config.h"
 
-bool ConfigClass::parseJSON(char* json)
+bool ConfigClass::parseJSON(char* input)
 {
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& root = jsonBuffer.parseObject(json);
+	DynamicJsonDocument doc(2048);
+	DeserializationError error = deserializeJson(doc, input);
 
-	if(root.containsKey("startup_effect"))
-		startup_effect = root["startup_effect"].asString();
-	if(root.containsKey("custom_color"))
-		custom_color = root["custom_color"].asString();
-	if(root.containsKey("custom_color2"))
-		custom_color2 = root["custom_color2"].asString();
-	if(root.containsKey("speed"))
-		speed = root["speed"];
-	if(root.containsKey("saturation"))
-		saturation = root["saturation"];
-	if(root.containsKey("current_effect"))
-		current_effect = root["current_effect"].asString();
-	
-	return root.success();
+	if(doc.containsKey("startup_effect"))
+		startup_effect = doc["startup_effect"].as<String>();
+	if(doc.containsKey("custom_color"))
+		custom_color = doc["custom_color"].as<String>();
+	if(doc.containsKey("custom_color2"))
+		custom_color2 = doc["custom_color2"].as<String>();
+	if(doc.containsKey("speed"))
+		speed = doc["speed"];
+	if(doc.containsKey("saturation"))
+		saturation = doc["saturation"];
+	if(doc.containsKey("current_effect"))
+		current_effect = doc["current_effect"].as<String>();
+
+	return !error;
 }
 
 String ConfigClass::getJSON()
 {
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& root = jsonBuffer.createObject();
+	DynamicJsonDocument doc(2048);
 
 	IPAddress ip = WiFi.localIP();
-	root["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
-	root["startup_effect"] = startup_effect;
-	root["custom_color"] = custom_color;
-	root["custom_color2"] = custom_color2;
-	root["speed"] = speed;
-	root["saturation"] = saturation;
-	root["status"] = String(status);
-	root["current_effect"] = effectList.get(effectIndex).name;
-	// effect list
-	JsonArray& data = root.createNestedArray("effect_list");
-	for(uint8_t i = 0; i < effectList.size(); i++)
-	{
-		data.add(effectList.get(i).name);
-	}
+	doc["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
+	doc["startup_effect"] = startup_effect;
+	doc["custom_color"] = custom_color;
+	doc["custom_color2"] = custom_color2;
+	doc["speed"] = speed;
+	doc["saturation"] = saturation;
+	// TODO: root["status"] = String(status);
+	// TODO: root["current_effect"] = effectList.get(effectIndex).name;
+	// animations list
+	// JsonArray animations = doc.createNestedArray("animations");
+	// for(uint8_t i = 0; i < effectList.size(); i++)
+	// {
+	// 	animations.add(effectList.get(i).name);
+	// }
 
 	String buffer = "";
-	root.prettyPrintTo(buffer);
+	serializeJson(doc, buffer);
 
 	return buffer;
 }
@@ -65,7 +64,9 @@ bool ConfigClass::init()
 
 	String content;
 	if(configFile.available())
+	{
 		content = configFile.readString();
+	}
 
 	char json[content.length()];
 	content.toCharArray(json, content.length());

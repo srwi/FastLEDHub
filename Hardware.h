@@ -1,11 +1,10 @@
-#ifndef _HARDWARE_H
-#define _HARDWARE_H
+#pragma once
 
 #include <Arduino.h>
 #include <Ticker.h>
+// Suppress FastLED warnings
+#define FASTLED_INTERNAL
 #include "FastLED.h"
-
-#include "EffectController.h"
 
 #define MAX_BETTER_HUE 1535
 #define NUM_LEDS 6
@@ -18,11 +17,9 @@ extern int16_t brightness10;
 extern float filteredBrightness;
 
 void initHardware();
-void clear();
+//void clear();
 void showshow();
 void betterShow(int16_t newBrightness = -1);
 CRGB betterHue(uint16_t fract1535, int16_t sat = -1, uint8_t val = 255);
 uint16_t getPotiBrightness();
 void handleInput();
-
-#endif

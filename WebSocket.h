@@ -1,5 +1,4 @@
-#ifndef _WEBSOCKET_H
-#define _WEBSOCKET_H
+#pragma once
 
 #include <Arduino.h>
 #include <Hash.h>
@@ -7,7 +6,6 @@
 #include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
-#include "EffectController.h"
 #include "Config.h"
 #include "Spectroscope.h"
 
@@ -21,5 +19,3 @@ void handleWebsocketText(String text, uint8_t num);
 void handleWebsocketBinary(uint8_t *binary, uint8_t num);
 void broadcastStatus();
 String byteArrayToString(uint8_t *bytes);
-
-#endif

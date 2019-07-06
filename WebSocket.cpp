@@ -47,6 +47,12 @@ void websocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 			//Serial.printf("[Websocket] [%u] get Binary: %s\n", num, payload);
 			handleWebsocketBinary(payload, num);
 		break;
+		case WStype_ERROR:
+		case WStype_FRAGMENT_TEXT_START:
+		case WStype_FRAGMENT_BIN_START:
+		case WStype_FRAGMENT:
+		case WStype_FRAGMENT_FIN:
+		break;
 	}
 }
 
@@ -65,7 +71,7 @@ void handleWebsocketText(String text, uint8_t num)
 	{
 		String effectName = text.substring(7);
 
-		toggle(effectName);
+		///////////toggle(effectName);
 	}
 	else if(text == "requesting_config")
 	{
@@ -101,47 +107,47 @@ String rgbToHex(uint8_t r, uint8_t g, uint8_t b)
 
 void handleWebsocketBinary(uint8_t *binary, uint8_t num)
 {
-	switch(binary[0])
-	{
-		case 0: // Custom Color
-			customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
-			Config.custom_color = rgbToHex(binary[1], binary[2], binary[3]);
-			begin(customColor);
-			liveDataHasChanged = true;
-			webSocket.sendTXT(num, String("ok").c_str());
-		break;
-		case 1: // Speed
-			setSpeed(binary[1]);
-			liveDataHasChanged = true;
-			webSocket.sendTXT(num, String("ok").c_str());
-		break;
-		case 4: // Spectroscope data
-			if(status != STOPPED)
-				stop();
-			for(uint16_t i = 0; i < NUM_LEDS; i++)
-			{
-				strip[i] = CRGB(binary[1 + i*3], binary[2 + i*3], binary[3 + i*3]);
-			}
-		break;
-		case 5: // Saturation
-			Config.saturation = binary[1];
-			liveDataHasChanged = true;
-			webSocket.sendTXT(num, String("ok").c_str());
-		break;
-		case 6: // linearSpectroscope data
-			linearSpectroscope(binary+1);
-		break;
-		case 7: // symmetricalSpectroscope data
-			symmetricalSpectroscope(binary+1);
-		break;
-		case 8: // Custom Color 2
-			customColor2Namespace::set(CRGB(binary[1], binary[2], binary[3]));
-			Config.custom_color2 = rgbToHex(binary[1], binary[2], binary[3]);
-			begin(customColor2);
-			liveDataHasChanged = true;
-			webSocket.sendTXT(num, String("ok").c_str());
-		break;
-	}
+	// switch(binary[0])
+	// {
+	// 	case 0: // Custom Color
+	// 		customColorNamespace::set(CRGB(binary[1], binary[2], binary[3]));
+	// 		Config.custom_color = rgbToHex(binary[1], binary[2], binary[3]);
+	// 		begin(customColor);
+	// 		liveDataHasChanged = true;
+	// 		webSocket.sendTXT(num, String("ok").c_str());
+	// 	break;
+	// 	case 1: // Speed
+	// 		setSpeed(binary[1]);
+	// 		liveDataHasChanged = true;
+	// 		webSocket.sendTXT(num, String("ok").c_str());
+	// 	break;
+	// 	case 4: // Spectroscope data
+	// 		if(status != STOPPED)
+	// 			stop();
+	// 		for(uint16_t i = 0; i < NUM_LEDS; i++)
+	// 		{
+	// 			strip[i] = CRGB(binary[1 + i*3], binary[2 + i*3], binary[3 + i*3]);
+	// 		}
+	// 	break;
+	// 	case 5: // Saturation
+	// 		Config.saturation = binary[1];
+	// 		liveDataHasChanged = true;
+	// 		webSocket.sendTXT(num, String("ok").c_str());
+	// 	break;
+	// 	case 6: // linearSpectroscope data
+	// 		linearSpectroscope(binary+1);
+	// 	break;
+	// 	case 7: // symmetricalSpectroscope data
+	// 		symmetricalSpectroscope(binary+1);
+	// 	break;
+	// 	case 8: // Custom Color 2
+	// 		customColor2Namespace::set(CRGB(binary[1], binary[2], binary[3]));
+	// 		Config.custom_color2 = rgbToHex(binary[1], binary[2], binary[3]);
+	// 		begin(customColor2);
+	// 		liveDataHasChanged = true;
+	// 		webSocket.sendTXT(num, String("ok").c_str());
+	// 	break;
+	// }
 }
 
 String byteArrayToString(uint8_t *bytes)
@@ -158,6 +164,6 @@ String byteArrayToString(uint8_t *bytes)
 void broadcastStatus()
 {
 	// Send status as JSON
-	String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_effect\": \"" + effectList.get(effectIndex).name + "\"\n}";
-	webSocket.broadcastTXT(msg.c_str());
+	// String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_effect\": \"" + effectList.get(effectIndex).name + "\"\n}";
+	// webSocket.broadcastTXT(msg.c_str());
 }
