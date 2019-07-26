@@ -19,8 +19,10 @@ void setup()
 
 void loop()
 {
+  if(!Animation::isDelaying())
+    Animation::getCurrent()->loop();
+
   handleESPEssentials();
   webSocket.loop();
-  Animation::current->loop();
   betterShow();
 }

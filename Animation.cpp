@@ -3,6 +3,8 @@
 Animation* Animation::current;
 AnimationStatus Animation::status = STOPPED;
 LinkedList<Animation*> animations;
+bool Animation::is_delaying = false;
+Ticker Animation::delayTicker;
 
 Animation::Animation(String _name)
 {
@@ -77,9 +79,25 @@ String Animation::getName()
   return name;
 }
 
+Animation* Animation::getCurrent()
+{
+  return current;
+}
+
 AnimationStatus Animation::getStatus()
 {
   return status;
+}
+
+bool Animation::isDelaying() 
+{
+  return is_delaying;
+}
+
+void Animation::delay(uint16_t t)
+{
+  is_delaying = true;
+  delayTicker.attach_ms(t * Config.speed, [&](){ is_delaying = false; });
 }
 
 void registerAnimations()
@@ -93,7 +111,6 @@ void registerAnimations()
   animations.add(new Fire("Fire"));
   animations.add(new Juggle("Juggle"));
   animations.add(new LeftRightLeftRightLeft("Left Right Left Right Left"));
-  animations.add(new Nox("Nox"));
   animations.add(new PopFade("Pop Fade"));
   animations.add(new RbRainbow("RG Rainbow"));
   animations.add(new RgbRainbow("RGB Rainbow"));

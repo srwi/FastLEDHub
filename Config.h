@@ -13,7 +13,7 @@ class ConfigClass
     String custom_color = "";
     String custom_color2 = "";
     String current_effect = "";
-    uint8_t speed = 0;
+    float speed = 0;
     uint8_t saturation = 255;
 
     bool init();

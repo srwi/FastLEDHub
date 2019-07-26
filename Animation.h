@@ -31,13 +31,18 @@ class Animation
     virtual void loop() = 0;
     virtual void reset() = 0;
 
+    static Animation* getCurrent();
+    static void delay(uint16_t t);
     static AnimationStatus getStatus();
-    static Animation* current;
+    static bool isDelaying();
 
   private:
     String name;
     
+    static Animation* current;
     static AnimationStatus status;
+    static bool is_delaying;
+    static Ticker delayTicker;
 };
 
 // Include animations here:
@@ -50,7 +55,6 @@ class Animation
 #include "Animations/fire.h"
 #include "Animations/juggle.h"
 #include "Animations/leftRightLeftRightLeft.h"
-#include "Animations/nox.h"
 #include "Animations/popFade.h"
 #include "Animations/rbRainbow.h"
 #include "Animations/rgbRainbow.h"
