@@ -15,12 +15,12 @@
 	</head>
 	<body>
 		<div id="connectingOverlay">
-			<h4 id="connectingOverlayText">Verbinden...</h4>
-			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Verbinden!</button>
+			<h4 id="connectingOverlayText">Connecting...</h4>
+			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Connect!</button>
 		</div>
 
 		<div id="wrapper">
-			<h1 style="text-align: center">LED-Leiste</h1>
+			<h1 style="text-align: center">Lightstrip Manager</h1>
 
 			<div id="effectButtons">
 				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Color</button>
@@ -33,14 +33,14 @@
 			<div class="panel-group" id="accordion">
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
-						<h4 class="panel-title">Wecker</h4>
+						<h4 class="panel-title">Alarm</h4>
 					</div>
 					<div id="alarmCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
 							<label class="switch">
 								<input id="alarm_enabled" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Aktivieren</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
 							</label>
 
 							<label for="alarm_timepicker_container">Zeit</label>
@@ -51,13 +51,13 @@
 								</span>
 							</div>
 
-							<label for="alarm_duration">Dauer</label>
+							<label for="alarm_duration">Duration</label>
 							<input id="alarm_duration" name="alarm_duration">
 
-							<label for="alarm_effect">Weckanimation</label>
+							<label for="alarm_effect">Animation</label>
 							<select class="form-control" id="alarm_effect"></select>
 
-							<label for="post_alarm_effect">Weckanimation (nach Ende)</label>
+							<label for="post_alarm_effect">Animation (after end)</label>
 							<select class="form-control" id="post_alarm_effect"></select>
 						</div>
 					</div>
@@ -65,20 +65,20 @@
 
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
-						<h4 class="panel-title">Sonnenuntergang</h4>
+						<h4 class="panel-title">Sunset</h4>
 					</div>
 					<div id="sunsetCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
 							<label class="switch">
 								<input id="sunset_enabled" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Aktivieren</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
 							</label>
 
-							<label for="sunset_duration">Dauer</label>
+							<label for="sunset_duration">Duration</label>
 							<input id="sunset_duration" name="sunset_duration">
 
-							<label for="sunset_offset">Verz&ouml;gerung</label>
+							<label for="sunset_offset">Delay</label>
 							<input id="sunset_offset" name="sunset_offset">
 
 							<label for="sunset_effect">Animation</label>
@@ -89,36 +89,36 @@
 
 				<div class="panel panel-default">
 					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#settingsCollapse">
-						<h4 class="panel-title">Einstellungen</h4>
+						<h4 class="panel-title">Settings</h4>
 					</div>
 					<div id="settingsCollapse" class="panel-collapse collapse">
 						<div class="panel-body">
-							<label for="own_ip">Eigene IP</label>
+							<label for="own_ip">Device IP</label>
 							<input type="text" class="form-control" id="own_ip" name="own_ip" readonly>
 
-							<label for="longitude">L&auml;ngengrad</label>
+							<label for="longitude">Longitude</label>
 							<input type="text" class="form-control" id="longitude" name="longitude">
 
-							<label for="latitude">Breitengrad</label>
+							<label for="latitude">Latitude</label>
 							<input type="text" class="form-control" id="latitude" name="latitude">
 
-							<label for="time_zone">Zeitzone</label>
+							<label for="time_zone">Time zone</label>
 							<input id="time_zone" name="time_zone">
 
 							<label class="switch">
 								<input id="summer_time" type="checkbox">
 								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Sommerzeit</div>
+								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summer time</div>
 							</label>
 
-							<label for="startup_effect">Startanimation</label>
+							<label for="startup_effect">Animation</label>
 							<select class="form-control" id="startup_effect"></select>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Speichern!</button>
+			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
 
 		</div>
 
