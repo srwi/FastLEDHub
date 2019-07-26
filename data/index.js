@@ -13,7 +13,7 @@ connection.onopen = function(e)
 {
 	send_text('requesting_config');
 
-	$('#connectingOverlayText').html('Warte auf Antwort...');
+	$('#connectingOverlayText').html('Waiting for response...');
 	$('#connectButton').hide();
 };
 
@@ -24,7 +24,7 @@ connection.onerror = function(e)
 
 connection.onclose = function(e)
 {
-	$('#connectingOverlayText').html('Verbindung unterbrochen.');
+	$('#connectingOverlayText').html('Connection interrupted.');
 	$('#refreshButton').show();
 	$('#connectingOverlay').fadeIn(140);
 };
@@ -39,7 +39,7 @@ connection.onmessage = function(e)
 	{
 		handle_json_data(JSON.parse(e.data));
 
-		$('#connectingOverlayText').html('Erfolg!');
+		$('#connectingOverlayText').html('Success!');
 		$('#connectingOverlay').fadeOut(140);
 	}
 	catch(f)
@@ -355,6 +355,7 @@ saturationStepSlider.noUiSlider.on('update', function( values, handle ) {
 });
 $('#saturation .noUi-handle').html("S&auml;tt.");
 
+// Close connection after being ianctive for 5 minutes
 var idleTime = 0;
 setInterval(function ()
 {
@@ -365,6 +366,7 @@ setInterval(function ()
 $(this).mousemove(function (e) { idleTime = 0; });
 $(this).keypress(function (e) { idleTime = 0; });
 
+// Close connection on mobile when page loses focus
 document.addEventListener('visibilitychange', function()
 {
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
