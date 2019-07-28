@@ -4,12 +4,6 @@ const char* serverIndex = "<form method='POST' action='/handle_update' enctype='
 
 void initWebUpdate()
 {
-  // TODO: Move this to ESPEssentials library
-  WebServer.on("/update", HTTP_GET, []() {
-    WebServer.sendHeader("Connection", "close");
-    WebServer.sendHeader("Access-Control-Allow-Origin", "*");
-    WebServer.send(200, "text/html", serverIndex);
-  });
   WebServer.on("/handle_update", HTTP_POST, []() {
     WebServer.sendHeader("Connection", "close");
     WebServer.sendHeader("Access-Control-Allow-Origin", "*");
@@ -47,37 +41,51 @@ void initWebUpdate()
     }
     yield();
   });
-
-  // TODO: Move this somewhere else as well
-  WebServer.on("/command/remove_wifi_credentials", HTTP_GET, [&]()
+  WebServer.on("/update", HTTP_GET, []() {
+    WebServer.sendHeader("Connection", "close");
+    WebServer.sendHeader("Access-Control-Allow-Origin", "*");
+    WebServer.send(200, "text/html", serverIndex);
+  });
+  WebServer.on("/reboot", HTTP_GET, [&]()
   {
-    // TODO: Wifi.saveCredentials("", "");
-    WebServer.send(200, "text/plain", "Wifi credentials removed. Rebooting...");
-    delay(30);
     ESP.restart();
   });
-  WebServer.on("/command/reboot", HTTP_GET, [&]()
+  WebServer.on("/stop", HTTP_GET, [&]()
   {
-    ESP.restart();
-    WebServer.send(200, "text/plain", "Rebooting...");
+    Animation::getCurrent()->stop();
+    WebServer.send(200, "text/plain", "Animation stopped.");
   });
-  WebServer.on("/command/stop", HTTP_GET, [&]()
+  WebServer.on("/pause", HTTP_GET, [&]()
   {
-    //stop();
-    WebServer.send(200, "text/plain", "Stop.");
+    Animation::getCurrent()->pause();
+    WebServer.send(200, "text/plain", "Animation paused.");
   });
-  WebServer.on("/command/begin", handleEffectCommand);
-}
-
-void handleEffectCommand()
-{
-  if(WebServer.hasArg("effect"))
+  WebServer.on("/resume", HTTP_GET, [&]()
   {
-    WebServer.send(200, "text/plain", "Starting effect #" + String(WebServer.arg("effect")) + "...");
-    // TODO: begin(String(WebServer.arg("effect")).toInt());
-  }
-  else
+    Animation::getCurrent()->resume();
+    WebServer.send(200, "text/plain", "Animation resumed.");
+  });
+  WebServer.on("/toggle", HTTP_GET, [&]()
   {
-    WebServer.send(404, "text/plain", "Oops, you forgot something!");
-  }
+    Animation::getCurrent()->toggle();
+    WebServer.send(200, "text/plain", "Animation toggled.");
+  });
+  WebServer.on("/restart", HTTP_GET, [&]()
+  {
+    Animation::getCurrent()->restart();
+    WebServer.send(200, "text/plain", "Animation restarted.");
+  });
+  WebServer.on("/begin", HTTP_GET, [&]()
+  {
+    if(WebServer.hasArg("animation"))
+    {
+      String animationName = String(WebServer.arg("animation"))
+      WebServer.send(200, "text/plain", "Starting animation '" + animationName + "'...");
+      getAnimation(animationName)->begin();
+    }
+    else
+    {
+      getAnimation(0)->begin();
+    }
+  });
 }
