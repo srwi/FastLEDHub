@@ -32,8 +32,8 @@ class Animation
     virtual void reset() = 0;
 
     static Animation* getCurrent();
-    static void delay(uint16_t t);
     static AnimationStatus getStatus();
+    static void delay(uint16_t t);
     static bool isDelaying();
 
   private:
@@ -44,6 +44,8 @@ class Animation
     static bool is_delaying;
     static Ticker delayTicker;
 };
+
+extern LinkedList<Animation*> animations;
 
 void registerAnimation(Animation* animation);
 void beginNextAnimation();

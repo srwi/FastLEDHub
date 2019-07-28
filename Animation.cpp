@@ -97,7 +97,7 @@ bool Animation::isDelaying()
 void Animation::delay(uint16_t t)
 {
   is_delaying = true;
-  delayTicker.attach_ms(t * Config.speed, [&](){ is_delaying = false; });
+  delayTicker.attach_ms(t * (255-Config.speed)/128, [&](){ is_delaying = false; });
 }
 
 void registerAnimation(Animation* animation)
@@ -126,9 +126,9 @@ void beginNextAnimation()
 {
   for(uint8_t i = 0; i < animations.size(); i++)
   {
-    if(animations.get(i)->getName() == Animation::getCurrent->getName())
+    if(animations.get(i)->getName() == Animation::getCurrent()->getName())
     {
-      uint8_t nextAnimationIndex = i + 1
+      uint8_t nextAnimationIndex = i + 1;
       if(nextAnimationIndex < animations.size())
       {
         getAnimation(nextAnimationIndex)->begin();

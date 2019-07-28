@@ -56,13 +56,13 @@ button
 	cursor: pointer;
 }
 
-#effectButtons
+#animationButtons
 {
 	text-align: center;
 	margin-top: 20px;
 }
 
-#effectButtons button
+#animationButtons button
 {
 	margin: 6px;
 }

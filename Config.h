@@ -5,14 +5,15 @@
 #include <ESPEssentials.h>
 #include <ESP8266WiFi.h>
 
+#include "Animation.h"
+
 class ConfigClass
 {
   public:
-    // other
     String startup_effect = "";
     String color = "";
     String current_effect = "";
-    float speed = 0;
+    uint8_t speed = 128;
     uint8_t saturation = 255;
 
     bool init();

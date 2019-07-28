@@ -79,7 +79,7 @@ void initWebUpdate()
   {
     if(WebServer.hasArg("animation"))
     {
-      String animationName = String(WebServer.arg("animation"))
+      String animationName = String(WebServer.arg("animation"));
       WebServer.send(200, "text/plain", "Starting animation '" + animationName + "'...");
       getAnimation(animationName)->begin();
     }

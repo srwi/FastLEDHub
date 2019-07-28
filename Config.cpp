@@ -29,14 +29,13 @@ String ConfigClass::getJSON()
   doc["color"] = color;
   doc["speed"] = speed;
   doc["saturation"] = saturation;
-  // TODO: root["status"] = String(status);
-  // TODO: root["current_effect"] = effectList.get(effectIndex).name;
-  // animations list
-  // JsonArray animations = doc.createNestedArray("animations");
-  // for(uint8_t i = 0; i < effectList.size(); i++)
-  // {
-  //  animations.add(effectList.get(i).name);
-  // }
+  doc["status"] = String(Animation::getStatus());
+  doc["current_animation"] = Animation::getCurrent()->getName();
+  JsonArray a = doc.createNestedArray("animations");
+  for(uint8_t i = 0; i < animations.size(); i++)
+  {
+    a.add(animations.get(i)->getName());
+  }
 
   String buffer = "";
   serializeJson(doc, buffer);

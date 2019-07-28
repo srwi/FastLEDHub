@@ -43,9 +43,9 @@ connection.onmessage = function(e)
 
 function handle_json_data(data)
 {
-  if(data.hasOwnProperty('animation_list'))
+  if(data.hasOwnProperty('animations'))
   {
-    data.animation_list.forEach(animation => {
+    data.animations.forEach(animation => {
       // Fill animation dropdowns
       $('#alarm_animation').append($('<option>', { text: animation }));
       $('#post_alarm_animation').append($('<option>', { text: animation }));
@@ -150,6 +150,10 @@ function update_buttons(status, animation)
     {
       $(this).css('background-color', '#464545');
       $(this).css('color', 'white');
+    }
+    else
+    {
+      $(this).removeClass('btn-success').removeClass('btn-warning');
     }
   });
 }
@@ -259,7 +263,7 @@ let $customColorPicker = $('#color_button').colorPicker({
 
 // Sliders
 let speedStepSlider = document.getElementById('speed');
-noUiSlider.create(speedStepSlider, { start: 1, step: 0.01, range: { 'min': 0.1, 'max': 10 } });
+noUiSlider.create(speedStepSlider, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
 speedStepSlider.noUiSlider.on('update', function(values, handle) {
   send_bytes(1, values[handle]);
 });
