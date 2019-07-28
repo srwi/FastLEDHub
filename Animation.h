@@ -45,18 +45,7 @@ class Animation
     static Ticker delayTicker;
 };
 
-// Include animations here:
-#include "Animations/alternatingRainbow.h"
-#include "Animations/confetti.h"
-#include "Animations/cremeRainbow.h"
-#include "Animations/customColor.h"
-#include "Animations/customColor2.h"
-#include "Animations/fader.h"
-#include "Animations/fire.h"
-#include "Animations/juggle.h"
-#include "Animations/leftRightLeftRightLeft.h"
-#include "Animations/popFade.h"
-#include "Animations/rbRainbow.h"
-#include "Animations/rgbRainbow.h"
-
-void registerAnimations();
+void registerAnimation(Animation* animation);
+void beginNextAnimation();
+Animation* getAnimation(String name);
+Animation* getAnimation(uint8_t i);

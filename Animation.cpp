@@ -100,20 +100,43 @@ void Animation::delay(uint16_t t)
   delayTicker.attach_ms(t * Config.speed, [&](){ is_delaying = false; });
 }
 
-void registerAnimations()
+void registerAnimation(Animation* animation)
 {
-  animations.add(new AlternatingRainbow("Alternating Rainbow"));
-  animations.add(new Confetti("Confetti"));
-  animations.add(new CremeRainbow("Creme Rainbow"));
-  animations.add(new Color("Color"));
-  animations.add(new Color2("Color 2"));
-  animations.add(new ColorFader("Color Fader"));
-  animations.add(new Fire("Fire"));
-  animations.add(new Juggle("Juggle"));
-  animations.add(new LeftRightLeftRightLeft("Left Right Left Right Left"));
-  animations.add(new PopFade("Pop Fade"));
-  animations.add(new RbRainbow("RG Rainbow"));
-  animations.add(new RgbRainbow("RGB Rainbow"));
+  animations.add(animation);
+}
 
-  animations.get(0)->begin();
+Animation* getAnimation(String name)
+{
+  for(uint8_t i = 0; i < animations.size(); i++)
+  {
+    Animation* a = animations.get(i);
+    if(a->getName() == name)
+      return a;
+  }
+
+  return NULL;
+}
+
+Animation* getAnimation(uint8_t i)
+{
+  return (animations.size() - 1 <= i) ? animations.get(i) : NULL;
+}
+
+void beginNextAnimation()
+{
+  for(uint8_t i = 0; i < animations.size(); i++)
+  {
+    if(animations.get(i)->getName() == Animation::getCurrent->getName())
+    {
+      uint8_t nextAnimationIndex = i + 1
+      if(nextAnimationIndex < animations.size())
+      {
+        getAnimation(nextAnimationIndex)->begin();
+      }
+      else
+      {
+        getAnimation(0)->begin();
+      }
+    }
+  }
 }

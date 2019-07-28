@@ -1,133 +1,132 @@
 <!DOCTYPE html>
 <html manifest="index.appcache">
-	<head>
-		<title>Lightstrip Manager</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="icon" sizes="192x192" href="index.png">
-		<link rel="stylesheet" href="index.css">
-		<!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
-		<link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.min.css">
-	</head>
-	<body>
-		<div id="connectingOverlay">
-			<h4 id="connectingOverlayText">Connecting...</h4>
-			<button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Connect!</button>
-		</div>
+  <head>
+    <title>Lightstrip Manager</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="index.png">
+    <link rel="stylesheet" href="index.css">
+    <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.min.css">
+  </head>
+  <body>
+    <div id="connectingOverlay">
+      <h4 id="connectingOverlayText">Connecting...</h4>
+      <button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary" style="display: none;">Connect!</button>
+    </div>
 
-		<div id="wrapper">
-			<h1 style="text-align: center">Lightstrip Manager</h1>
+    <div id="wrapper">
+      <h1 style="text-align: center">Lightstrip Manager</h1>
 
-			<div id="effectButtons">
-				<button type="button" class="btn btn-default color no-alpha" id="custom_color_button">Color</button>
-				<button type="button" class="btn btn-default color no-alpha" id="custom_color2_button">Color 2</button>
-			</div>
+      <div id="effectButtons">
+        <button type="button" class="btn btn-default color no-alpha" id="color_button">Color</button>
+      </div>
 
-			<div class="speed_slider" id="speed"></div>
-			<div class="saturation_slider" id="saturation"></div>
+      <div class="speed_slider" id="speed"></div>
+      <div class="saturation_slider" id="saturation"></div>
 
-			<div class="panel-group" id="accordion">
-				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
-						<h4 class="panel-title">Alarm</h4>
-					</div>
-					<div id="alarmCollapse" class="panel-collapse collapse">
-						<div class="panel-body">
-							<label class="switch">
-								<input id="alarm_enabled" type="checkbox">
-								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
-							</label>
+      <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#alarmCollapse">
+            <h4 class="panel-title">Alarm</h4>
+          </div>
+          <div id="alarmCollapse" class="panel-collapse collapse">
+            <div class="panel-body">
+              <label class="switch">
+                <input id="alarm_enabled" type="checkbox">
+                <div class="slider round"></div>
+                <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
+              </label>
 
-							<label for="alarm_timepicker_container">Zeit</label>
-							<div id="alarm_timepicker_container" class="input-group clockpicker" data-autoclose="true">
-								<input id="alarm_time" type="text" class="form-control" value="10:10">
-								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-time"></span>
-								</span>
-							</div>
+              <label for="alarm_timepicker_container">Zeit</label>
+              <div id="alarm_timepicker_container" class="input-group clockpicker" data-autoclose="true">
+                <input id="alarm_time" type="text" class="form-control" value="10:10">
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-time"></span>
+                </span>
+              </div>
 
-							<label for="alarm_duration">Duration</label>
-							<input id="alarm_duration" name="alarm_duration">
+              <label for="alarm_duration">Duration</label>
+              <input id="alarm_duration" name="alarm_duration">
 
-							<label for="alarm_effect">Animation</label>
-							<select class="form-control" id="alarm_effect"></select>
+              <label for="alarm_effect">Animation</label>
+              <select class="form-control" id="alarm_effect"></select>
 
-							<label for="post_alarm_effect">Animation (after end)</label>
-							<select class="form-control" id="post_alarm_effect"></select>
-						</div>
-					</div>
-				</div>
+              <label for="post_alarm_effect">Animation (after end)</label>
+              <select class="form-control" id="post_alarm_effect"></select>
+            </div>
+          </div>
+        </div>
 
-				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
-						<h4 class="panel-title">Sunset</h4>
-					</div>
-					<div id="sunsetCollapse" class="panel-collapse collapse">
-						<div class="panel-body">
-							<label class="switch">
-								<input id="sunset_enabled" type="checkbox">
-								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
-							</label>
+        <div class="panel panel-default">
+          <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#sunsetCollapse">
+            <h4 class="panel-title">Sunset</h4>
+          </div>
+          <div id="sunsetCollapse" class="panel-collapse collapse">
+            <div class="panel-body">
+              <label class="switch">
+                <input id="sunset_enabled" type="checkbox">
+                <div class="slider round"></div>
+                <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
+              </label>
 
-							<label for="sunset_duration">Duration</label>
-							<input id="sunset_duration" name="sunset_duration">
+              <label for="sunset_duration">Duration</label>
+              <input id="sunset_duration" name="sunset_duration">
 
-							<label for="sunset_offset">Delay</label>
-							<input id="sunset_offset" name="sunset_offset">
+              <label for="sunset_offset">Delay</label>
+              <input id="sunset_offset" name="sunset_offset">
 
-							<label for="sunset_effect">Animation</label>
-							<select class="form-control" id="sunset_effect"></select>
-						</div>
-					</div>
-				</div>
+              <label for="sunset_effect">Animation</label>
+              <select class="form-control" id="sunset_effect"></select>
+            </div>
+          </div>
+        </div>
 
-				<div class="panel panel-default">
-					<div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#settingsCollapse">
-						<h4 class="panel-title">Settings</h4>
-					</div>
-					<div id="settingsCollapse" class="panel-collapse collapse">
-						<div class="panel-body">
-							<label for="own_ip">Device IP</label>
-							<input type="text" class="form-control" id="own_ip" name="own_ip" readonly>
+        <div class="panel panel-default">
+          <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#settingsCollapse">
+            <h4 class="panel-title">Settings</h4>
+          </div>
+          <div id="settingsCollapse" class="panel-collapse collapse">
+            <div class="panel-body">
+              <label for="own_ip">Device IP</label>
+              <input type="text" class="form-control" id="own_ip" name="own_ip" readonly>
 
-							<label for="longitude">Longitude</label>
-							<input type="text" class="form-control" id="longitude" name="longitude">
+              <label for="longitude">Longitude</label>
+              <input type="text" class="form-control" id="longitude" name="longitude">
 
-							<label for="latitude">Latitude</label>
-							<input type="text" class="form-control" id="latitude" name="latitude">
+              <label for="latitude">Latitude</label>
+              <input type="text" class="form-control" id="latitude" name="latitude">
 
-							<label for="time_zone">Time zone</label>
-							<input id="time_zone" name="time_zone">
+              <label for="time_zone">Time zone</label>
+              <input id="time_zone" name="time_zone">
 
-							<label class="switch">
-								<input id="summer_time" type="checkbox">
-								<div class="slider round"></div>
-								<div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summer time</div>
-							</label>
+              <label class="switch">
+                <input id="summer_time" type="checkbox">
+                <div class="slider round"></div>
+                <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summer time</div>
+              </label>
 
-							<label for="startup_effect">Animation</label>
-							<select class="form-control" id="startup_effect"></select>
-						</div>
-					</div>
-				</div>
-			</div>
+              <label for="startup_effect">Animation</label>
+              <select class="form-control" id="startup_effect"></select>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
+      <button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
 
-		</div>
+    </div>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
-		<script src="index.js"></script>
-	</body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
+    <script src="index.js"></script>
+  </body>
 </html>

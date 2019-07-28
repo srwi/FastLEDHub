@@ -10,8 +10,7 @@ class ConfigClass
   public:
     // other
     String startup_effect = "";
-    String custom_color = "";
-    String custom_color2 = "";
+    String color = "";
     String current_effect = "";
     float speed = 0;
     uint8_t saturation = 255;

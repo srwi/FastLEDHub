@@ -7,10 +7,8 @@ bool ConfigClass::parseJSON(char* input)
 
   if(doc.containsKey("startup_effect"))
     startup_effect = doc["startup_effect"].as<String>();
-  if(doc.containsKey("custom_color"))
-    custom_color = doc["custom_color"].as<String>();
-  if(doc.containsKey("custom_color2"))
-    custom_color2 = doc["custom_color2"].as<String>();
+  if(doc.containsKey("color"))
+    color = doc["color"].as<String>();
   if(doc.containsKey("speed"))
     speed = doc["speed"];
   if(doc.containsKey("saturation"))
@@ -28,8 +26,7 @@ String ConfigClass::getJSON()
   IPAddress ip = WiFi.localIP();
   doc["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
   doc["startup_effect"] = startup_effect;
-  doc["custom_color"] = custom_color;
-  doc["custom_color2"] = custom_color2;
+  doc["color"] = color;
   doc["speed"] = speed;
   doc["saturation"] = saturation;
   // TODO: root["status"] = String(status);
