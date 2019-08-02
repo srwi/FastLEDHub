@@ -5,10 +5,7 @@ class AlternatingRainbow : public Animation
   public:
     using Animation::Animation;
 
-    void reset()
-    {
-      
-    }
+    void reset() {}
 
     void loop()
     {

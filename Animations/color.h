@@ -1,9 +1,5 @@
 #pragma once
 
-// #include "Animation.h"
-
-// class Animation;
-
 class Color : public Animation
 {
   public:

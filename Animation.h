@@ -4,8 +4,8 @@
 #include <LinkedList.h>
 
 #include "Config.h"
-#include "WebSocket.h"
 #include "Hardware.h"
+#include "WebSocket.h"
 
 enum AnimationStatus
 {
@@ -31,21 +31,18 @@ class Animation
     virtual void loop() = 0;
     virtual void reset() = 0;
 
-    static Animation* getCurrent();
-    static AnimationStatus getStatus();
     static void delay(uint16_t t);
-    static bool isDelaying();
 
   private:
     String name;
     
-    static Animation* current;
-    static AnimationStatus status;
-    static bool is_delaying;
     static Ticker delayTicker;
 };
 
 extern LinkedList<Animation*> animations;
+extern Animation* currentAnimation;
+extern AnimationStatus status;
+extern bool isDelaying;
 
 void registerAnimation(Animation* animation);
 void beginNextAnimation();

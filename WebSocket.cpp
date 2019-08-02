@@ -148,6 +148,6 @@ String byteArrayToString(uint8_t *bytes)
 void broadcastStatus()
 {
   // Send status as JSON
-  String msg = "{\n  \"status\": " + String((int)Animation::getStatus()) + ",\n  \"current_animation\": \"" + Animation::getCurrent()->getName() + "\"\n}";
+  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_animation\": \"" + currentAnimation->getName() + "\"\n}";
   webSocket.broadcastTXT(msg.c_str());
 }

@@ -99,8 +99,6 @@ function handle_json_data(data)
     $('#color_button').val(data.color);
     currentColor = data.color;
   }
-  if(data.hasOwnProperty('own_ip'))
-    own_ip.value = data.own_ip;
 }
 
 function update_buttons(status, animation)
@@ -153,7 +151,7 @@ function update_buttons(status, animation)
     }
     else
     {
-      $(this).removeClass('btn-success').removeClass('btn-warning');
+      $(this).removeClass('btn-success').removeClass('btn-warning').addClass('btn-default');
     }
   });
 }

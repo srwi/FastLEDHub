@@ -10,9 +10,8 @@
 class ConfigClass
 {
   public:
-    String startup_effect = "";
+    String startupAnimation = "";
     String color = "";
-    String current_effect = "";
     uint8_t speed = 128;
     uint8_t saturation = 255;
 

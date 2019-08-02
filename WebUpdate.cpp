@@ -52,27 +52,27 @@ void initWebUpdate()
   });
   WebServer.on("/stop", HTTP_GET, [&]()
   {
-    Animation::getCurrent()->stop();
+    currentAnimation->stop();
     WebServer.send(200, "text/plain", "Animation stopped.");
   });
   WebServer.on("/pause", HTTP_GET, [&]()
   {
-    Animation::getCurrent()->pause();
+    currentAnimation->pause();
     WebServer.send(200, "text/plain", "Animation paused.");
   });
   WebServer.on("/resume", HTTP_GET, [&]()
   {
-    Animation::getCurrent()->resume();
+    currentAnimation->resume();
     WebServer.send(200, "text/plain", "Animation resumed.");
   });
   WebServer.on("/toggle", HTTP_GET, [&]()
   {
-    Animation::getCurrent()->toggle();
+    currentAnimation->toggle();
     WebServer.send(200, "text/plain", "Animation toggled.");
   });
   WebServer.on("/restart", HTTP_GET, [&]()
   {
-    Animation::getCurrent()->restart();
+    currentAnimation->restart();
     WebServer.send(200, "text/plain", "Animation restarted.");
   });
   WebServer.on("/begin", HTTP_GET, [&]()

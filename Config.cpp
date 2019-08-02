@@ -5,16 +5,14 @@ bool ConfigClass::parseJSON(char* input)
   DynamicJsonDocument doc(2048);
   DeserializationError error = deserializeJson(doc, input);
 
-  if(doc.containsKey("startup_effect"))
-    startup_effect = doc["startup_effect"].as<String>();
+  if(doc.containsKey("startupAnimation"))
+    startupAnimation = doc["startupAnimation"].as<String>();
   if(doc.containsKey("color"))
     color = doc["color"].as<String>();
   if(doc.containsKey("speed"))
     speed = doc["speed"];
   if(doc.containsKey("saturation"))
     saturation = doc["saturation"];
-  if(doc.containsKey("current_effect"))
-    current_effect = doc["current_effect"].as<String>();
 
   return !error;
 }
@@ -24,13 +22,12 @@ String ConfigClass::getJSON()
   DynamicJsonDocument doc(2048);
 
   IPAddress ip = WiFi.localIP();
-  doc["own_ip"] = String(String(ip[0]) + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]));
-  doc["startup_effect"] = startup_effect;
+  doc["startupAnimation"] = startupAnimation;
   doc["color"] = color;
   doc["speed"] = speed;
   doc["saturation"] = saturation;
-  doc["status"] = String(Animation::getStatus());
-  doc["current_animation"] = Animation::getCurrent()->getName();
+  doc["status"] = String(status);
+  doc["currentAnimation"] = currentAnimation->getName();
   JsonArray a = doc.createNestedArray("animations");
   for(uint8_t i = 0; i < animations.size(); i++)
   {

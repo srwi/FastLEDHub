@@ -1,10 +1,10 @@
 #include "Animation.h"
 
-Animation* Animation::current;
-AnimationStatus Animation::status = STOPPED;
-LinkedList<Animation*> animations;
-bool Animation::is_delaying = false;
 Ticker Animation::delayTicker;
+LinkedList<Animation*> animations;
+Animation* currentAnimation;
+AnimationStatus status = STOPPED;
+bool isDelaying = false;
 
 Animation::Animation(String _name)
 {
@@ -18,7 +18,7 @@ void Animation::begin()
 
   reset();
   status = RUNNING;
-  current = this;
+  currentAnimation = this;
 
   broadcastStatus();
   Serial.println("Started '" + name + "'");
@@ -66,9 +66,9 @@ void Animation::pause()
 
 void Animation::toggle()
 {
-  if(status == RUNNING)
+  if(currentAnimation->getName() == name && status == RUNNING)
     pause();
-  else if(status == PAUSED)
+  else if(currentAnimation->getName() == name && status == PAUSED)
     resume();
   else
     begin();
@@ -79,25 +79,10 @@ String Animation::getName()
   return name;
 }
 
-Animation* Animation::getCurrent()
-{
-  return current;
-}
-
-AnimationStatus Animation::getStatus()
-{
-  return status;
-}
-
-bool Animation::isDelaying() 
-{
-  return is_delaying;
-}
-
 void Animation::delay(uint16_t t)
 {
-  is_delaying = true;
-  delayTicker.attach_ms(t * (255-Config.speed)/128, [&](){ is_delaying = false; });
+  isDelaying = true;
+  delayTicker.attach_ms(t * (255-Config.speed)/128, [&](){ isDelaying = false; });
 }
 
 void registerAnimation(Animation* animation)
@@ -126,7 +111,7 @@ void beginNextAnimation()
 {
   for(uint8_t i = 0; i < animations.size(); i++)
   {
-    if(animations.get(i)->getName() == Animation::getCurrent()->getName())
+    if(animations.get(i)->getName() == currentAnimation->getName())
     {
       uint8_t nextAnimationIndex = i + 1;
       if(nextAnimationIndex < animations.size())
