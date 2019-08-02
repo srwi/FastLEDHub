@@ -23,11 +23,11 @@
       <h1 style="text-align: center">Lightstrip Manager</h1>
 
       <div id="animationButtons">
-        <button type="button" class="btn btn-default color no-alpha" id="color_button">Color</button>
+        <button type="button" class="btn btn-default color no-alpha" id="colorButton">Color</button>
       </div>
 
-      <div class="speed_slider" id="speed"></div>
-      <div class="saturation_slider" id="saturation"></div>
+      <div class="speedSlider" id="speed"></div>
+      <div class="saturationSlider" id="saturation"></div>
 
       <div class="panel-group" id="accordion">
         <div class="panel panel-default">
@@ -37,27 +37,27 @@
           <div id="alarmCollapse" class="panel-collapse collapse">
             <div class="panel-body">
               <label class="switch">
-                <input id="alarm_enabled" type="checkbox">
+                <input id="alarmEnabled" type="checkbox">
                 <div class="slider round"></div>
                 <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
               </label>
 
-              <label for="alarm_timepicker_container">Zeit</label>
-              <div id="alarm_timepicker_container" class="input-group clockpicker" data-autoclose="true">
-                <input id="alarm_time" type="text" class="form-control" value="10:10">
+              <label for="alarmTimepickerContainer">Zeit</label>
+              <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
+                <input id="alarmTime" type="text" class="form-control" value="10:10">
                 <span class="input-group-addon">
                   <span class="glyphicon glyphicon-time"></span>
                 </span>
               </div>
 
-              <label for="alarm_duration">Duration</label>
-              <input id="alarm_duration" name="alarm_duration">
+              <label for="alarmDuration">Duration</label>
+              <input id="alarmDuration" name="alarmDuration">
 
-              <label for="alarm_animation">Animation</label>
-              <select class="form-control" id="alarm_animation"></select>
+              <label for="alarmAnimation">Animation</label>
+              <select class="form-control" id="alarmAnimation"></select>
 
-              <label for="post_alarm_animation">Animation (after end)</label>
-              <select class="form-control" id="post_alarm_animation"></select>
+              <label for="postAlarmAnimation">Animation (after end)</label>
+              <select class="form-control" id="postAlarmAnimation"></select>
             </div>
           </div>
         </div>
@@ -69,19 +69,19 @@
           <div id="sunsetCollapse" class="panel-collapse collapse">
             <div class="panel-body">
               <label class="switch">
-                <input id="sunset_enabled" type="checkbox">
+                <input id="sunsetEnabled" type="checkbox">
                 <div class="slider round"></div>
                 <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Enabled</div>
               </label>
 
-              <label for="sunset_duration">Duration</label>
-              <input id="sunset_duration" name="sunset_duration">
+              <label for="sunsetDuration">Duration</label>
+              <input id="sunsetDuration" name="sunsetDuration">
 
-              <label for="sunset_offset">Delay</label>
-              <input id="sunset_offset" name="sunset_offset">
+              <label for="sunsetOffset">Delay</label>
+              <input id="sunsetOffset" name="sunsetOffset">
 
-              <label for="sunset_animation">Animation</label>
-              <select class="form-control" id="sunset_animation"></select>
+              <label for="sunsetAnimation">Animation</label>
+              <select class="form-control" id="sunsetAnimation"></select>
             </div>
           </div>
         </div>
@@ -98,23 +98,23 @@
               <label for="latitude">Latitude</label>
               <input type="text" class="form-control" id="latitude" name="latitude">
 
-              <label for="time_zone">Time zone</label>
-              <input id="time_zone" name="time_zone">
+              <label for="timeZone">Time zone</label>
+              <input id="timeZone" name="timeZone">
 
               <label class="switch">
-                <input id="summer_time" type="checkbox">
+                <input id="summerTime" type="checkbox">
                 <div class="slider round"></div>
                 <div style="margin-left: 60px; margin-top: 3px; font-weight: normal;">Summer time</div>
               </label>
 
-              <label for="startup_animation">Animation</label>
-              <select class="form-control" id="startup_animation"></select>
+              <label for="startupAnimation">Animation</label>
+              <select class="form-control" id="startupAnimation"></select>
             </div>
           </div>
         </div>
       </div>
 
-      <button onClick="send_config();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
+      <button onClick="sendConfig();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
 
     </div>
 

@@ -50,8 +50,19 @@ void initWebUpdate()
   {
     ESP.restart();
   });
+  WebServer.on("/sunset", HTTP_GET, [&]()
+  {
+    startFade(SUNSET);
+    WebServer.send(200, "text/plain", "Starting sunset.");
+  });
+  WebServer.on("/alarm", HTTP_GET, [&]()
+  {
+    startFade(ALARM);
+    WebServer.send(200, "text/plain", "Starting alarm.");
+  });
   WebServer.on("/stop", HTTP_GET, [&]()
   {
+    stopFade();
     currentAnimation->stop();
     WebServer.send(200, "text/plain", "Animation stopped.");
   });

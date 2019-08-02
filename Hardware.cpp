@@ -90,27 +90,33 @@ uint16_t getPotiBrightness()
 
 void handleInput()
 {
-  // Adjust brightness calculation if needed
-  uint16_t potiBrightness = getPotiBrightness();
-
-  filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
-
-  // Only set brightness if it's not near the filtered brightness value which will lag behind
-  if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
+  if(!currentFade)
   {
-    brightness10 = (float)potiBrightness * potiBrightness / 1023;
+    // Adjust brightness calculation if needed
+    uint16_t potiBrightness = getPotiBrightness();
+
+    filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
+
+    // Only set brightness if it's not near the filtered brightness value which will lag behind
+    if(!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
+    {
+      brightness10 = (float)potiBrightness * potiBrightness / 1023;
+    } 
   }
 
   // Push button
   if(!digitalRead(BUTTON_PIN) && !buttonPushed)
   {
     // button pushed
-    // TODO: cycleEffect();
+    stopFade();
+    beginNextAnimation();
+
     buttonPushed = true;
   }
   else if(digitalRead(BUTTON_PIN) && buttonPushed)
   {
     // button released
+
     buttonPushed = false;
   }
 }

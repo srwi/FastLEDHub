@@ -1,6 +1,7 @@
 #include "WebSocket.h"
 
 WebSocketsServer webSocket = WebSocketsServer(81);
+uint8_t websocketConnectionCount = 0;
 bool liveDataHasChanged = false;
 
 void initWebsocket()
@@ -24,10 +25,12 @@ void handleWebsocket(uint8_t num, WStype_t type, uint8_t* payload, size_t length
         Config.save();
         liveDataHasChanged = false;
       }
+      websocketConnectionCount--;
       Serial.printf("[%u] Disconnected!\n", num);
     break;
     case WStype_CONNECTED:
     {
+      websocketConnectionCount++;
       IPAddress ip = webSocket.remoteIP(num);
       Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
     }
@@ -63,8 +66,9 @@ void handleWebsocketText(String text, uint8_t num)
 
   if(text.startsWith("toggle"))
   {
-    String effectName = text.substring(7);
-    getAnimation(effectName)->toggle();
+    String animation = text.substring(7);
+    stopFade();
+    getAnimation(animation)->toggle();
   }
   else if(text == "requesting_config")
   {

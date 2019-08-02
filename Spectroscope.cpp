@@ -5,7 +5,8 @@ CRGB color_1, color_2 = CRGB::Red;
 
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
-  // TODO: stop();
+  stopFade();
+  currentAnimation->stop();
   
   // Spectrum
   for(uint8_t i = 0; i < 16; i++)

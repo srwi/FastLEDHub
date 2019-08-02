@@ -9,7 +9,7 @@ connection.binaryType = 'arraybuffer';
 
 connection.onopen = function(e)
 {
-  send_text('requesting_config');
+  sendText('requesting_config');
 
   $('#connectingOverlayText').html('Waiting for response...');
   $('#connectButton').hide();
@@ -34,74 +34,74 @@ connection.onmessage = function(e)
   websocketReady = true;
   try
   {
-    handle_json_data(JSON.parse(e.data));
+    handleJsonData(JSON.parse(e.data));
 
     $('#connectingOverlayText').html('Success!');
     $('#connectingOverlay').fadeOut(140);
   } catch(f) {}
 };
 
-function handle_json_data(data)
+function handleJsonData(data)
 {
   if(data.hasOwnProperty('animations'))
   {
     data.animations.forEach(animation => {
       // Fill animation dropdowns
-      $('#alarm_animation').append($('<option>', { text: animation }));
-      $('#post_alarm_animation').append($('<option>', { text: animation }));
-      $('#sunset_animation').append($('<option>', { text: animation }));
-      $('#startup_animation').append($('<option>', { text: animation }));
+      $('#alarmAnimation').append($('<option>', { text: animation }));
+      $('#postAlarmAnimation').append($('<option>', { text: animation }));
+      $('#sunsetAnimation').append($('<option>', { text: animation }));
+      $('#startupAnimation').append($('<option>', { text: animation }));
 
       // Add buttons to button collection
       if(animation != 'Color' && animation != 'Sunrise')
-        $('<button type="button" class="btn btn-default" onClick="send_animation_button(\'' + animation + '\');">' + animation + '</button>').insertAfter($('#color_button'));
+        $('<button type="button" class="btn btn-default" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertAfter($('#colorButton'));
     })
   }
 
   // Update buttons list
-  if(data.hasOwnProperty('status') && data.hasOwnProperty('current_animation'))
-    update_buttons(data.status, data.current_animation);
+  if(data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
+    updateButtons(data.status, data.currentAnimation);
 
-  if(data.hasOwnProperty('alarm_animation'))
-    $('#alarm_animation').val(data.alarm_animation != '' ? data.alarm_animation : 'Color');
-  if(data.hasOwnProperty('post_alarm_animation'))
-    $('#post_alarm_animation').val(data.post_alarm_animation != '' ? data.post_alarm_animation : 'Color');
-  if(data.hasOwnProperty('sunset_animation'))
-    $('#sunset_animation').val(data.sunset_animation != '' ? data.sunset_animation : 'Color');
-  if(data.hasOwnProperty('startup_animation'))
-    $('#startup_animation').val(data.startup_animation != '' ? data.startup_animation : 'Color');
-  if(data.hasOwnProperty('time_zone'))
-    time_zone.value = data.time_zone;
-  if(data.hasOwnProperty('summer_time'))
-    $('#summer_time').prop('checked', data.summer_time);
+  if(data.hasOwnProperty('alarmAnimation'))
+    $('#alarmAnimation').val(data.alarmAnimation != '' ? data.alarmAnimation : 'Color');
+  if(data.hasOwnProperty('postAlarmAnimation'))
+    $('#postAlarmAnimation').val(data.postAlarmAnimation != '' ? data.postAlarmAnimation : 'Color');
+  if(data.hasOwnProperty('sunsetAnimation'))
+    $('#sunsetAnimation').val(data.sunsetAnimation != '' ? data.sunsetAnimation : 'Color');
+  if(data.hasOwnProperty('startupAnimation'))
+    $('#startupAnimation').val(data.startupAnimation != '' ? data.startupAnimation : 'Color');
+  if(data.hasOwnProperty('timeZone'))
+    timeZone.value = data.timeZone;
+  if(data.hasOwnProperty('summerTime'))
+    $('#summerTime').prop('checked', data.summerTime);
   if(data.hasOwnProperty('longitude'))
     longitude.value = data.longitude;
   if(data.hasOwnProperty('latitude'))
     latitude.value = data.latitude;
-  if(data.hasOwnProperty('alarm_enabled'))
-    $('#alarm_enabled').prop('checked', data.alarm_enabled);
-  if(data.hasOwnProperty('alarm_duration'))
-    alarm_duration.value = data.alarm_duration;
-  if(data.hasOwnProperty('alarm_hour') && data.hasOwnProperty('alarm_minute'))
-    $('#alarm_time').val((data.alarm_hour < 10 ? '0' + data.alarm_hour.toString() : data.alarm_hour) + ':' + (data.alarm_minute < 10 ? '0' + data.alarm_minute.toString() : data.alarm_minute));
-  if(data.hasOwnProperty('sunset_enabled'))
-    $('#sunset_enabled').prop('checked', data.sunset_enabled);
-  if(data.hasOwnProperty('sunset_duration'))
-    sunset_duration.value = data.sunset_duration;
-  if(data.hasOwnProperty('sunset_offset'))
-    sunset_offset.value = data.sunset_offset;
+  if(data.hasOwnProperty('alarmEnabled'))
+    $('#alarmEnabled').prop('checked', data.alarmEnabled);
+  if(data.hasOwnProperty('alarmDuration'))
+    alarmDuration.value = data.alarmDuration;
+  if(data.hasOwnProperty('alarmHour') && data.hasOwnProperty('alarmMinute'))
+    $('#alarmTime').val((data.alarmHour < 10 ? '0' + data.alarmHour.toString() : data.alarmHour) + ':' + (data.alarmMinute < 10 ? '0' + data.alarmMinute.toString() : data.alarmMinute));
+  if(data.hasOwnProperty('sunsetEnabled'))
+    $('#sunsetEnabled').prop('checked', data.sunsetEnabled);
+  if(data.hasOwnProperty('sunsetDuration'))
+    sunsetDuration.value = data.sunsetDuration;
+  if(data.hasOwnProperty('sunsetOffset'))
+    sunsetOffset.value = data.sunsetOffset;
   if(data.hasOwnProperty('speed'))
     document.getElementById('speed').noUiSlider.set(data.speed);
   if(data.hasOwnProperty('saturation'))
     document.getElementById('saturation').noUiSlider.set(data.saturation);
   if(data.hasOwnProperty('color'))
   {
-    $('#color_button').val(data.color);
+    $('#colorButton').val(data.color);
     currentColor = data.color;
   }
 }
 
-function update_buttons(status, animation)
+function updateButtons(status, animation)
 { 
   currentStatus = status;
   currentAnimation = animation;
@@ -156,35 +156,35 @@ function update_buttons(status, animation)
   });
 }
 
-function send_config()
+function sendConfig()
 {
   let config = new Object();
-  let time = $('#alarm_time').val().split(':');
+  let time = $('#alarmTime').val().split(':');
 
-  config.alarm_hour = time[0];
-  config.alarm_minute = time[1];
-  config.alarm_enabled = $('#alarm_enabled').is(':checked');
-  config.alarm_duration = alarm_duration.value;
-  config.alarm_animation = $('#alarm_animation').val();
-  config.post_alarm_animation = $('#post_alarm_animation').val();
-  config.time_zone = time_zone.value;
-  config.summer_time = $('#summer_time').is(':checked');
+  config.alarmHour = time[0];
+  config.alarmMinute = time[1];
+  config.alarmEnabled = $('#alarmEnabled').is(':checked');
+  config.alarmDuration = alarmDuration.value;
+  config.alarmAnimation = $('#alarmAnimation').val();
+  config.postAlarmAnimation = $('#postAlarmAnimation').val();
+  config.timeZone = timeZone.value;
+  config.summerTime = $('#summerTime').is(':checked');
   config.longitude = longitude.value;
   config.latitude = latitude.value;
-  config.sunset_enabled = $('#sunset_enabled').is(':checked');
-  config.sunset_duration = sunset_duration.value;
-  config.sunset_offset = sunset_offset.value;
-  config.sunset_animation = $('#sunset_animation').val();
-  config.startup_animation = $('#startup_animation').val();
+  config.sunsetEnabled = $('#sunsetEnabled').is(':checked');
+  config.sunsetDuration = sunsetDuration.value;
+  config.sunsetOffset = sunsetOffset.value;
+  config.sunsetAnimation = $('#sunsetAnimation').val();
+  config.startupAnimation = $('#startupAnimation').val();
   config.speed = document.getElementById('speed').noUiSlider.get();
   config.saturation = document.getElementById('saturation').noUiSlider.get();
   config.color = currentColor;
 
   let json = JSON.stringify(config, null, 2);
-  send_text(json);
+  sendText(json);
 }
 
-function send_bytes()
+function sendBytes()
 {
   if(connection.readyState == 1 && websocketReady)
   {
@@ -203,7 +203,7 @@ function send_bytes()
   }
 }
 
-function send_text(text)
+function sendText(text)
 {
   if(connection.readyState == 1)
   {
@@ -216,44 +216,44 @@ function send_text(text)
   }
 }
 
-function send_animation_button(animation)
+function sendAnimationButton(animation)
 {
-  send_text('toggle ' + animation);
-  update_buttons(-1, animation);
+  sendText('toggle ' + animation);
+  updateButtons(-1, animation);
 }
 
 
 // Inputs
 $('.clockpicker').clockpicker().find('input').change(function(){});
-$('input[name="alarm_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('input[name="time_zone"]').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
-$('input[name="summer_time"]').TouchSpin({ max: 1 });
-$('input[name="sunset_duration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('input[name="sunset_offset"]').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
+$('input[name="alarmDuration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+$('input[name="timeZone"]').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
+$('input[name="summerTime"]').TouchSpin({ max: 1 });
+$('input[name="sunsetDuration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+$('input[name="sunsetOffset"]').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
 // Color picker
-let $customColorPicker = $('#color_button').colorPicker({
+let $customColorPicker = $('#colorButton').colorPicker({
   opacity:false,
   preventFocus: true,
-  buildCallback: function($elm) { $('#color_button').on('click', function(e) { e.preventDefault && e.preventDefault(); }); },
+  buildCallback: function($elm) { $('#colorButton').on('click', function(e) { e.preventDefault && e.preventDefault(); }); },
   renderCallback: function($elm, toggled) {
     if(toggled === true)
     {
-      update_buttons(2, 'Color');
+      updateButtons(2, 'Color');
     }
     else if(toggled === false)
     {
       if(currentAnimation != 'Color' || currentStatus == 0)
       {
-        $('#color_button').css('background-color','#464545');
-        $('#color_button').css('color','white');
+        $('#colorButton').css('background-color','#464545');
+        $('#colorButton').css('color','white');
       }
     }
     let newColor = this.color.colors.HEX + ''; // dereference by appending ''
     if(currentColor != newColor || toggled === true)
     {
       let newColorRGB = this.color.colors.RND.rgb;
-      send_bytes(0, newColorRGB.r, newColorRGB.g, newColorRGB.b);
+      sendBytes(0, newColorRGB.r, newColorRGB.g, newColorRGB.b);
       currentColor = newColor;
     }
   }
@@ -263,13 +263,13 @@ let $customColorPicker = $('#color_button').colorPicker({
 let speedStepSlider = document.getElementById('speed');
 noUiSlider.create(speedStepSlider, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
 speedStepSlider.noUiSlider.on('update', function(values, handle) {
-  send_bytes(1, values[handle]);
+  sendBytes(1, values[handle]);
 });
 $('#speed .noUi-handle').html("Speed");
 let saturationStepSlider = document.getElementById('saturation');
 noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: {'min':110, 'max':255} });
 saturationStepSlider.noUiSlider.on('update', function(values, handle) {
-  send_bytes(5, values[handle]);
+  sendBytes(5, values[handle]);
 });
 $('#saturation .noUi-handle').html("Sat.");
 

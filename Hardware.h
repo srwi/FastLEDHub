@@ -6,6 +6,9 @@
 #define FASTLED_INTERNAL
 #include "FastLED.h"
 
+#include "Animation.h"
+#include "Fade.h"
+
 #define NUM_LEDS 6
 #define LIGHTSTRIP_PIN 5
 #define BUTTON_PIN 4

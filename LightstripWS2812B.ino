@@ -3,6 +3,7 @@
 
 #include "Animation.h"
 #include "Config.h"
+#include "Fade.h"
 #include "Hardware.h"
 #include "WebSocket.h"
 #include "WebUpdate.h"
@@ -26,6 +27,7 @@ void setup()
   initHardware();
   initWebsocket();
   initWebUpdate();
+  initTime();
 
   // Register animations here:
   registerAnimation(new AlternatingRainbow("Alternating Rainbow"));
@@ -48,6 +50,7 @@ void loop()
     currentAnimation->loop();
 
   handleESPEssentials();
+  handleFade();
   webSocket.loop();
   betterShow();
 }

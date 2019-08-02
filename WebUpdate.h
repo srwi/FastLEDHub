@@ -4,5 +4,6 @@
 #include <ESPEssentials.h>
 
 #include "Animation.h"
+#include "Fade.h"
 
 void initWebUpdate();

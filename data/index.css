@@ -14,7 +14,7 @@ button
 	outline: none !important;
 }
 
-.speed_slider, .saturation_slider
+.speedSlider, .saturationSlider
 {
 	margin: 28px 40px;
 }

@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 
+#include "Animation.h"
 #include "Hardware.h"
 
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical);
