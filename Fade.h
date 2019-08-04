@@ -1,13 +1,15 @@
-#ifndef _FADE_H
-#define _FADE_H
+#pragma once
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include <ESPEssentials.h>
 #include <Ticker.h>
+#include <TimeLib.h>
 
-#include "Hardware.h"
-#include "Time.h"
-#include "Config.h"
 #include "Animation.h"
+#include "Config.h"
+#include "Hardware.h"
+#include "WebSocket.h"
 
 enum FadeMode
 {
@@ -23,4 +25,7 @@ void startFade(FadeMode fadeMode);
 void stopFade();
 void fadeTick();
 
-#endif
+void initTime();
+void getSunsetTime();
+time_t getNtpTime();
+void sendNTPpacket(IPAddress &address);

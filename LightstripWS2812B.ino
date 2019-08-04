@@ -27,7 +27,7 @@ void setup()
   initHardware();
   initWebsocket();
   initWebUpdate();
-  initTime();
+  // initTime();
 
   // Register animations here:
   registerAnimation(new AlternatingRainbow("Alternating Rainbow"));

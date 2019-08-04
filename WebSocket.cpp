@@ -49,6 +49,8 @@ void handleWebsocket(uint8_t num, WStype_t type, uint8_t* payload, size_t length
     case WStype_FRAGMENT_BIN_START:
     case WStype_FRAGMENT:
     case WStype_FRAGMENT_FIN:
+    case WStype_PONG:
+    case WStype_PING:
     break;
   }
 }
