@@ -198,7 +198,8 @@ void getSunsetTime()
   // Save time as new fallbackTime in case there is no wifi connection next time
   Config.sunsetHour = hour;
   Config.sunsetMinute = minute;
-  //Config.save(); // TODO: crashes when saving config
+  Config.save(); // TODO: crashes when saving config
+  delay(1000); // TODO: Temporary hotfix for crash
 
   Serial.println("ok!");
 }
