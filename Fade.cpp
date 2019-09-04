@@ -20,12 +20,14 @@ void handleFade()
     return;
 
   // Check for alarm
-  if(Config.alarmEnabled && hour() == Config.alarmHour && minute() == Config.alarmMinute)
+  time_t n = time(nullptr);
+  struct tm *now = gmtime(&n);
+  if(n && Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
   {
     startFade(ALARM);
   }
   // Check for sunset
-  else if(Config.sunsetEnabled && hour() == Config.sunsetHour && minute() == Config.sunsetMinute)
+  else if (Config.sunsetEnabled && now->tm_hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
   {
     // Only start sunset if all leds are off
     if(brightness10 == 0)
@@ -115,10 +117,7 @@ void fadeTick()
 
 void initTime()
 {
-  Udp.begin(localPort);
-  setSyncProvider(getNtpTime);
-  setTime(hour(),minute(),0,1,1,11);
-  Serial.println("[Time] Current time: " + String(hour()) + ":" + String(minute()));
+  configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
 
   getSunsetTime();
   Serial.println("[Sunset] Sunset time will be: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
@@ -202,63 +201,4 @@ void getSunsetTime()
   delay(1000); // TODO: Temporary hotfix for crash
 
   Serial.println("ok!");
-}
-
-time_t getNtpTime()
-{
-  // Don't get time while websocket connection is open (Could cause connection to drop)
-  if(websocketConnectionCount > 0)
-  {
-    Serial.println("[Time] Won't get time because there are active websocket connections.");
-    // Return zero to skip this sync attempt
-    return 0;
-  }
-
-  Serial.print("[Time] Getting time from NTP server...");
-  time_t time = 0;
-  uint32_t beginWait_1 = millis();
-  while(time == 0 && millis() - beginWait_1 < 5000)
-  {
-    // Try to get time
-    while (Udp.parsePacket() > 0);
-    sendNTPpacket(timeServer);
-    uint32_t beginWait_2 = millis();
-    while (time == 0 && millis() - beginWait_2 < 1500)
-    {
-      int size = Udp.parsePacket();
-      if (size >= NTP_PACKET_SIZE)
-      {
-        Udp.read(packetBuffer, NTP_PACKET_SIZE);
-        unsigned long secsSince1900;
-        secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
-        secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
-        secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
-        secsSince1900 |= (unsigned long)packetBuffer[43];
-        time = secsSince1900 - 2208988800UL + ( Config.timeZone + Config.summerTime ) * SECS_PER_HOUR;
-      }
-    }
-  }
-
-  if(time)
-    Serial.println("ok!");
-  else
-    Serial.println("failed!");
-
-  return time;
-}
-
-void sendNTPpacket(IPAddress &address)
-{
-  memset(packetBuffer, 0, NTP_PACKET_SIZE);
-  packetBuffer[0] = 0b11100011;
-  packetBuffer[1] = 0;
-  packetBuffer[2] = 6;
-  packetBuffer[3] = 0xEC;
-  packetBuffer[12] = 49;
-  packetBuffer[13] = 0x4E;
-  packetBuffer[14] = 49;
-  packetBuffer[15] = 52;
-  Udp.beginPacket(address, 123);
-  Udp.write(packetBuffer, NTP_PACKET_SIZE);
-  Udp.endPacket();
 }

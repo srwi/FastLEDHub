@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
 #include <Ticker.h>
-#include <TimeLib.h>
+#include <time.h>
 
 #include "Animation.h"
 #include "Config.h"
@@ -24,8 +24,5 @@ void handleFade();
 void startFade(FadeMode fadeMode);
 void stopFade();
 void fadeTick();
-
 void initTime();
 void getSunsetTime();
-time_t getNtpTime();
-void sendNTPpacket(IPAddress &address);

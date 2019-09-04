@@ -16,7 +16,7 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
 
 ## How to use
 
-- Create a new animation `ExampleAnimation` file in `/Animations/`
+- Create a new animation `ExampleAnimation.h` file in `/Animations/`
     ```cpp
     #pragma once
 
@@ -37,9 +37,13 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
         }
     };
     ```
-- Register animation in `LightstripWS2812B.ino`
+- Include and register animation in `LightstripWS2812B.ino`
     ```cpp
-    registerAnimation(ExampleAnimation("Example animation name"));
+    #include "Animations/ExampleAnimation.h"
+
+    ...
+
+    registerAnimation(new ExampleAnimation("Example animation name"));
     ```
 - Upload sketch data folder `/data/`
 - Upload sketch
