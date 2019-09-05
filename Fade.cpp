@@ -6,12 +6,7 @@ uint16_t sunsetMaximumBrightness = 0;
 Ticker hasBeenStartedResetTicker;
 Ticker fadeTicker;
 bool hasBeenStarted = false;
-
-IPAddress timeServer(129, 6, 15, 28); // Alternative: 37.34.57.151
-unsigned int localPort = 2390; // Alternative: 8888
-WiFiUDP Udp;
-const int NTP_PACKET_SIZE = 48;
-byte packetBuffer[NTP_PACKET_SIZE];
+bool hasSunsetTime = false;
 
 void handleFade()
 {
@@ -19,10 +14,20 @@ void handleFade()
   if(currentFade || hasBeenStarted)
     return;
 
-  // Check for alarm
+  // Get current time
   time_t n = time(nullptr);
+  if (!n) return;
   struct tm *now = gmtime(&n);
-  if(n && Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
+
+  // Get sunset time if not yet done
+  if(!hasSunsetTime && now->tm_year != 70)
+  {
+    getSunset(now->tm_yday, Config.latitude, Config.longitude);
+    hasSunsetTime = true;
+  }
+
+  // Check for alarm
+  if(Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
   {
     startFade(ALARM);
   }
@@ -118,87 +123,62 @@ void fadeTick()
 void initTime()
 {
   configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
-
-  getSunsetTime();
-  Serial.println("[Sunset] Sunset time will be: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
 }
 
-void getSunsetTime()
+float rad(float deg)
 {
-  Serial.print("[Sunset] Getting sunset time...");
+  return PI * deg / 180;
+}
 
-  // Request data from sunrise-sunset.org API
-  WiFiClient client;
-  const char* host = "api.sunrise-sunset.org";
-  String url = "/json?lat=" + String(Config.latitude) + "&lng=" + String(Config.longitude) + "&date=today";
-  if (!client.connect(host, 80))
-  {
-    Serial.println("failed! Using fallback time.");
-    return;
-  }
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
-  unsigned long timeout = millis();
-  while (client.available() == 0)
-  {
-    if (millis() - timeout > 1500)
-    {
-      Serial.println("failed! Using fallback time.");
-      client.stop();
-      return;
-    }
-  }
+// https://quantitative-ecology.blogspot.com/2007/10/approximate-sunrise-and-sunset-times.html
+void getSunset(uint16_t d, float Lat, float Long)
+{
+  // This function is copied from:
+  // Teets, D.A. 2003. Predicting sunrise and sunset times.
+  // The College Mathematics Journal 34(4):317-321.
 
-  // Read result of GET request
-  String result;
-  while(client.available())
-    result += client.readStringUntil('\r');
+  // At the default location the estimates of sunrise and sunset are within
+  // seven minutes of the correct times (http://aa.usno.navy.mil/data/docs/RS_OneYear.php)
+  // with a mean of 2.4 minutes error.
 
-  // Crop actual JSON data
-  result = result.substring(result.indexOf('{'), result.lastIndexOf('}') + 1);
+  // Radius of the earth (km)
+  float R = 6378;
 
-  // Get sunset time from JSON data
-  DynamicJsonDocument doc(2048);
-  deserializeJson(doc, result);
-  String sunset = "";
-  if(doc.containsKey("results") && doc["results"].containsKey("sunset"))
-    sunset = doc["results"]["sunset"].as<String>();
+  // Radians between the xy-plane and the ecliptic plane
+  float epsilon = rad(23.45);
 
-  if(sunset == "")
-  {
-    Serial.println("failed! Using fallback time.");
-    return;
-  }
+  // Convert observer's latitude to radians
+  float L = rad(Lat);
 
-  // Generate sunset time from JSON and saved settings
-  int8_t hour = 0;
-  int16_t minute = 0;
-  hour = sunset.substring(0, sunset.indexOf(':')).toInt();
-  minute = sunset.substring(sunset.indexOf(':') + 1, sunset.lastIndexOf(':')).toInt();
-  hour += Config.timeZone;
-  hour += Config.summerTime;
-  minute += Config.sunsetOffset;
-  if(sunset.endsWith("PM"))
-    hour += 12;
-  while(minute >= 60)
-  {
-    minute -= 60;
-    hour++;
-  }
-  while(minute < 0)
-  {
-    minute += 60;
-    hour--;
-  }
-  while(hour >= 24)
-    hour -= 24;
-  while(hour < 0)
-    hour += 24;
+  // Calculate offset of sunrise based on longitude (min)
+  // If Long is negative, then the mod represents degrees West of
+  // a standard time meridian, so timing of sunrise and sunset should
+  // be made later.
+  float timezone = -4 * (abs(Long) % 15) * (Long >= 0 ? 1 : -1);
 
-  // Save time as new fallbackTime in case there is no wifi connection next time
-  Config.sunsetHour = hour;
-  Config.sunsetMinute = minute;
-  Config.save(); // TODO: crashes when saving config
-  delay(1000); // TODO: Temporary hotfix for crash
+  // The earth's mean distance from the sun (km)
+  float r = 149598000;
 
-  Serial.println("ok!");
+  float theta = 2 * PI / 365.25 * (d - 80);
+
+  float zs = r * sin(theta) * sin(epsilon);
+  float rp = sqrt(r*r - zs*zs);
+
+  float t0 = 1440 / (2 * PI) * acos((R - zs * sin(L)) / (rp * cos(L)));
+
+  // A kludge adjustment for the radius of the sun
+  float that = t0 + 5;
+
+  // Adjust "noon" for the fact that the earth's orbit is not circular:
+  float n = 720 - 10 * sin(4 * PI * (d - 80) / 365.25) + 8 * sin(2 * PI * d / 365.25);
+
+  // Now sunrise and sunset are:
+  // float sunrise = (n - that + timezone) / 60;
+  float sunset = (n + that + timezone) / 60;
+
+  Config.sunsetHour = (int)floor(sunset) % 24;
+  Config.sunsetMinute = (sunset - floor(sunset)) * 60;
+  Config.save();
+
+  Serial.println("[Sunset] Got sunset time: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
 }
