@@ -25,9 +25,13 @@ void setup()
   initESPEssentials("Lightstrip");
   Config.init();
   initHardware();
-  initWebsocket();
-  initWebUpdate();
-  initTime();
+
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    initWebsocket();
+    initWebUpdate();
+    initFade();
+  }
 
   // Register animations here:
   registerAnimation(new AlternatingRainbow("Alternating Rainbow"));

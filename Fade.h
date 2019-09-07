@@ -24,6 +24,6 @@ void handleFade();
 void startFade(FadeMode fadeMode);
 void stopFade();
 void fadeTick();
-void initTime();
+void initFade();
 void getSunset(uint16_t d, float Lat, float Long);
 float rad(float deg);

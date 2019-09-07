@@ -8,6 +8,11 @@ Ticker fadeTicker;
 bool hasBeenStarted = false;
 bool hasSunsetTime = false;
 
+void initFade()
+{
+  configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
+}
+
 void handleFade()
 {
   // Return if fade is running
@@ -118,11 +123,6 @@ void fadeTick()
   }
 
   brightness10 = fadeBrightness;
-}
-
-void initTime()
-{
-  configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
 }
 
 float rad(float deg)
