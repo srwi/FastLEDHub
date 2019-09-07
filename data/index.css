@@ -9,9 +9,9 @@ label
 	margin-top: 16px;
 }
 
-button
+.btn:focus
 {
-	outline: none !important;
+	box-shadow: none !important;
 }
 
 .speedSlider, .saturationSlider
@@ -41,21 +41,6 @@ button
 	max-width: 450px;
 }
 
-#accordion .panel-default
-{
-	margin-bottom: 20px;
-}
-
-#accordion .panel-body
-{
-	padding-top: 0px;
-}
-
-#accordion .panel-heading
-{
-	cursor: pointer;
-}
-
 #animationButtons
 {
 	text-align: center;
@@ -65,6 +50,17 @@ button
 #animationButtons button
 {
 	margin: 6px;
+	padding: 10px 15px;
+}
+
+body .card
+{
+	margin-bottom: 20px;
+}
+
+body .card-header
+{
+	padding: 0.6rem 1.25rem;
 }
 
 body .cp-disp
@@ -144,28 +140,44 @@ body .noUi-active
   box-shadow: none;
 }
 
-body .form-control
+body .custom-select
 {
 	background-color: #222;
 	color: white;
 }
 
-body .form-control[readonly]
+body .custom-select[readonly]
 {
 	background-color: #222;
 	color: #585858;
 }
 
+body .custom-select[disabled]
+{
+	background-color: #222;
+}
+
 body input, body textarea
 {
-    background-color: #151515;
-    color: white;
+    background-color: #222 !important;
+    color: white !important;
+}
+
+body .input-group
+{
+	background-color: #464545;
+	border-radius: 4px;
+}
+
+body .input-group-addon
+{
+	padding: 0px 10px;
+	margin: auto;
 }
 
 body .form-control
 {
-	background-color: #222;
-	color: white;
+	border-width: 0px !important;
 }
 
 body .clockpicker-popover .popover-title,
@@ -180,70 +192,7 @@ body .clockpicker-plate
 	border: 1px solid #464545;
 }
 
-.switch
+.custom-control-label::before
 {
-    margin-top: 20px;
-    margin-bottom: 0;
-    position: relative;
-    display: block;
-    width: 47px;
-    height: 26px;
-}
-
-.switch input
-{
-	display:none;
-}
-
-.slider
-{
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
 	background-color: #222;
-	-webkit-transition: .4s;
-	transition: .4s;
-}
-
-.slider:before
-{
-	position: absolute;
-	content: "";
-	height: 18px;
-	width: 18px;
-	left: 4px;
-	bottom: 4px;
-	background-color: white;
-	-webkit-transition: .4s;
-	transition: .4s;
-}
-
-input:checked + .slider
-{
-	background-color: #375a7f;
-}
-
-input:focus + .slider
-{
-	box-shadow: 0 0 1px #375a7f;
-}
-
-input:checked + .slider:before
-{
-	-webkit-transform: translateX(21px);
-	-ms-transform: translateX(21px);
-	transform: translateX(21px);
-}
-
-.slider.round
-{
-	border-radius: 34px;
-}
-
-.slider.round:before
-{
-	border-radius: 50%;
 }

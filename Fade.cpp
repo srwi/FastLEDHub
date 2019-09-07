@@ -3,8 +3,8 @@
 FadeMode currentFade = NONE;
 uint16_t fadeBrightness = 0;
 uint16_t sunsetMaximumBrightness = 0;
-Ticker hasBeenStartedResetTicker;
 Ticker fadeTicker;
+Ticker hasBeenStartedResetTicker;
 bool hasBeenStarted = false;
 bool hasSunsetTime = false;
 

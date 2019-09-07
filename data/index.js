@@ -54,7 +54,7 @@ function handleJsonData(data)
 
       // Add buttons to button collection
       if(animation != 'Color' && animation != 'Sunrise')
-        $('<button type="button" class="btn btn-default" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertAfter($('#colorButton'));
+        $('<button type="button" class="btn btn-secondary" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertAfter($('#colorButton'));
     })
   }
 
@@ -69,7 +69,11 @@ function handleJsonData(data)
   if(data.hasOwnProperty('sunsetAnimation'))
     $('#sunsetAnimation').val(data.sunsetAnimation != '' ? data.sunsetAnimation : 'Color');
   if(data.hasOwnProperty('startupAnimation'))
+  {
     $('#startupAnimation').val(data.startupAnimation != '' ? data.startupAnimation : 'Color');
+    $('#useStartupAnimation').prop('checked', data.startupAnimation != '')
+    $('#startupAnimation').prop('disabled', data.startupAnimation == '')
+  }
   if(data.hasOwnProperty('timeZone'))
     timeZone.value = data.timeZone;
   if(data.hasOwnProperty('summerTime'))
@@ -102,7 +106,7 @@ function handleJsonData(data)
 }
 
 function updateButtons(status, animation)
-{ 
+{
   currentStatus = status;
   currentAnimation = animation;
 
@@ -151,7 +155,7 @@ function updateButtons(status, animation)
     }
     else
     {
-      $(this).removeClass('btn-success').removeClass('btn-warning').addClass('btn-default');
+      $(this).removeClass('btn-success').removeClass('btn-warning').addClass('btn-secondary');
     }
   });
 }
@@ -175,7 +179,7 @@ function sendConfig()
   config.sunsetDuration = sunsetDuration.value;
   config.sunsetOffset = sunsetOffset.value;
   config.sunsetAnimation = $('#sunsetAnimation').val();
-  config.startupAnimation = $('#startupAnimation').val();
+  config.startupAnimation = $('#useStartupAnimation').is(':checked') ? $('#startupAnimation').val() : '';
   config.speed = document.getElementById('speed').noUiSlider.get();
   config.saturation = document.getElementById('saturation').noUiSlider.get();
   config.color = currentColor;
