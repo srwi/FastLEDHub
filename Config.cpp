@@ -1,53 +1,53 @@
 #include "Config.h"
 
-bool ConfigClass::parseJSON(char* input)
+bool ConfigClass::parseJSON(char *input)
 {
   DynamicJsonDocument doc(2048);
   DeserializationError error = deserializeJson(doc, input);
 
   // Time
-  if(doc.containsKey("timeZone"))
+  if (doc.containsKey("timeZone"))
     timeZone = doc["timeZone"];
-  if(doc.containsKey("summerTime"))
+  if (doc.containsKey("summerTime"))
     summerTime = doc["summerTime"];
-  if(doc.containsKey("longitude"))
+  if (doc.containsKey("longitude"))
     longitude = doc["longitude"];
-  if(doc.containsKey("latitude"))
+  if (doc.containsKey("latitude"))
     latitude = doc["latitude"];
   // Alarm
-  if(doc.containsKey("alarmEnabled"))
+  if (doc.containsKey("alarmEnabled"))
     alarmEnabled = doc["alarmEnabled"];
-  if(doc.containsKey("alarmDuration"))
+  if (doc.containsKey("alarmDuration"))
     alarmDuration = doc["alarmDuration"];
-  if(doc.containsKey("alarmHour"))
+  if (doc.containsKey("alarmHour"))
     alarmHour = doc["alarmHour"];
-  if(doc.containsKey("alarmMinute"))
+  if (doc.containsKey("alarmMinute"))
     alarmMinute = doc["alarmMinute"];
-  if(doc.containsKey("alarmAnimation"))
+  if (doc.containsKey("alarmAnimation"))
     alarmAnimation = doc["alarmAnimation"].as<String>();
-  if(doc.containsKey("postAlarmAnimation"))
+  if (doc.containsKey("postAlarmAnimation"))
     postAlarmAnimation = doc["postAlarmAnimation"].as<String>();
   // Sunset
-  if(doc.containsKey("sunsetEnabled"))
+  if (doc.containsKey("sunsetEnabled"))
     sunsetEnabled = doc["sunsetEnabled"];
-  if(doc.containsKey("sunsetHour"))
+  if (doc.containsKey("sunsetHour"))
     sunsetHour = doc["sunsetHour"];
-  if(doc.containsKey("sunsetMinute"))
+  if (doc.containsKey("sunsetMinute"))
     sunsetMinute = doc["sunsetMinute"];
-  if(doc.containsKey("sunsetDuration"))
+  if (doc.containsKey("sunsetDuration"))
     sunsetDuration = doc["sunsetDuration"];
-  if(doc.containsKey("sunsetOffset"))
+  if (doc.containsKey("sunsetOffset"))
     sunsetOffset = doc["sunsetOffset"];
-  if(doc.containsKey("sunsetAnimation"))
+  if (doc.containsKey("sunsetAnimation"))
     sunsetAnimation = doc["sunsetAnimation"].as<String>();
   // Other properties
-  if(doc.containsKey("startupAnimation"))
+  if (doc.containsKey("startupAnimation"))
     startupAnimation = doc["startupAnimation"].as<String>();
-  if(doc.containsKey("color"))
+  if (doc.containsKey("color"))
     color = doc["color"].as<String>();
-  if(doc.containsKey("speed"))
+  if (doc.containsKey("speed"))
     speed = doc["speed"];
-  if(doc.containsKey("saturation"))
+  if (doc.containsKey("saturation"))
     saturation = doc["saturation"];
 
   return !error;
@@ -84,7 +84,7 @@ String ConfigClass::getJSON()
   doc["status"] = String(status);
   doc["currentAnimation"] = currentAnimation ? currentAnimation->getName() : "";
   JsonArray a = doc.createNestedArray("animations");
-  for(uint8_t i = 0; i < animations.size(); i++)
+  for (uint8_t i = 0; i < animations.size(); i++)
   {
     a.add(animations.get(i)->getName());
   }
@@ -111,7 +111,7 @@ bool ConfigClass::init()
   }
 
   String content;
-  if(configFile.available())
+  if (configFile.available())
   {
     content = configFile.readString();
   }
@@ -125,7 +125,7 @@ bool ConfigClass::init()
 bool ConfigClass::save()
 {
   File configFile = SPIFFS.open(configFilename, "w");
-  if(!configFile)
+  if (!configFile)
   {
     Serial.println("[Config] Opening file " + configFilename + " for saving failed.");
     return false;

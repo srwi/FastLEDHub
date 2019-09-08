@@ -16,35 +16,35 @@ enum AnimationStatus
 
 class Animation
 {
-  public:
-    Animation() = default;
-    Animation(String _name);
+public:
+  Animation() = default;
+  Animation(String _name);
 
-    void begin();
-    void toggle();
-    void stop();
-    void pause();
-    void restart();
-    void resume();
-    String getName();
+  void begin();
+  void toggle();
+  void stop();
+  void pause();
+  void restart();
+  void resume();
+  String getName();
 
-    virtual void loop() = 0;
-    virtual void reset() = 0;
+  virtual void loop() = 0;
+  virtual void reset() = 0;
 
-    static void delay(uint16_t t);
+  static void delay(uint16_t t);
 
-  private:
-    String name;
+private:
+  String name;
 
-    static Ticker delayTicker;
+  static Ticker delayTicker;
 };
 
-extern LinkedList<Animation*> animations;
-extern Animation* currentAnimation;
+extern LinkedList<Animation *> animations;
+extern Animation *currentAnimation;
 extern AnimationStatus status;
 extern bool isDelaying;
 
-void registerAnimation(Animation* animation);
+void registerAnimation(Animation *animation);
 void beginNextAnimation();
-Animation* getAnimation(String name);
-Animation* getAnimation(uint8_t i);
+Animation *getAnimation(String name);
+Animation *getAnimation(uint8_t i);

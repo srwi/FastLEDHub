@@ -1,26 +1,21 @@
-html, body
-{
+html, body {
 	height: 100%;
 	background-color: black !important;
 }
 
-label
-{
+label {
 	margin-top: 16px;
 }
 
-.btn:focus
-{
+.btn:focus {
 	box-shadow: none !important;
 }
 
-.speedSlider, .saturationSlider
-{
+.speedSlider, .saturationSlider {
 	margin: 28px 40px;
 }
 
-#connectingOverlay
-{
+#connectingOverlay {
 	opacity: 1;
 	background: black;
 	color: white;
@@ -34,49 +29,41 @@ label
 	text-align: center;
 }
 
-#wrapper
-{
+#wrapper {
 	margin: auto;
 	padding: 20px;
 	max-width: 450px;
 }
 
-#animationButtons
-{
+#animationButtons {
 	text-align: center;
 	margin-top: 20px;
 }
 
-#animationButtons button
-{
+#animationButtons button {
 	margin: 6px;
 	padding: 10px 15px;
 }
 
-body .card
-{
+body .card {
 	margin-bottom: 20px;
 }
 
-body .card-header
-{
+body .card-header {
 	padding: 0.6rem 1.25rem;
 }
 
-body .cp-disp
-{
+body .cp-disp {
 	display: none;
 }
 
-body .cp-xy-slider
-{
+body .cp-xy-slider {
 	width: 230px;
 	height: 230px;
 	z-index: 9999;
 }
 
-body .cp-xy-cursor
-{
+body .cp-xy-cursor {
 	width: 16px;
 	height: 16px;
 	border-width: 2px;
@@ -84,115 +71,95 @@ body .cp-xy-cursor
 	z-index: 9999;
 }
 
-body .cp-z-slider
-{
+body .cp-z-slider {
 	height: 230px;
 	width: 40px;
 	z-index: 9999;
 }
 
-body .cp-z-cursor
-{
+body .cp-z-cursor {
 	border-width: 8px;
 	margin-top: -8px;
 	z-index: 9999;
 }
 
-body .cp-alpha
-{
+body .cp-alpha {
 	display: none;
 }
 
-body .cp-color-picker
-{
+body .cp-color-picker {
 	z-index: 9999;
 }
 
-body .noUi-target
-{
-  background-color: #222;
-  box-shadow: none;
-  border-width: 0px;
+body .noUi-target {
+	background-color: #222;
+	box-shadow: none;
+	border-width: 0px;
 }
 
-body .noUi-handle:after, body .noUi-handle:before
-{
-  display: none;
+body .noUi-handle:after, body .noUi-handle:before {
+	display: none;
 }
 
-body .noUi-horizontal .noUi-handle
-{
-  width: 80px;
-  left: -40px;
-  padding-top: 3px;
-  text-align: center;
+body .noUi-horizontal .noUi-handle {
+	width: 80px;
+	left: -40px;
+	padding-top: 3px;
+	text-align: center;
 }
 
-body .noUi-handle
-{
-  background-color: #464545;
-  box-shadow: none;
-  border-width: 0px;
+body .noUi-handle {
+	background-color: #464545;
+	box-shadow: none;
+	border-width: 0px;
 }
 
-body .noUi-active
-{
-  box-shadow: none;
+body .noUi-active {
+	box-shadow: none;
 }
 
-body .custom-select
-{
+body .custom-select {
 	background-color: #222;
 	color: white;
 }
 
-body .custom-select[readonly]
-{
+body .custom-select[readonly] {
 	background-color: #222;
 	color: #585858;
 }
 
-body .custom-select[disabled]
-{
+body .custom-select[disabled] {
 	background-color: #222;
 }
 
-body input, body textarea
-{
-    background-color: #222 !important;
-    color: white !important;
+body input, body textarea {
+	background-color: #222 !important;
+	color: white !important;
 }
 
-body .input-group
-{
+body .input-group {
 	background-color: #464545;
 	border-radius: 4px;
 }
 
-body .input-group-addon
-{
+body .input-group-addon {
 	padding: 0px 10px;
 	margin: auto;
 }
 
-body .form-control
-{
+body .form-control {
 	border-width: 0px !important;
 }
 
-body .clockpicker-popover .popover-title,
-body .clockpicker-popover .popover-content
-{
+body .clockpicker-popover .popover-title, body .clockpicker-popover .popover-content {
 	background: none;
 }
 
-body .clockpicker-plate
-{
+body .clockpicker-plate {
 	background-color: #222222;
 	border: 1px solid #464545;
 }
 
-.custom-control-label::before
-{
+.custom-control-label::before {
 	background-color: #222;
 }

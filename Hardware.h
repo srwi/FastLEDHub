@@ -15,8 +15,8 @@
 
 #define MAX_BETTER_HUE 1535
 
-extern CRGB strip[NUM_LEDS];
-extern CRGB brightness_corrected_strip[NUM_LEDS];
+extern CRGB leds[NUM_LEDS];
+extern CRGB brightness_corrected_leds[NUM_LEDS];
 extern int16_t brightness10;
 extern float filteredBrightness;
 

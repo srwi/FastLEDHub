@@ -1,8 +1,8 @@
 #include "Animation.h"
 
 Ticker Animation::delayTicker;
-LinkedList<Animation*> animations;
-Animation* currentAnimation;
+LinkedList<Animation *> animations;
+Animation *currentAnimation;
 AnimationStatus status = STOPPED;
 bool isDelaying = false;
 
@@ -26,7 +26,7 @@ void Animation::begin()
 
 void Animation::stop()
 {
-  if(status == STOPPED)
+  if (status == STOPPED)
     return;
 
   status = STOPPED;
@@ -39,7 +39,7 @@ void Animation::stop()
 
 void Animation::resume()
 {
-  if(status != PAUSED)
+  if (status != PAUSED)
     return;
 
   status = RUNNING;
@@ -82,39 +82,39 @@ String Animation::getName()
 void Animation::delay(uint16_t t)
 {
   isDelaying = true;
-  delayTicker.attach_ms(t * (255-Config.speed)/128, [&](){ isDelaying = false; });
+  delayTicker.attach_ms(t * (255 - Config.speed) / 128, [&]() { isDelaying = false; });
 }
 
-void registerAnimation(Animation* animation)
+void registerAnimation(Animation *animation)
 {
   animations.add(animation);
 }
 
-Animation* getAnimation(String name)
+Animation *getAnimation(String name)
 {
-  for(uint8_t i = 0; i < animations.size(); i++)
+  for (uint8_t i = 0; i < animations.size(); i++)
   {
-    Animation* a = animations.get(i);
-    if(a->getName() == name)
+    Animation *a = animations.get(i);
+    if (a->getName() == name)
       return a;
   }
 
   return NULL;
 }
 
-Animation* getAnimation(uint8_t i)
+Animation *getAnimation(uint8_t i)
 {
   return (animations.size() - 1 <= i) ? animations.get(i) : NULL;
 }
 
 void beginNextAnimation()
 {
-  for(uint8_t i = 0; i < animations.size(); i++)
+  for (uint8_t i = 0; i < animations.size(); i++)
   {
     if (currentAnimation && animations.get(i)->getName() == currentAnimation->getName())
     {
       uint8_t nextAnimationIndex = i + 1;
-      if(nextAnimationIndex < animations.size())
+      if (nextAnimationIndex < animations.size())
       {
         getAnimation(nextAnimationIndex)->begin();
       }

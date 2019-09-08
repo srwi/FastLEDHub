@@ -16,23 +16,24 @@ void initFade()
 void handleFade()
 {
   // Return if fade is running
-  if(currentFade || hasBeenStarted)
+  if (currentFade || hasBeenStarted)
     return;
 
   // Get current time
   time_t n = time(nullptr);
-  if (!n) return;
+  if (!n)
+    return;
   struct tm *now = gmtime(&n);
 
   // Get sunset time if not yet done
-  if(!hasSunsetTime && now->tm_year != 70)
+  if (!hasSunsetTime && now->tm_year != 70)
   {
     getSunset(now->tm_yday, Config.latitude, Config.longitude);
     hasSunsetTime = true;
   }
 
   // Check for alarm
-  if(Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
+  if (Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
   {
     startFade(ALARM);
   }
@@ -40,23 +41,23 @@ void handleFade()
   else if (Config.sunsetEnabled && now->tm_hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
   {
     // Only start sunset if all leds are off
-    if(brightness10 == 0)
+    if (brightness10 == 0)
     {
       startFade(SUNSET);
     }
     else // brightness10 > 0
     {
-      bool stripIsIlluminated = false;
-      for(uint16_t i = 0; i < NUM_LEDS; i++)
+      bool ledsIlluminated = false;
+      for (uint16_t i = 0; i < NUM_LEDS; i++)
       {
-        if(brightness_corrected_strip[i] != CRGB(0,0,0))
+        if (brightness_corrected_leds[i] != CRGB(0, 0, 0))
         {
-          stripIsIlluminated = true;
+          ledsIlluminated = true;
           break;
         }
       }
 
-      if(!stripIsIlluminated)
+      if (!ledsIlluminated)
         startFade(SUNSET);
     }
   }
@@ -72,19 +73,19 @@ void startFade(FadeMode fadeMode)
 
   // Prevent starting fade multiple times
   hasBeenStarted = true;
-  hasBeenStartedResetTicker.attach(90, [&](){ hasBeenStarted = false; }); // TODO: Should only be called once?
+  hasBeenStartedResetTicker.attach(90, [&]() { hasBeenStarted = false; }); // TODO: Should only be called once?
 
-  if(fadeMode == ALARM)
+  if (fadeMode == ALARM)
   {
     getAnimation(Config.alarmAnimation)->begin();
-    fadeTicker.attach_ms(Config.alarmDuration*60*1000/1024, fadeTick);
+    fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1024, fadeTick);
     Serial.println("[Fade] Start fade 'Alarm'");
   }
-  else if(fadeMode == SUNSET)
+  else if (fadeMode == SUNSET)
   {
     getAnimation(Config.sunsetAnimation)->begin();
     sunsetMaximumBrightness = brightness10;
-    fadeTicker.attach_ms(Config.sunsetDuration*60*1000/sunsetMaximumBrightness, fadeTick);
+    fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, fadeTick);
     Serial.println("[Fade] Start fade 'Sunset'");
   }
 }
@@ -97,24 +98,24 @@ void stopFade()
 
 void fadeTick()
 {
-  if(status == PAUSED)
+  if (status == PAUSED)
     return;
 
-  if(currentFade == ALARM && fadeBrightness == 1023)
+  if (currentFade == ALARM && fadeBrightness == 1023)
   {
-    if(Config.postAlarmAnimation != Config.alarmAnimation)
+    if (Config.postAlarmAnimation != Config.alarmAnimation)
       getAnimation(Config.postAlarmAnimation)->begin();
     fadeTicker.detach();
     Serial.println("[Fade] End fade 'Alarm'");
   }
-  else if(currentFade == SUNSET && fadeBrightness == sunsetMaximumBrightness)
+  else if (currentFade == SUNSET && fadeBrightness == sunsetMaximumBrightness)
   {
     fadeTicker.detach();
     Serial.println("[Fade] End fade 'Sunset'");
   }
   else
   {
-    if(fadeBrightness < 1023)
+    if (fadeBrightness < 1023)
       fadeBrightness++;
     else
       fadeTicker.detach();
@@ -162,7 +163,7 @@ void getSunset(uint16_t d, float Lat, float Long)
   float theta = 2 * PI / 365.25 * (d - 80);
 
   float zs = r * sin(theta) * sin(epsilon);
-  float rp = sqrt(r*r - zs*zs);
+  float rp = sqrt(r * r - zs * zs);
 
   float t0 = 1440 / (2 * PI) * acos((R - zs * sin(L)) / (rp * cos(L)));
 

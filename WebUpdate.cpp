@@ -1,6 +1,6 @@
 #include "WebUpdate.h"
 
-const char* serverIndex = "<form method='POST' action='/handle_update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
+const char *serverIndex = "<form method='POST' action='/handle_update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
 
 void initWebUpdate()
 {
@@ -8,8 +8,7 @@ void initWebUpdate()
     WebServer.sendHeader("Connection", "close");
     WebServer.sendHeader("Access-Control-Allow-Origin", "*");
     WebServer.send(200, "text/plain", (Update.hasError())?"FAIL":"OK");
-    ESP.restart();
-  },[]() {
+    ESP.restart(); }, []() {
     HTTPUpload& upload = WebServer.upload();
     if(upload.status == UPLOAD_FILE_START){
       Serial.setDebugOutput(true);
@@ -39,29 +38,24 @@ void initWebUpdate()
       }
       Serial.setDebugOutput(false);
     }
-    yield();
-  });
+    yield(); });
   WebServer.on("/update", HTTP_GET, []() {
     WebServer.sendHeader("Connection", "close");
     WebServer.sendHeader("Access-Control-Allow-Origin", "*");
     WebServer.send(200, "text/html", serverIndex);
   });
-  WebServer.on("/reboot", HTTP_GET, [&]()
-  {
+  WebServer.on("/reboot", HTTP_GET, [&]() {
     ESP.restart();
   });
-  WebServer.on("/sunset", HTTP_GET, [&]()
-  {
+  WebServer.on("/sunset", HTTP_GET, [&]() {
     startFade(SUNSET);
     WebServer.send(200, "text/plain", "Starting sunset.");
   });
-  WebServer.on("/alarm", HTTP_GET, [&]()
-  {
+  WebServer.on("/alarm", HTTP_GET, [&]() {
     startFade(ALARM);
     WebServer.send(200, "text/plain", "Starting alarm.");
   });
-  WebServer.on("/stop", HTTP_GET, [&]()
-  {
+  WebServer.on("/stop", HTTP_GET, [&]() {
     stopFade();
     if (currentAnimation)
       currentAnimation->stop();
@@ -87,9 +81,8 @@ void initWebUpdate()
       currentAnimation->restart();
     WebServer.send(200, "text/plain", "Animation restarted.");
   });
-  WebServer.on("/begin", HTTP_GET, [&]()
-  {
-    if(WebServer.hasArg("animation"))
+  WebServer.on("/begin", HTTP_GET, [&]() {
+    if (WebServer.hasArg("animation"))
     {
       String animationName = String(WebServer.arg("animation"));
       WebServer.send(200, "text/plain", "Starting animation '" + animationName + "'...");
