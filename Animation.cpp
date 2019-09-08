@@ -104,7 +104,7 @@ Animation *getAnimation(String name)
 
 Animation *getAnimation(uint8_t i)
 {
-  return (animations.size() - 1 <= i) ? animations.get(i) : NULL;
+  return (i < animations.size()) ? animations.get(i) : NULL;
 }
 
 void beginNextAnimation()
