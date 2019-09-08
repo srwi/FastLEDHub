@@ -35,7 +35,7 @@ class Animation
 
   private:
     String name;
-    
+
     static Ticker delayTicker;
 };
 

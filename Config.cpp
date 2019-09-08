@@ -82,7 +82,7 @@ String ConfigClass::getJSON()
   doc["speed"] = speed;
   doc["saturation"] = saturation;
   doc["status"] = String(status);
-  doc["currentAnimation"] = currentAnimation->getName();
+  doc["currentAnimation"] = currentAnimation ? currentAnimation->getName() : "";
   JsonArray a = doc.createNestedArray("animations");
   for(uint8_t i = 0; i < animations.size(); i++)
   {

@@ -85,7 +85,7 @@ void handleWebsocketText(String text, uint8_t num)
 String rgbToHex(uint8_t r, uint8_t g, uint8_t b)
 {
   String output = "";
-  
+
   if(r == 0)
     output += "00";
   else
@@ -154,6 +154,6 @@ String byteArrayToString(uint8_t *bytes)
 void broadcastStatus()
 {
   // Send status as JSON
-  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_animation\": \"" + currentAnimation->getName() + "\"\n}";
+  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_animation\": \"" + (currentAnimation ? currentAnimation->getName() : "") + "\"\n}";
   webSocket.broadcastTXT(msg.c_str());
 }

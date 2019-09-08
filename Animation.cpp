@@ -66,9 +66,9 @@ void Animation::pause()
 
 void Animation::toggle()
 {
-  if(currentAnimation->getName() == name && status == RUNNING)
+  if (currentAnimation && currentAnimation->getName() == name && status == RUNNING)
     pause();
-  else if(currentAnimation->getName() == name && status == PAUSED)
+  else if (currentAnimation && currentAnimation->getName() == name && status == PAUSED)
     resume();
   else
     begin();
@@ -111,7 +111,7 @@ void beginNextAnimation()
 {
   for(uint8_t i = 0; i < animations.size(); i++)
   {
-    if(animations.get(i)->getName() == currentAnimation->getName())
+    if (currentAnimation && animations.get(i)->getName() == currentAnimation->getName())
     {
       uint8_t nextAnimationIndex = i + 1;
       if(nextAnimationIndex < animations.size())

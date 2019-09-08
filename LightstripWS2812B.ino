@@ -45,12 +45,14 @@ void setup()
   registerAnimation(new RbRainbow("RG Rainbow"));
   registerAnimation(new RgbRainbow("RGB Rainbow"));
 
-  getAnimation(Config.startupAnimation == "" ? "Color" : Config.startupAnimation)->begin();
+  //currentAnimation = getAnimation("Color");
+  if (Config.startupAnimation != "")
+    getAnimation(Config.startupAnimation)->begin();
 }
 
 void loop()
 {
-  if(!isDelaying && status == RUNNING)
+  if(!isDelaying && status == RUNNING && currentAnimation)
     currentAnimation->loop();
 
   handleESPEssentials();

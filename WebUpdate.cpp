@@ -63,27 +63,28 @@ void initWebUpdate()
   WebServer.on("/stop", HTTP_GET, [&]()
   {
     stopFade();
-    currentAnimation->stop();
+    if (currentAnimation)
+      currentAnimation->stop();
     WebServer.send(200, "text/plain", "Animation stopped.");
   });
-  WebServer.on("/pause", HTTP_GET, [&]()
-  {
-    currentAnimation->pause();
+  WebServer.on("/pause", HTTP_GET, [&]() {
+    if (currentAnimation)
+      currentAnimation->pause();
     WebServer.send(200, "text/plain", "Animation paused.");
   });
-  WebServer.on("/resume", HTTP_GET, [&]()
-  {
-    currentAnimation->resume();
+  WebServer.on("/resume", HTTP_GET, [&]() {
+    if (currentAnimation)
+      currentAnimation->resume();
     WebServer.send(200, "text/plain", "Animation resumed.");
   });
-  WebServer.on("/toggle", HTTP_GET, [&]()
-  {
-    currentAnimation->toggle();
+  WebServer.on("/toggle", HTTP_GET, [&]() {
+    if (currentAnimation)
+      currentAnimation->toggle();
     WebServer.send(200, "text/plain", "Animation toggled.");
   });
-  WebServer.on("/restart", HTTP_GET, [&]()
-  {
-    currentAnimation->restart();
+  WebServer.on("/restart", HTTP_GET, [&]() {
+    if (currentAnimation)
+      currentAnimation->restart();
     WebServer.send(200, "text/plain", "Animation restarted.");
   });
   WebServer.on("/begin", HTTP_GET, [&]()
