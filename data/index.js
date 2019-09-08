@@ -47,13 +47,9 @@ function handleJsonData(data) {
 
       // Add buttons to button collection
       if (animation != 'Color' && animation != 'Sunrise')
-        $('<button type="button" class="btn btn-secondary" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertAfter($('#colorButton'));
+        $('<button type="button" class="btn btn-secondary" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertBefore($('#stopButton'));
     })
   }
-
-  // Update buttons list
-  if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
-    updateButtons(data.status, data.currentAnimation);
 
   if (data.hasOwnProperty('alarmAnimation'))
     $('#alarmAnimation').val(data.alarmAnimation != '' ? data.alarmAnimation : 'Color');
@@ -94,6 +90,10 @@ function handleJsonData(data) {
     $('#colorButton').val(data.color);
     currentColor = data.color;
   }
+
+  // Update buttons list
+  if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
+    updateButtons(data.status, data.currentAnimation);
 }
 
 function updateButtons(status, animation) {
@@ -101,44 +101,35 @@ function updateButtons(status, animation) {
   currentAnimation = animation;
 
   // Cycle through all animation buttons and change class/style accordingly
-  $('#animationButtons button').each(function () {
-    if ($(this).text() == animation) {
-      if (animation == 'Color') {
-        if (status == 2) // Running
-        {
+  $('#animationButtons button:not(:last-child)').each(function () {
+    if (currentAnimation == $(this).text()) {
+      if (currentStatus == 2) {
+        // Running
+        if ($(this).text() == 'Color') {
           let colorInstance = $customColorPicker.colorPicker.color;
           let colors = colorInstance.colors;
           colors.HEX = currentColor;
           colorInstance.setColor(null, 'HEX');
-          $(this).val('#' + currentColor).css({ 'background-color': '#' + colors.HEX, 'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd' });
-        }
-      }
-      else if (status == 1) // Paused
-      {
-        $(this).attr('class', 'btn btn-warning');
-      }
-      else if (status == 2) // Running
-      {
-        $(this).attr('class', 'btn btn-success');
-      }
-      else if (status == -1) // Toggle
-      {
-        if ($(this).hasClass('btn-success')) {
-          currentStatus = 1;
-          $(this).addClass('btn-warning').removeClass('btn-success');
+          $(this).val('#' + currentColor).css({
+            'background-color': '#' + colors.HEX,
+            'border-color': '#' + colors.HEX,
+            'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd'
+          });
         }
         else {
-          currentStatus = 2;
-          $(this).addClass('btn-success').removeClass('btn-warning');
+          $(this).attr('class', 'btn btn-success');
         }
       }
-    }
-    else if ($(this).text() == 'Color') {
-      $(this).css('background-color', '#464545');
-      $(this).css('color', 'white');
+      else if (currentStatus == 1) {
+        // Paused
+        $(this).attr('class', 'btn btn-warning');
+      }
     }
     else {
-      $(this).removeClass('btn-success').removeClass('btn-warning').addClass('btn-secondary');
+      $(this).attr('class', 'btn btn-secondary');
+      $(this).css('background-color', '');
+      $(this).css('border-color', '');
+      $(this).css('color', '');
     }
   });
 }
@@ -197,7 +188,6 @@ function sendText(text) {
 
 function sendAnimationButton(animation) {
   sendText('toggle ' + animation);
-  updateButtons(-1, animation);
 }
 
 
@@ -220,8 +210,9 @@ let $customColorPicker = $('#colorButton').colorPicker({
     }
     else if (toggled === false) {
       if (currentAnimation != 'Color' || currentStatus == 0) {
-        $('#colorButton').css('background-color', '#464545');
-        $('#colorButton').css('color', 'white');
+        $('#colorButton').css('background-color', '');
+        $('#colorButton').css('border-color', '');
+        $('#colorButton').css('color', '');
       }
     }
     let newColor = this.color.colors.HEX + ''; // dereference by appending ''

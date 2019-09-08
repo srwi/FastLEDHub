@@ -16,13 +16,14 @@
 #define MAX_BETTER_HUE 1535
 
 extern CRGB leds[NUM_LEDS];
-extern CRGB brightness_corrected_leds[NUM_LEDS];
+extern CRGB brightnessCorrectedLeds[NUM_LEDS];
 extern int16_t brightness10;
 extern float filteredBrightness;
 
 void initHardware();
 void showshow();
 void betterShow(int16_t newBrightness = -1);
+void betterClear();
 CRGB betterHue(uint16_t fract1535, int16_t sat = -1, uint8_t val = 255);
 uint16_t getPotiBrightness();
 void handleInput();

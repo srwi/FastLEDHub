@@ -13,8 +13,7 @@ Animation::Animation(String _name)
 
 void Animation::begin()
 {
-  FastLED.clear();
-  betterShow();
+  betterClear();
 
   reset();
   status = RUNNING;
@@ -30,8 +29,8 @@ void Animation::stop()
     return;
 
   status = STOPPED;
-  FastLED.clear();
-  betterShow();
+  betterClear();
+  currentAnimation = NULL;
 
   broadcastStatus();
   Serial.println("Stopped '" + name + "'");

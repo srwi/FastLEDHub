@@ -72,6 +72,11 @@ void handleWebsocketText(String text, uint8_t num)
     stopFade();
     getAnimation(animation)->toggle();
   }
+  else if (text == "stop")
+  {
+    if (currentAnimation)
+      currentAnimation->stop();
+  }
   else if (text == "requesting_config")
   {
     webSocket.sendTXT(num, Config.getJSON().c_str());
@@ -120,7 +125,8 @@ void handleWebsocketBinary(uint8_t *binary, uint8_t num)
     webSocket.sendTXT(num, String("ok").c_str());
     break;
   case 4: // Spectroscope data
-    //Animation::getCurrent()->stop();
+    if (currentAnimation)
+      currentAnimation->stop();
     for (uint16_t i = 0; i < NUM_LEDS; i++)
     {
       leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
@@ -154,6 +160,6 @@ String byteArrayToString(uint8_t *bytes)
 void broadcastStatus()
 {
   // Send status as JSON
-  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"current_animation\": \"" + (currentAnimation ? currentAnimation->getName() : "") + "\"\n}";
+  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"currentAnimation\": \"" + (currentAnimation ? currentAnimation->getName() : "") + "\"\n}";
   webSocket.broadcastTXT(msg.c_str());
 }

@@ -50,7 +50,7 @@ void handleFade()
       bool ledsIlluminated = false;
       for (uint16_t i = 0; i < NUM_LEDS; i++)
       {
-        if (brightness_corrected_leds[i] != CRGB(0, 0, 0))
+        if (brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
         {
           ledsIlluminated = true;
           break;

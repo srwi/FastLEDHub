@@ -31,11 +31,11 @@ void setup()
   }
 
   // Register animations here:
-  registerAnimation(new Rainbow("Rainbow"));
-  registerAnimation(new ColorBlend("Color Blend"));
   registerAnimation(new Color("Color"));
-  registerAnimation(new Fader("Fader"));
+  registerAnimation(new ColorBlend("Color Blend"));
   registerAnimation(new ColorRider("Color Rider"));
+  registerAnimation(new Fader("Fader"));
+  registerAnimation(new Rainbow("Rainbow"));
   registerAnimation(new RbWave("RB Wave"));
   registerAnimation(new RgbWave("RGB Wave"));
 

@@ -5,7 +5,7 @@ bool buttonPushed = false;
 float filteredBrightness = 255 / 2;
 int16_t brightness10 = 1023;
 CRGB leds[NUM_LEDS];
-CRGB brightness_corrected_leds[NUM_LEDS];
+CRGB brightnessCorrectedLeds[NUM_LEDS];
 
 void betterShow(int16_t bright10)
 {
@@ -18,37 +18,46 @@ void betterShow(int16_t bright10)
 
   for (uint16_t i = 0; i < NUM_LEDS; i++)
   {
-    brightness_corrected_leds[i] = leds[i];
+    brightnessCorrectedLeds[i] = leds[i];
     switch (fract2)
     {
     case 0:
-      brightness_corrected_leds[i].nscale8(bright8);
+      brightnessCorrectedLeds[i].nscale8(bright8);
       break;
     case 2:
       if (i % 2)
       {
-        brightness_corrected_leds[i].nscale8(bright8);
+        brightnessCorrectedLeds[i].nscale8(bright8);
       }
       else
       {
-        brightness_corrected_leds[i].nscale8(bright8 + 1);
+        brightnessCorrectedLeds[i].nscale8(bright8 + 1);
       }
       break;
     case 1:
     case 3:
       if (i % 4 < fract2)
       {
-        brightness_corrected_leds[i].nscale8(bright8 + 1);
+        brightnessCorrectedLeds[i].nscale8(bright8 + 1);
       }
       else
       {
-        brightness_corrected_leds[i].nscale8(bright8);
+        brightnessCorrectedLeds[i].nscale8(bright8);
       }
       break;
     }
   }
 
   FastLED.show();
+}
+
+void betterClear()
+{
+  for(uint8_t i = 0; i < NUM_LEDS; i++)
+  {
+    leds[i] = CRGB::Black;
+  }
+  betterShow();
 }
 
 CRGB betterHue(uint16_t fract1535, int16_t sat, uint8_t val)
@@ -70,7 +79,7 @@ void initHardware()
 {
   pinMode(BUTTON_PIN, INPUT);
   inputTicker.attach_ms(10, handleInput);
-  FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(brightness_corrected_leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(brightnessCorrectedLeds, NUM_LEDS);
   FastLED.setDither(0);
   FastLED.setTemperature(Tungsten100W);
   FastLED.setBrightness(255);

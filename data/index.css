@@ -7,6 +7,10 @@ label {
 	margin-top: 16px;
 }
 
+p {
+	color: #777;
+}
+
 .btn:focus {
 	box-shadow: none !important;
 }
@@ -43,6 +47,7 @@ label {
 #animationButtons button {
 	margin: 6px;
 	padding: 10px 15px;
+	transition: none !important;
 }
 
 body .card {
@@ -51,6 +56,7 @@ body .card {
 
 body .card-header {
 	padding: 0.6rem 1.25rem;
+	cursor: pointer;
 }
 
 body .cp-disp {
@@ -112,6 +118,7 @@ body .noUi-handle {
 	background-color: #464545;
 	box-shadow: none;
 	border-width: 0px;
+	cursor: pointer;
 }
 
 body .noUi-active {
