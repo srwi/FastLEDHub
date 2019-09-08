@@ -2,19 +2,18 @@
 
 class Color : public Animation
 {
-  public:
-    using Animation::Animation;
+public:
+  using Animation::Animation;
 
-    void reset() {}
-
-    void loop()
+  void reset()
+  {
+    for (int i = 0; i < NUM_LEDS; i++)
     {
-      for(int i=0; i<NUM_LEDS; i++)
-      {
-        strip[i] = strtol((const char *)&Config.color[0], NULL, 16);
-      }
-
-      // TODO: remove delay completely
-      delay(10);
+      leds[i] = strtol((const char *)&Config.color[0], NULL, 16);
     }
+  }
+
+  void loop()
+  {
+  }
 };

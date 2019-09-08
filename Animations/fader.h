@@ -1,25 +1,26 @@
 #pragma once
 
-class ColorFader : public Animation
+class Fader : public Animation
 {
-  public:
-    using Animation::Animation;
+public:
+  using Animation::Animation;
 
-    uint16_t hue1535 = 0;
+  void reset()
+  {
+    hue = 0;
+  }
 
-    void reset()
-    {
-      hue1535 = 0;
-    }
+  void loop()
+  {
+    if (hue > MAX_BETTER_HUE)
+      hue = 0;
 
-    void loop()
-    {
-      if(hue1535 > 1535)
-        hue1535 = 0;
+    fill_solid(leds, NUM_LEDS, betterHue(hue, Config.saturation));
+    hue++;
 
-      fill_solid(strip, NUM_LEDS, betterHue(hue1535, Config.saturation));
-      hue1535++;
+    delay(15);
+  }
 
-      delay(50);
-    }
+private:
+  uint16_t hue = 0;
 };

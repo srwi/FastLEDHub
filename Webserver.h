@@ -6,4 +6,4 @@
 #include "Animation.h"
 #include "Fade.h"
 
-void initWebUpdate();
+void initWebserverCommands();
