@@ -2,7 +2,7 @@
 
 Ticker inputTicker;
 bool buttonPushed = false;
-float filteredBrightness = 255 / 2;
+float filteredBrightness = 128;
 int16_t brightness10 = 1023;
 CRGB leds[NUM_LEDS];
 CRGB brightnessCorrectedLeds[NUM_LEDS];
@@ -12,9 +12,9 @@ void betterShow(int16_t bright10)
   if (bright10 != -1)
     brightness10 = bright10;
 
-  int16_t gamma_corrected_brightness = round((float)brightness10 * brightness10 / 1023);
-  uint8_t bright8 = gamma_corrected_brightness / 4;
-  uint8_t fract2 = bright8 != 255 ? gamma_corrected_brightness % 4 : 0;
+  int16_t gammaCorrectedBrightness = round((float)brightness10 * brightness10 / 1023);
+  uint8_t bright8 = gammaCorrectedBrightness / 4;
+  uint8_t fract2 = bright8 != 255 ? gammaCorrectedBrightness % 4 : 0;
 
   for (uint16_t i = 0; i < NUM_LEDS; i++)
   {
