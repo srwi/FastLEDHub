@@ -10,8 +10,8 @@ connection.binaryType = 'arraybuffer';
 connection.onopen = function (e) {
   sendText('requesting_config');
 
-  $('#connectingOverlayText').html('Waiting for response...');
-  $('#connectButton').hide();
+  connectingOverlayText.innerHTML = 'Waiting for response...';
+  refreshButton.style.display = 'none';
 };
 
 connection.onerror = function (e) {
@@ -19,9 +19,9 @@ connection.onerror = function (e) {
 };
 
 connection.onclose = function (e) {
-  $('#connectingOverlayText').html('Connection interrupted.');
-  $('#refreshButton').show();
-  $('#connectingOverlay').fadeIn(140);
+  connectingOverlayText.innerHTML = 'Connection interrupted.';
+  refreshButton.style.display = '';
+  connectingOverlay.style.display = '';
 };
 
 connection.onmessage = function (e) {
@@ -31,63 +31,68 @@ connection.onmessage = function (e) {
   try {
     handleJsonData(JSON.parse(e.data));
 
-    $('#connectingOverlayText').html('Success!');
-    $('#connectingOverlay').fadeOut(140);
-  } catch (f) { }
+    connectingOverlayText.innerHTML = 'Success!';
+    connectingOverlay.style.display = 'none';
+  } catch (e) { }
 };
 
 function handleJsonData(data) {
   if (data.hasOwnProperty('animations')) {
     data.animations.forEach(animation => {
       // Fill animation dropdowns
-      $('#alarmAnimation').append($('<option>', { text: animation }));
-      $('#postAlarmAnimation').append($('<option>', { text: animation }));
-      $('#sunsetAnimation').append($('<option>', { text: animation }));
-      $('#startupAnimation').append($('<option>', { text: animation }));
+      alarmAnimation.add(new Option(animation));
+      postAlarmAnimation.add(new Option(animation));
+      sunsetAnimation.add(new Option(animation));
+      startupAnimation.add(new Option(animation));
 
       // Add buttons to button collection
-      if (animation != 'Color' && animation != 'Sunrise')
-        $('<button type="button" class="btn btn-secondary" onClick="sendAnimationButton(\'' + animation + '\');">' + animation + '</button>').insertBefore($('#stopButton'));
+      if (animation != 'Color') {
+        let btn = document.createElement('button');
+        btn.classList.add('btn-secondary', 'btn');
+        btn.innerHTML = animation;
+        btn.onclick = () => { sendAnimationButton(animation); };
+        animationButtons.insertBefore(btn, stopButton);
+      }
     })
   }
 
   if (data.hasOwnProperty('alarmAnimation'))
-    $('#alarmAnimation').val(data.alarmAnimation != '' ? data.alarmAnimation : 'Color');
+    alarmAnimation.value = data.alarmAnimation || 'Color';
   if (data.hasOwnProperty('postAlarmAnimation'))
-    $('#postAlarmAnimation').val(data.postAlarmAnimation != '' ? data.postAlarmAnimation : 'Color');
+    postAlarmAnimation.value = data.postAlarmAnimation || 'Color';
   if (data.hasOwnProperty('sunsetAnimation'))
-    $('#sunsetAnimation').val(data.sunsetAnimation != '' ? data.sunsetAnimation : 'Color');
+    sunsetAnimation.value = data.sunsetAnimation || 'Color';
   if (data.hasOwnProperty('startupAnimation')) {
-    $('#startupAnimation').val(data.startupAnimation != '' ? data.startupAnimation : 'Color');
-    $('#useStartupAnimation').prop('checked', data.startupAnimation != '')
-    $('#startupAnimation').prop('disabled', data.startupAnimation == '')
+    startupAnimation.value = data.startupAnimation || 'Color';
+    useStartupAnimation.checked = data.startupAnimation != '';
+    startupAnimation.disabled = data.startupAnimation == '';
   }
   if (data.hasOwnProperty('timeZone'))
     timeZone.value = data.timeZone;
   if (data.hasOwnProperty('summerTime'))
-    $('#summerTime').prop('checked', data.summerTime);
+    summerTime.checked = data.summerTime;
   if (data.hasOwnProperty('longitude'))
     longitude.value = data.longitude;
   if (data.hasOwnProperty('latitude'))
     latitude.value = data.latitude;
   if (data.hasOwnProperty('alarmEnabled'))
-    $('#alarmEnabled').prop('checked', data.alarmEnabled);
+    alarmEnabled.checked = data.alarmEnabled;
   if (data.hasOwnProperty('alarmDuration'))
     alarmDuration.value = data.alarmDuration;
   if (data.hasOwnProperty('alarmHour') && data.hasOwnProperty('alarmMinute'))
-    $('#alarmTime').val((data.alarmHour < 10 ? '0' + data.alarmHour.toString() : data.alarmHour) + ':' + (data.alarmMinute < 10 ? '0' + data.alarmMinute.toString() : data.alarmMinute));
+    alarmTime.value = (data.alarmHour < 10 ? '0' + data.alarmHour.toString() : data.alarmHour) + ':' + (data.alarmMinute < 10 ? '0' + data.alarmMinute.toString() : data.alarmMinute);
   if (data.hasOwnProperty('sunsetEnabled'))
-    $('#sunsetEnabled').prop('checked', data.sunsetEnabled);
+    sunsetEnabled.checked = data.sunsetEnabled;
   if (data.hasOwnProperty('sunsetDuration'))
     sunsetDuration.value = data.sunsetDuration;
   if (data.hasOwnProperty('sunsetOffset'))
     sunsetOffset.value = data.sunsetOffset;
   if (data.hasOwnProperty('speed'))
-    document.getElementById('speed').noUiSlider.set(data.speed);
+    speed.noUiSlider.set(data.speed);
   if (data.hasOwnProperty('saturation'))
-    document.getElementById('saturation').noUiSlider.set(data.saturation);
+    saturation.noUiSlider.set(data.saturation);
   if (data.hasOwnProperty('color')) {
-    $('#colorButton').val(data.color);
+    colorButton.value = data.color;
     currentColor = data.color;
   }
 
@@ -101,60 +106,59 @@ function updateButtons(status, animation) {
   currentAnimation = animation;
 
   // Cycle through all animation buttons and change class/style accordingly
-  $('#animationButtons button:not(:last-child)').each(function () {
-    if (currentAnimation == $(this).text()) {
+  document.querySelectorAll('#animationButtons button:not(:last-child)').forEach(btn => {
+    if (currentAnimation == btn.innerHTML) {
       if (currentStatus == 2) {
         // Running
-        if ($(this).text() == 'Color') {
+        if (btn.innerHTML == 'Color') {
           let colorInstance = $customColorPicker.colorPicker.color;
           let colors = colorInstance.colors;
           colors.HEX = currentColor;
           colorInstance.setColor(null, 'HEX');
-          $(this).val('#' + currentColor).css({
-            'background-color': '#' + colors.HEX,
-            'border-color': '#' + colors.HEX,
-            'color': colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd'
-          });
+          btn.style.backgroundColor = '#' + colors.HEX;
+          btn.style.borderColor = '#' + colors.HEX;
+          btn.style.color = colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd';
+          btn.value = '#' + colors.HEX;
         }
         else {
-          $(this).attr('class', 'btn btn-success');
+          btn.classList.value = 'btn btn-success';
         }
       }
       else if (currentStatus == 1) {
         // Paused
-        $(this).attr('class', 'btn btn-warning');
+        btn.classList.value = 'btn btn-warning';
       }
     }
     else {
-      $(this).attr('class', 'btn btn-secondary');
-      $(this).css('background-color', '');
-      $(this).css('border-color', '');
-      $(this).css('color', '');
+      btn.classList.value = 'btn btn-secondary';
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
     }
   });
 }
 
 function sendConfig() {
-  let config = new Object();
-  let time = $('#alarmTime').val().split(':');
+  let config = {};
+  let time = alarmTime.value.split(':');
 
   config.alarmHour = time[0];
   config.alarmMinute = time[1];
-  config.alarmEnabled = $('#alarmEnabled').is(':checked');
+  config.alarmEnabled = alarmEnabled.checked;
   config.alarmDuration = alarmDuration.value;
-  config.alarmAnimation = $('#alarmAnimation').val();
-  config.postAlarmAnimation = $('#postAlarmAnimation').val();
+  config.alarmAnimation = alarmAnimation.value;
+  config.postAlarmAnimation = postAlarmAnimation.value;
   config.timeZone = timeZone.value;
-  config.summerTime = $('#summerTime').is(':checked');
+  config.summerTime = summerTime.checked;
   config.longitude = longitude.value;
   config.latitude = latitude.value;
-  config.sunsetEnabled = $('#sunsetEnabled').is(':checked');
+  config.sunsetEnabled = sunsetEnabled.checked;
   config.sunsetDuration = sunsetDuration.value;
   config.sunsetOffset = sunsetOffset.value;
-  config.sunsetAnimation = $('#sunsetAnimation').val();
-  config.startupAnimation = $('#useStartupAnimation').is(':checked') ? $('#startupAnimation').val() : '';
-  config.speed = document.getElementById('speed').noUiSlider.get();
-  config.saturation = document.getElementById('saturation').noUiSlider.get();
+  config.sunsetAnimation = sunsetAnimation.value;
+  config.startupAnimation = useStartupAnimation.checked ? startupAnimation.value : '';
+  config.speed = speed.noUiSlider.get();
+  config.saturation = saturation.noUiSlider.get();
   config.color = currentColor;
 
   let json = JSON.stringify(config, null, 2);
@@ -192,27 +196,26 @@ function sendAnimationButton(animation) {
 
 
 // Inputs
-$('.clockpicker').clockpicker().find('input').change(function () { });
-$('input[name="alarmDuration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('input[name="timeZone"]').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
-$('input[name="summerTime"]').TouchSpin({ max: 1 });
-$('input[name="sunsetDuration"]').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('input[name="sunsetOffset"]').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
+$('.clockpicker').clockpicker();
+$('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+$('#timeZone').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
+$('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+$('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
 // Color picker
 let $customColorPicker = $('#colorButton').colorPicker({
   opacity: false,
   preventFocus: true,
-  buildCallback: function ($elm) { $('#colorButton').on('click', function (e) { e.preventDefault && e.preventDefault(); }); },
-  renderCallback: function ($elm, toggled) {
+  buildCallback: $elm => { $('#colorButton').on('click', function (e) { e.preventDefault && e.preventDefault(); }); },
+  renderCallback: ($elm, toggled) => {
     if (toggled === true) {
       updateButtons(2, 'Color');
     }
     else if (toggled === false) {
       if (currentAnimation != 'Color' || currentStatus == 0) {
-        $('#colorButton').css('background-color', '');
-        $('#colorButton').css('border-color', '');
-        $('#colorButton').css('color', '');
+        colorButton.style.backgroundColor = '';
+        colorButton.style.borderColor = '';
+        colorButton.style.color = '';
       }
     }
     let newColor = this.color.colors.HEX + ''; // dereference by appending ''
@@ -225,31 +228,25 @@ let $customColorPicker = $('#colorButton').colorPicker({
 });
 
 // Sliders
-let speedStepSlider = document.getElementById('speed');
-noUiSlider.create(speedStepSlider, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
-speedStepSlider.noUiSlider.on('update', function (values, handle) {
-  sendBytes(1, values[handle]);
-});
-$('#speed .noUi-handle').html("Speed");
-let saturationStepSlider = document.getElementById('saturation');
-noUiSlider.create(saturationStepSlider, { start: 255, step: 1, range: { 'min': 110, 'max': 255 } });
-saturationStepSlider.noUiSlider.on('update', function (values, handle) {
-  sendBytes(5, values[handle]);
-});
-$('#saturation .noUi-handle').html("Sat.");
+noUiSlider.create(speed, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
+noUiSlider.create(saturation, { start: 255, step: 1, range: { 'min': 110, 'max': 255 } });
+speed.noUiSlider.on('update', (values, handle) => { sendBytes(1, values[handle]); });
+saturation.noUiSlider.on('update', (values, handle) => { sendBytes(5, values[handle]); });
+document.querySelector('#speed .noUi-handle').innerHTML = 'Speed';
+document.querySelector('#saturation .noUi-handle').innerHTML = 'Sat.';
 
 // Close connection after being ianctive for 5 minutes
 let idleTime = 0;
-setInterval(function () {
+setInterval(() => {
   idleTime++;
   if (idleTime > 300)//s
     connection.close();
 }, 1000);
-$(this).mousemove(function (e) { idleTime = 0; });
-$(this).keypress(function (e) { idleTime = 0; });
 
-// Close connection on mobile when page loses focus
-document.addEventListener('visibilitychange', function () {
+document.addEventListener('mousemove', e => { idleTime = 0; });
+document.addEventListener('keypress', e => { idleTime = 0; });
+document.addEventListener('visibilitychange', () => {
+  // Close connection on mobile when page loses focus
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
     if (document.hidden)
       connection.close();
