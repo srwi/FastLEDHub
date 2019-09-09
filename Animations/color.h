@@ -7,13 +7,10 @@ public:
 
   void reset()
   {
-    for (int i = 0; i < NUM_LEDS; i++)
-    {
-      leds[i] = strtol((const char *)&Config.color[0], NULL, 16);
-    }
   }
 
   void loop()
   {
+    fill_solid(leds, NUM_LEDS, strtol((const char *)&Config.color[0], NULL, 16));
   }
 };

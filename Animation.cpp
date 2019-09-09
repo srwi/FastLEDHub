@@ -13,6 +13,9 @@ Animation::Animation(String _name)
 
 void Animation::begin()
 {
+  if (currentAnimation && currentAnimation->getName() == name)
+    return;
+
   betterClear();
 
   reset();
