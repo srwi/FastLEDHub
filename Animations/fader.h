@@ -19,6 +19,8 @@ public:
     hue++;
 
     delay(15);
+
+    FastLED.show();
   }
 
 private:

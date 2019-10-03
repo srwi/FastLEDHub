@@ -20,6 +20,8 @@ public:
     step++;
     if (step == MAX_BETTER_HUE * 2 / 3)
       step = 0;
+
+    FastLED.show();
   }
 
 private:

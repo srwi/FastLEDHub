@@ -23,6 +23,8 @@ public:
     currentLed += increaseLedIndex ? 1 : -1;
 
     delay(50);
+
+    FastLED.show();
   }
 
 private:

@@ -19,5 +19,7 @@ public:
     {
       leds[i] = betterHue(startHue + (endHue - startHue) * i / NUM_LEDS, Config.saturation);
     }
+
+    FastLED.show();
   }
 };

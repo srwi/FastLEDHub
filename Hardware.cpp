@@ -48,7 +48,10 @@ void betterShow(int16_t bright10)
     }
   }
 
+#pragma push_macro("FastLED")
+#undef FastLED
   FastLED.show();
+#pragma pop_macro("FastLED")
 }
 
 void betterClear()
@@ -79,10 +82,13 @@ void initHardware()
 {
   pinMode(BUTTON_PIN, INPUT);
   inputTicker.attach_ms(10, handleInput);
+#pragma push_macro("FastLED")
+#undef FastLED
   FastLED.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(brightnessCorrectedLeds, NUM_LEDS);
   FastLED.setDither(0);
   FastLED.setTemperature(Tungsten100W);
   FastLED.setBrightness(255);
+#pragma pop_macro("FastLED")
 }
 
 uint16_t getPotiBrightness()

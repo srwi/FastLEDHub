@@ -45,11 +45,10 @@ void setup()
 
 void loop()
 {
-  if (!isDelaying && status == RUNNING && currentAnimation)
+  if (status == RUNNING && currentAnimation)
     currentAnimation->loop();
 
   handleESPEssentials();
   handleFade();
   webSocket.loop();
-  betterShow();
 }

@@ -26,5 +26,7 @@ public:
       step = 0;
 
     delay(5);
+
+    FastLED.show();
   }
 };

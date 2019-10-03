@@ -42,7 +42,6 @@ private:
 extern LinkedList<Animation *> animations;
 extern Animation *currentAnimation;
 extern AnimationStatus status;
-extern bool isDelaying;
 
 void registerAnimation(Animation *animation);
 void beginNextAnimation();

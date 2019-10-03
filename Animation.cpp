@@ -1,10 +1,8 @@
 #include "Animation.h"
 
-Ticker Animation::delayTicker;
 LinkedList<Animation *> animations;
 Animation *currentAnimation;
 AnimationStatus status = STOPPED;
-bool isDelaying = false;
 
 Animation::Animation(String _name)
 {
@@ -81,10 +79,15 @@ String Animation::getName()
   return name;
 }
 
-void Animation::delay(uint16_t t)
+void Animation::delay(uint16_t ms)
 {
-  isDelaying = true;
-  delayTicker.attach_ms(t * (255 - Config.speed) / 128, [&]() { isDelaying = false; });
+  unsigned long start = micros();
+  while (micros() - start < 1000.0 * ms * pow(Config.speed - 255, 2) / 16384)
+  {
+    handleESPEssentials();
+    handleFade();
+    webSocket.loop();
+  }
 }
 
 void registerAnimation(Animation *animation)

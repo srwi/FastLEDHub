@@ -31,5 +31,7 @@ public:
         leds[i] = blend(endColor, startColor, 255 * i / NUM_LEDS);
       }
     }
+
+    FastLED.show();
   }
 };

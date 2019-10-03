@@ -27,3 +27,10 @@ void betterClear();
 CRGB betterHue(uint16_t fract1535, int16_t sat = -1, uint8_t val = 255);
 uint16_t getPotiBrightness();
 void handleInput();
+
+struct FastLEDDummy
+{
+  static void show() { betterShow(); };
+};
+#define FastLED \
+  FastLEDDummy {}
