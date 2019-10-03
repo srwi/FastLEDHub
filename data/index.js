@@ -115,10 +115,10 @@ function updateButtons(status, animation) {
           let colors = colorInstance.colors;
           colors.HEX = currentColor;
           colorInstance.setColor(null, 'HEX');
+          btn.value = '#' + colors.HEX;
           btn.style.backgroundColor = '#' + colors.HEX;
           btn.style.borderColor = '#' + colors.HEX;
           btn.style.color = colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd';
-          btn.value = '#' + colors.HEX;
         }
         else {
           btn.classList.value = 'btn btn-success';
@@ -139,29 +139,27 @@ function updateButtons(status, animation) {
 }
 
 function sendConfig() {
-  let config = {};
   let time = alarmTime.value.split(':');
-
-  config.alarmHour = time[0];
-  config.alarmMinute = time[1];
-  config.alarmEnabled = alarmEnabled.checked;
-  config.alarmDuration = alarmDuration.value;
-  config.alarmAnimation = alarmAnimation.value;
-  config.postAlarmAnimation = postAlarmAnimation.value;
-  config.timeZone = timeZone.value;
-  config.summerTime = summerTime.checked;
-  config.longitude = longitude.value;
-  config.latitude = latitude.value;
-  config.sunsetEnabled = sunsetEnabled.checked;
-  config.sunsetDuration = sunsetDuration.value;
-  config.sunsetOffset = sunsetOffset.value;
-  config.sunsetAnimation = sunsetAnimation.value;
-  config.startupAnimation = useStartupAnimation.checked ? startupAnimation.value : '';
-  config.speed = speed.noUiSlider.get();
-  config.saturation = saturation.noUiSlider.get();
-  config.color = currentColor;
-
-  let json = JSON.stringify(config, null, 2);
+  let json = JSON.stringify({
+    alarmHour: time[0],
+    alarmMinute: time[1],
+    alarmEnabled: alarmEnabled.checked,
+    alarmDuration: alarmDuration.value,
+    alarmAnimation: alarmAnimation.value,
+    postAlarmAnimation: postAlarmAnimation.value,
+    timeZone: timeZone.value,
+    summerTime: summerTime.checked,
+    longitude: longitude.value,
+    latitude: latitude.value,
+    sunsetEnabled: sunsetEnabled.checked,
+    sunsetDuration: sunsetDuration.value,
+    sunsetOffset: sunsetOffset.value,
+    sunsetAnimation: sunsetAnimation.value,
+    startupAnimation: useStartupAnimation.checked ? startupAnimation.value : '',
+    speed: speed.noUiSlider.get(),
+    saturation: saturation.noUiSlider.get(),
+    color: currentColor
+  }, null, 2);
   sendText(json);
 }
 
@@ -206,8 +204,8 @@ $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 let $customColorPicker = $('#colorButton').colorPicker({
   opacity: false,
   preventFocus: true,
-  buildCallback: $elm => { $('#colorButton').on('click', function (e) { e.preventDefault && e.preventDefault(); }); },
-  renderCallback: ($elm, toggled) => {
+  buildCallback: function ($elm) { $('#colorButton').on('click', function (e) { e.preventDefault && e.preventDefault(); }); },
+  renderCallback: function ($elm, toggled) {
     if (toggled === true) {
       updateButtons(2, 'Color');
     }
@@ -223,6 +221,7 @@ let $customColorPicker = $('#colorButton').colorPicker({
       let newColorRGB = this.color.colors.RND.rgb;
       sendBytes(0, newColorRGB.r, newColorRGB.g, newColorRGB.b);
       currentColor = newColor;
+      document.querySelector('#colorButton').style.borderColor = '#' + newColor;
     }
   }
 });

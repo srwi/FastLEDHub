@@ -95,6 +95,7 @@ body .cp-alpha {
 
 body .cp-color-picker {
 	z-index: 9999;
+	background-color: #222;
 }
 
 body .noUi-target {
