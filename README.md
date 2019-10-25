@@ -23,7 +23,7 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
   - WebSockets
   - FastLED
 - Custom libraries
-  - [ESPEssentials](github.com/stnkl/ESPEssentials)
+  - [ESPEssentials](https://github.com/stnkl/ESPEssentials)
   - [WifiManager](https://github.com/tzapu/WiFiManager/tree/34d9a975b5339bb5510f5718fbd1530dff9de733) ('development' branch)
 
 ## Compile
