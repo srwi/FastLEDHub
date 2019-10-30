@@ -58,7 +58,7 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
         }
     };
     ```
-- Include and register animation in `LightstripWS2812B.ino`
+- Include and register animation in `FastLEDManager.ino`
     ```cpp
     #include "Animations/ExampleAnimation.h"
 
