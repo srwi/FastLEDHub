@@ -48,7 +48,8 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
 
         // other functions and variables if needed
 
-        void reset() {
+        void reset()
+        {
           // your standard reset function
         }
 
