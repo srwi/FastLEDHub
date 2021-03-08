@@ -12,7 +12,6 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
 - Control saturation
 - Alarm: Be woken up to an animation slowly fading in
 - Sunset: Automatically fade in an animation when the sun sets at your location
-- Spectroscope: Display spectroscope data from your computer's sound card
 - Compatible with [ha-bridge](https://github.com/bwssytems/ha-bridge) via [http requests](https://github.com/stnkl/FastLEDManager/blob/master/Webserver.cpp)
 
 ## Requirements
@@ -22,9 +21,8 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
   - LinkedList
   - WebSockets
   - FastLED
-- Custom libraries
-  - [ESPEssentials](https://github.com/stnkl/ESPEssentials)
-  - [WifiManager](https://github.com/tzapu/WiFiManager/tree/34d9a975b5339bb5510f5718fbd1530dff9de733) ('development' branch)
+  - ESPEssentials
+  - WiFiManager (&ge; 2.0.0)
 
 ## Compile
 
