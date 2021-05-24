@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include <ESPEssentials.h>
-#include <ESP8266WiFi.h>
 
-#include "Animation.h"
 
 class ConfigClass
 {
@@ -41,7 +37,5 @@ public:
   String getJSON();
 
 private:
-  const String configFilename = "/config_json.txt";
+  const String configFilename = "/config.txt";
 };
-
-extern ConfigClass Config;

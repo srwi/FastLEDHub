@@ -1,49 +1,30 @@
 #pragma once
 
-#include <Ticker.h>
-#include <LinkedList.h>
+#include <Arduino.h>
 
-#include "Config.h"
-#include "Hardware.h"
-#include "WebSocket.h"
-
-enum AnimationStatus
-{
-  STOPPED = 0,
-  PAUSED,
-  RUNNING
-};
 
 class Animation
 {
 public:
-  Animation() = default;
-  Animation(String _name);
+  Animation() = delete;
 
-  void begin();
-  void toggle();
-  void stop();
-  void pause();
-  void restart();
-  void resume();
+  /// Constructor
+  /// @param name Animation name
+  Animation(String name);
+
+  /// Get the animation name
+  /// @return Animation name
   String getName();
 
+  /// Loop method gets called repeatedly while running
+  /// the animation. This method needs to be implemented.
   virtual void loop() = 0;
+
+  /// Setup method gets called when the animation starts.
+  /// This method needs to be implemented.
   virtual void reset() = 0;
 
-  static void delay(uint16_t t);
-
 private:
-  String name;
-
-  static Ticker delayTicker;
+  /// Animation name
+  String m_name;
 };
-
-extern LinkedList<Animation *> animations;
-extern Animation *currentAnimation;
-extern AnimationStatus status;
-
-void registerAnimation(Animation *animation);
-void beginNextAnimation();
-Animation *getAnimation(String name);
-Animation *getAnimation(uint8_t i);

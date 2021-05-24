@@ -1,13 +1,24 @@
 #include "Spectroscope.h"
 
+#include "Animation.h"
+#include "Fade.h"
+#include "FastLEDManager.h"
+
+#include <FastLED.h>
+
+
+namespace Spectroscope
+{
+
 uint8_t spectroscopeData[22] = {0};
 CRGB color_1, color_2 = CRGB::Red;
 
+
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
-  stopFade();
-  if (currentAnimation)
-    currentAnimation->stop();
+  Fade::stop();
+  if (FastLEDManager.currentAnimation)
+    FastLEDManager.stop();
 
   // Spectrum
   for (uint8_t i = 0; i < 16; i++)
@@ -24,16 +35,16 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
   {
     for (int j = 0; j < stripe_width; j++)
     {
-      leds[current_led].red = color_1.red * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.red * spectroscopeData[i] / 255 * i / 15;
-      leds[current_led].green = color_1.green * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.green * spectroscopeData[i] / 255 * i / 15;
-      leds[current_led].blue = color_1.blue * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.blue * spectroscopeData[i] / 255 * i / 15;
-      // Copy to second half
-      if (isSymmetrical)
-      {
-        leds[NUM_LEDS - current_led].red = leds[current_led].red;
-        leds[NUM_LEDS - current_led].green = leds[current_led].green;
-        leds[NUM_LEDS - current_led].blue = leds[current_led].blue;
-      }
+      // leds[current_led].red = color_1.red * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.red * spectroscopeData[i] / 255 * i / 15;
+      // leds[current_led].green = color_1.green * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.green * spectroscopeData[i] / 255 * i / 15;
+      // leds[current_led].blue = color_1.blue * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.blue * spectroscopeData[i] / 255 * i / 15;
+      // // Copy to second half
+      // if (isSymmetrical)
+      // {
+      //   leds[NUM_LEDS - current_led].red = leds[current_led].red;
+      //   leds[NUM_LEDS - current_led].green = leds[current_led].green;
+      //   leds[NUM_LEDS - current_led].blue = leds[current_led].blue;
+      // }
       current_led++;
     }
   }
@@ -48,3 +59,5 @@ void linearSpectroscope(uint8_t *arr)
 {
   updateSpectroscope(arr, false);
 }
+
+} // namespace Spectroscope

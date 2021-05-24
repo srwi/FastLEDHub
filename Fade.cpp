@@ -1,22 +1,35 @@
 #include "Fade.h"
 
-FadeMode currentFade = NONE;
+#include "FastLEDManager.h"
+
+#include <ArduinoJson.h>
+#include <ESPEssentials.h>
+#include <Ticker.h>
+#include <time.h>
+
+
+namespace Fade
+{
+
+FadeMode currentFade = FadeMode::NONE;
 uint16_t fadeBrightness = 0;
 uint16_t sunsetMaximumBrightness = 0;
 Ticker fadeTicker;
 Ticker hasBeenStartedResetTicker;
 bool hasBeenStarted = false;
 bool hasSunsetTime = false;
+ConfigClass *config;
 
-void initFade()
+void initialize(ConfigClass *conf)
 {
-  configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
+  config = conf;
+  configTime(config->timeZone * 3600, config->summerTime * 3600, "pool.ntp.org", "time.nist.gov");
 }
 
-void handleFade()
+void handle()
 {
   // Return if fade is running
-  if (currentFade || hasBeenStarted)
+  if (currentFade != FadeMode::NONE || hasBeenStarted)
     return;
 
   // Get current time
@@ -28,46 +41,46 @@ void handleFade()
   // Get sunset time if not yet done
   if (!hasSunsetTime && now->tm_year != 70)
   {
-    getSunset(now->tm_yday, Config.latitude, Config.longitude);
+    getSunset(now->tm_yday, config->latitude, config->longitude);
     hasSunsetTime = true;
   }
 
   // Check for alarm
-  if (Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
+  if (config->alarmEnabled && now->tm_hour == config->alarmHour && now->tm_min == config->alarmMinute)
   {
-    startFade(ALARM);
+    Fade::begin(Fade::FadeMode::ALARM);
   }
   // Check for sunset
-  else if (Config.sunsetEnabled && now->tm_hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
+  else if (config->sunsetEnabled && now->tm_hour == config->sunsetHour && now->tm_min == config->sunsetMinute)
   {
     // Only start sunset if all leds are off
-    if (brightness10 == 0)
+    if (FastLEDManager.brightness10 == 0)
     {
-      startFade(SUNSET);
+      Fade::begin(Fade::FadeMode::SUNSET);
     }
     else // brightness10 > 0
     {
       bool ledsIlluminated = false;
       for (uint16_t i = 0; i < NUM_LEDS; i++)
       {
-        if (brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
-        {
-          ledsIlluminated = true;
-          break;
-        }
+        // if (brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
+        // {
+        //   ledsIlluminated = true;
+        //   break;
+        // }
       }
 
       if (!ledsIlluminated)
-        startFade(SUNSET);
+        Fade::begin(Fade::FadeMode::SUNSET);
     }
   }
 }
 
-void startFade(FadeMode fadeMode)
+void begin(FadeMode fadeMode)
 {
   // Set fade starting point
   fadeBrightness = 1;
-  betterShow(fadeBrightness);
+  FastLEDManager.show(fadeBrightness);
 
   currentFade = fadeMode;
 
@@ -75,40 +88,40 @@ void startFade(FadeMode fadeMode)
   hasBeenStarted = true;
   hasBeenStartedResetTicker.attach(90, [&]() { hasBeenStarted = false; }); // TODO: Should only be called once?
 
-  if (fadeMode == ALARM)
+  if (fadeMode == Fade::FadeMode::ALARM)
   {
-    getAnimation(Config.alarmAnimation)->begin();
-    fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1024, fadeTick);
+    FastLEDManager.begin(FastLEDManager.getAnimation(config->alarmAnimation));
+    fadeTicker.attach_ms(config->alarmDuration * 60 * 1000 / 1024, tick);
     Serial.println("[Fade] Start fade 'Alarm'");
   }
-  else if (fadeMode == SUNSET)
+  else if (fadeMode == Fade::FadeMode::SUNSET)
   {
-    getAnimation(Config.sunsetAnimation)->begin();
-    sunsetMaximumBrightness = brightness10;
-    fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, fadeTick);
+    FastLEDManager.begin(FastLEDManager.getAnimation(config->sunsetAnimation));
+    sunsetMaximumBrightness = FastLEDManager.brightness10;
+    fadeTicker.attach_ms(config->sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, tick);
     Serial.println("[Fade] Start fade 'Sunset'");
   }
 }
 
-void stopFade()
+void stop()
 {
   fadeTicker.detach();
-  currentFade = NONE;
+  currentFade = FadeMode::NONE;
 }
 
-void fadeTick()
+void tick()
 {
-  if (status == PAUSED)
+  if (FastLEDManager.status == PAUSED)
     return;
 
-  if (currentFade == ALARM && fadeBrightness == 1023)
+  if (currentFade == Fade::FadeMode::ALARM && fadeBrightness == 1023)
   {
-    if (Config.postAlarmAnimation != Config.alarmAnimation)
-      getAnimation(Config.postAlarmAnimation)->begin();
+    if (config->postAlarmAnimation != config->alarmAnimation)
+      FastLEDManager.begin(FastLEDManager.getAnimation(config->postAlarmAnimation));
     fadeTicker.detach();
     Serial.println("[Fade] End fade 'Alarm'");
   }
-  else if (currentFade == SUNSET && fadeBrightness == sunsetMaximumBrightness)
+  else if (currentFade == Fade::FadeMode::SUNSET && fadeBrightness == sunsetMaximumBrightness)
   {
     fadeTicker.detach();
     Serial.println("[Fade] End fade 'Sunset'");
@@ -123,7 +136,7 @@ void fadeTick()
     Serial.println("[Fade] Fade brightness: " + String(fadeBrightness));
   }
 
-  brightness10 = fadeBrightness;
+  FastLEDManager.brightness10 = fadeBrightness;
 }
 
 float rad(float deg)
@@ -177,9 +190,11 @@ void getSunset(uint16_t d, float Lat, float Long)
   // float sunrise = (n - that + timezone) / 60;
   float sunset = (n + that + timezone) / 60;
 
-  Config.sunsetHour = (int)floor(sunset) % 24;
-  Config.sunsetMinute = (sunset - floor(sunset)) * 60;
-  Config.save();
+  config->sunsetHour = (int)floor(sunset) % 24;
+  config->sunsetMinute = (sunset - floor(sunset)) * 60;
+  config->save();
 
-  Serial.println("[Sunset] Got sunset time: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
+  Serial.println("[Sunset] Got sunset time: " + String(config->sunsetHour) + ":" + String(config->sunsetMinute));
 }
+
+} // namespace Fade

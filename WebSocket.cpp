@@ -1,20 +1,35 @@
 #include "WebSocket.h"
 
+#include "Animation.h"
+#include "ColorUtils.h"
+#include "Config.h"
+#include "Fade.h"
+#include "FastLEDManager.h"
+#include "Spectroscope.h"
+
+#include <Hash.h>
+#include <ESP8266mDNS.h>
+#include <ArduinoJson.h>
+
+
+namespace WebSocket
+{
+
 WebSocketsServer webSocket = WebSocketsServer(81);
 uint8_t websocketConnectionCount = 0;
 bool liveDataHasChanged = false;
 
-void initWebsocket()
+void initialize()
 {
   webSocket.begin();
-  webSocket.onEvent(handleWebsocket);
+  webSocket.onEvent(handle);
   if (MDNS.begin("lightstrip"))
     Serial.println("MDNS responder started");
   MDNS.addService("http", "tcp", 80);
   MDNS.addService("ws", "tcp", 81);
 }
 
-void handleWebsocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
+void handle(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
 {
   switch (type)
   {
@@ -22,7 +37,7 @@ void handleWebsocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length
     // Save config if color, speed or saturation changed
     if (liveDataHasChanged)
     {
-      Config.save();
+      FastLEDManager.config->save();
       liveDataHasChanged = false;
     }
     websocketConnectionCount--;
@@ -37,11 +52,11 @@ void handleWebsocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length
   break;
   case WStype_TEXT:
     // Serial.printf("[%u] Got text: %s\n", num, payload);
-    handleWebsocketText(byteArrayToString(payload), num);
+    handleText(byteArrayToString(payload), num);
     break;
   case WStype_BIN:
     // Serial.printf("[%u] Got binary: %s\n", num, payload);
-    handleWebsocketBinary(payload, num);
+    handleBinary(payload, num);
     break;
   // Suppress warnings:
   case WStype_ERROR:
@@ -55,31 +70,39 @@ void handleWebsocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length
   }
 }
 
-void handleWebsocketText(String text, uint8_t num)
+void handleText(String text, uint8_t num)
 {
   char textArray[text.length()];
   text.toCharArray(textArray, text.length());
 
-  if (Config.parseJSON(textArray))
+  if (FastLEDManager.config->parseJSON(textArray))
   {
-    Config.save();
+    FastLEDManager.config->save();
     return;
   }
 
   if (text.startsWith("toggle"))
   {
     String animation = text.substring(7);
-    stopFade();
-    getAnimation(animation)->toggle();
+    Fade::stop();
+    FastLEDManager.toggle();
   }
   else if (text == "stop")
   {
-    if (currentAnimation)
-      currentAnimation->stop();
+    if (FastLEDManager.currentAnimation)
+      FastLEDManager.stop();
   }
   else if (text == "requesting_config")
   {
-    webSocket.sendTXT(num, Config.getJSON().c_str());
+    webSocket.sendTXT(num, FastLEDManager.config->getJSON().c_str());
+    // TODO: Also send animations list, status and current animation
+    // doc["status"] = String(FastLEDManager.status);
+    // doc["currentAnimation"] = FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "";
+    // JsonArray animations = doc.createNestedArray("animations");
+    // for (uint8_t i = 0; i < FastLEDManager.animations.size(); i++)
+    // {
+    //   animations.add(FastLEDManager.animations.get(i)->getName());
+    // }
   }
   else
   {
@@ -87,61 +110,39 @@ void handleWebsocketText(String text, uint8_t num)
   }
 }
 
-String rgbToHex(uint8_t r, uint8_t g, uint8_t b)
-{
-  String output = "";
-
-  if (r == 0)
-    output += "00";
-  else
-    output += (r < 16 ? "0" : "") + String(r, HEX);
-
-  if (g == 0)
-    output += "00";
-  else
-    output += (g < 16 ? "0" : "") + String(g, HEX);
-
-  if (b == 0)
-    output += "00";
-  else
-    output += (b < 16 ? "0" : "") + String(b, HEX);
-
-  return output;
-}
-
-void handleWebsocketBinary(uint8_t *binary, uint8_t num)
+void handleBinary(uint8_t *binary, uint8_t num)
 {
   switch (binary[0])
   {
   case 0: // Color
-    Config.color = rgbToHex(binary[1], binary[2], binary[3]);
+    FastLEDManager.config->color = rgb2hex(binary[1], binary[2], binary[3]);
     liveDataHasChanged = true;
-    getAnimation("Color")->begin();
+    FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
     webSocket.sendTXT(num, String("ok").c_str());
     break;
   case 1: // Speed
-    Config.speed = binary[1];
+    FastLEDManager.config->speed = binary[1];
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
     break;
   case 4: // Spectroscope data
-    if (currentAnimation)
-      currentAnimation->stop();
+    if (FastLEDManager.currentAnimation)
+      FastLEDManager.stop();
     for (uint16_t i = 0; i < NUM_LEDS; i++)
     {
-      leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
+      // leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     }
     break;
   case 5: // Saturation
-    Config.saturation = binary[1];
+    FastLEDManager.config->saturation = binary[1];
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
     break;
   case 6: // linearSpectroscope data
-    linearSpectroscope(binary + 1);
+    Spectroscope::linearSpectroscope(binary + 1);
     break;
   case 7: // symmetricalSpectroscope data
-    symmetricalSpectroscope(binary + 1);
+    Spectroscope::symmetricalSpectroscope(binary + 1);
     break;
   }
 }
@@ -160,6 +161,8 @@ String byteArrayToString(uint8_t *bytes)
 void broadcastStatus()
 {
   // Send status as JSON
-  String msg = "{\n  \"status\": " + String((int)status) + ",\n  \"currentAnimation\": \"" + (currentAnimation ? currentAnimation->getName() : "") + "\"\n}";
-  webSocket.broadcastTXT(msg.c_str());
+  String msg = "{\n  \"status\": " + String((int)FastLEDManager.status) + ",\n  \"currentAnimation\": \"" + (FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "") + "\"\n}";
+  WebSocket::webSocket.broadcastTXT(msg.c_str());
 }
+
+} // namespace WebSocket

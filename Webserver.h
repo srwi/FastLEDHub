@@ -1,9 +1,8 @@
 #pragma once
 
-#include <Arduino.h>
-#include <ESPEssentials.h>
+namespace Webserver
+{
 
-#include "Animation.h"
-#include "Fade.h"
+void initialize();
 
-void initWebserverCommands();
+} // namespace Webserver

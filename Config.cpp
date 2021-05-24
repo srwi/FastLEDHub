@@ -1,5 +1,9 @@
 #include "Config.h"
 
+#include <ArduinoJson.h>
+#include <FS.h>
+
+
 bool ConfigClass::parseJSON(char *input)
 {
   DynamicJsonDocument doc(2048);
@@ -81,13 +85,6 @@ String ConfigClass::getJSON()
   doc["color"] = color;
   doc["speed"] = speed;
   doc["saturation"] = saturation;
-  doc["status"] = String(status);
-  doc["currentAnimation"] = currentAnimation ? currentAnimation->getName() : "";
-  JsonArray a = doc.createNestedArray("animations");
-  for (uint8_t i = 0; i < animations.size(); i++)
-  {
-    a.add(animations.get(i)->getName());
-  }
 
   String buffer = "";
   serializeJson(doc, buffer);
@@ -99,14 +96,14 @@ bool ConfigClass::init()
 {
   if (!SPIFFS.begin())
   {
-    Serial.println("[Config] Couldn't mount file system.");
+    Serial.println("[FastLEDManager] Couldn't mount file system.");
     return false;
   }
 
   File configFile = SPIFFS.open(configFilename, "r");
   if (!configFile)
   {
-    Serial.println("[Config] Opening file '" + configFilename + "' failed.");
+    Serial.println("[FastLEDManager] Opening file '" + configFilename + "' failed.");
     return false;
   }
 
@@ -127,7 +124,7 @@ bool ConfigClass::save()
   File configFile = SPIFFS.open(configFilename, "w");
   if (!configFile)
   {
-    Serial.println("[Config] Opening file " + configFilename + " for saving failed.");
+    Serial.println("[FastLEDManager] Opening file " + configFilename + " for saving failed.");
     return false;
   }
 
@@ -136,5 +133,3 @@ bool ConfigClass::save()
 
   return true;
 }
-
-ConfigClass Config;

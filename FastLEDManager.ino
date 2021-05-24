@@ -1,54 +1,40 @@
-#include <Arduino.h>
-#include <ESPEssentials.h>
-
 #include "Animation.h"
 #include "Config.h"
 #include "Fade.h"
-#include "Hardware.h"
-#include "WebSocket.h"
+#include "FastLEDManager.h"
 #include "Webserver.h"
+#include "WebSocket.h"
 
 // Include animations here:
-#include "Animations/rainbow.h"
 #include "Animations/color.h"
-#include "Animations/colorBlend.h"
-#include "Animations/fader.h"
-#include "Animations/colorRider.h"
-#include "Animations/rbWave.h"
-#include "Animations/rgbWave.h"
+
+#include <Arduino.h>
+#include <ESPEssentials.h>
+#include <FastLED.h>
+
+#define LIGHTSTRIP_PIN 5
+#define BUTTON_PIN 4
+
 
 void setup()
 {
   initESPEssentials("Lightstrip");
-  Config.init();
-  initHardware();
 
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    initWebsocket();
-    initWebserverCommands();
-    initFade();
-  }
+  FastLEDManager.initialize();
+  FastLEDManager.setButtonPin(4);
+  FastLEDManager.setPotiPin(5);
 
-  // Register animations here:
-  registerAnimation(new Color("Color"));
-  registerAnimation(new ColorBlend("Color Blend"));
-  registerAnimation(new ColorRider("Color Rider"));
-  registerAnimation(new Fader("Fader"));
-  registerAnimation(new Rainbow("Rainbow"));
-  registerAnimation(new RbWave("RB Wave"));
-  registerAnimation(new RgbWave("RGB Wave"));
+  FastLEDManager.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(FastLEDManager.brightnessCorrectedLeds, NUM_LEDS);
 
-  if (Config.startupAnimation != "")
-    getAnimation(Config.startupAnimation)->begin();
+  // FastLEDManager.setDither(0);
+  // FastLEDManager.setTemperature(Tungsten100W);
+  // FastLEDManager.setBrightness(255);
+
+  FastLEDManager.registerAnimation(new Color("Color"));
 }
 
 void loop()
 {
-  if (status == RUNNING && currentAnimation)
-    currentAnimation->loop();
-
   handleESPEssentials();
-  handleFade();
-  webSocket.loop();
+  FastLEDManager.handle();
 }
