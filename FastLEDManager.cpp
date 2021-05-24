@@ -11,12 +11,14 @@
 
 
 Ticker inputTicker;
-bool buttonPushed = false;
+bool cycleButtonPushed = false;
+bool toggleButtonPushed = false;
 bool autostartHandled = false;
 float filteredBrightness = 128;
 int16_t brightness10 = 1023;
 uint8_t potiPin = -1;
-uint8_t buttonPin = -1;
+uint8_t cycleButtonPin = -1;
+uint8_t toggleButtonPin = -1;
 CRGB leds[NUM_LEDS];
 CRGB brightnessCorrectedLeds[NUM_LEDS];
 Animation *currentAnimation;
@@ -35,16 +37,24 @@ void FastLEDManagerClass::initialize()
   }
 }
 
-void FastLEDManagerClass::setButtonPin(uint8_t pin)
+void FastLEDManagerClass::enableCycleButton(uint8_t pin)
 {
-  // inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, handleInput);
+  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
   pinMode(pin, INPUT);
-  buttonPin = pin;
+  cycleButtonPin = pin;
 }
 
-void FastLEDManagerClass::setPotiPin(uint8_t pin)
+void FastLEDManagerClass::enableToggleButton(uint8_t pin)
 {
-  // inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, handleInput);
+  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
+  pinMode(pin, INPUT);
+  cycleButtonPin = pin;
+}
+
+void FastLEDManagerClass::enablePotentiometer(uint8_t pin)
+{
+  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
+  pinMode(pin, INPUT);
   potiPin = pin;
 }
 
@@ -148,7 +158,7 @@ Animation* FastLEDManagerClass::getAnimation(uint8_t i)
 
 void FastLEDManagerClass::handleInput()
 {
-  if (Fade::currentFade == Fade::FadeMode::NONE)
+  if (potiPin >= 0 && Fade::currentFade == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
@@ -168,16 +178,32 @@ void FastLEDManagerClass::handleInput()
     }
   }
 
-  // Push button
-  if (!digitalRead(buttonPin) && !buttonPushed)
+  if (cycleButtonPin >= 0)
   {
-    Fade::stop();
-    cycle();
-    buttonPushed = true;
+    if (!digitalRead(cycleButtonPin) && !cycleButtonPushed)
+    {
+      Fade::stop();
+      cycle();
+      cycleButtonPushed = true;
+    }
+    else if (digitalRead(cycleButtonPin) && cycleButtonPushed)
+    {
+      cycleButtonPushed = false;
+    }
   }
-  else if (digitalRead(buttonPin) && buttonPushed)
+
+  if (toggleButtonPin >= 0)
   {
-    buttonPushed = false;
+    if (!digitalRead(toggleButtonPin) && !toggleButtonPushed)
+    {
+      Fade::stop();
+      toggle();
+      toggleButtonPushed = true;
+    }
+    else if (digitalRead(toggleButtonPin) && toggleButtonPushed)
+    {
+      toggleButtonPushed = false;
+    }
   }
 }
 

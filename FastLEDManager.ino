@@ -21,8 +21,8 @@ void setup()
   initESPEssentials("Lightstrip");
 
   FastLEDManager.initialize();
-  FastLEDManager.setButtonPin(4);
-  FastLEDManager.setPotiPin(5);
+  FastLEDManager.enableCycleButton(4);
+  FastLEDManager.enablePotentiometer(5);
 
   FastLEDManager.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(FastLEDManager.brightnessCorrectedLeds, NUM_LEDS);
 

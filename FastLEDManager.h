@@ -32,12 +32,16 @@ public:
 
     /// Initialize cycle button. The button will be used to cycle through animations.
     /// @param pin Button pin
-    void setButtonPin(uint8_t pin);
+    void enableCycleButton(uint8_t pin);
+
+    /// Initialize toggle button. The button will be used to pause/resume animations.
+    /// @param pin Button pin
+    void enableToggleButton(uint8_t pin);
 
     /// Initialize potentiometer pin. The potentiometer will be used to
     /// control the overall brightness.
     /// @param pin Potentiometer pin
-    void setPotiPin(uint8_t pin);
+    void enablePotentiometer(uint8_t pin);
 
     /// Register an animation instance to be managed by FastLEDManager
     /// @param animation Pointer to animation instance
@@ -100,11 +104,13 @@ private:
     void autostart();
 
     Ticker inputTicker;
-    bool buttonPushed;
+    bool cycleButtonPushed;
+    bool toggleButtonPushed;
     bool autostartHandled;
     float filteredBrightness;
     uint8_t potiPin;
-    uint8_t buttonPin;
+    uint8_t cycleButtonPin;
+    uint8_t toggleButtonPin;
 };
 
 extern FastLEDManagerClass FastLEDManager;
