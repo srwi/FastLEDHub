@@ -11,7 +11,6 @@
 
 
 Ticker inputTicker;
-ConfigClass *config;
 bool buttonPushed = false;
 bool autostartHandled = false;
 float filteredBrightness = 128;
@@ -27,13 +26,12 @@ AnimationStatus status = STOPPED;
 void FastLEDManagerClass::initialize()
 {
   brightness10 = 1023;
-  config = new ConfigClass();
-  config->init();
+  Config.init();
   if (WiFi.status() == WL_CONNECTED)
   {
     WebSocket::initialize();
     Webserver::initialize();
-    Fade::initialize(config);
+    Fade::initialize();
   }
 }
 
@@ -118,7 +116,7 @@ void FastLEDManagerClass::clear()
 void FastLEDManagerClass::delay(uint16_t ms)
 {
   unsigned long start = micros();
-  while (micros() - start < 1000.0 * ms * pow(config->speed - 255, 2) / 16384)
+  while (micros() - start < 1000.0 * ms * pow(Config.speed - 255, 2) / 16384)
   {
     handleESPEssentials();
     Fade::handle();
@@ -185,8 +183,8 @@ void FastLEDManagerClass::handleInput()
 
 void FastLEDManagerClass::autostart()
 {
-  if (config->startupAnimation != "")
-    begin(getAnimation(config->startupAnimation));
+  if (Config.startupAnimation != "")
+    begin(getAnimation(Config.startupAnimation));
 
   autostartHandled = true;
 }

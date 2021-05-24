@@ -37,7 +37,7 @@ void handle(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     // Save config if color, speed or saturation changed
     if (liveDataHasChanged)
     {
-      FastLEDManager.config->save();
+      Config.save();
       liveDataHasChanged = false;
     }
     websocketConnectionCount--;
@@ -75,9 +75,9 @@ void handleText(String text, uint8_t num)
   char textArray[text.length()];
   text.toCharArray(textArray, text.length());
 
-  if (FastLEDManager.config->parseJSON(textArray))
+  if (Config.parseJSON(textArray))
   {
-    FastLEDManager.config->save();
+    Config.save();
     return;
   }
 
@@ -94,7 +94,7 @@ void handleText(String text, uint8_t num)
   }
   else if (text == "requesting_config")
   {
-    webSocket.sendTXT(num, FastLEDManager.config->getJSON().c_str());
+    webSocket.sendTXT(num, Config.getJSON().c_str());
     // TODO: Also send animations list, status and current animation
     // doc["status"] = String(FastLEDManager.status);
     // doc["currentAnimation"] = FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "";
@@ -115,13 +115,13 @@ void handleBinary(uint8_t *binary, uint8_t num)
   switch (binary[0])
   {
   case 0: // Color
-    FastLEDManager.config->color = rgb2hex(binary[1], binary[2], binary[3]);
+    Config.color = rgb2hex(binary[1], binary[2], binary[3]);
     liveDataHasChanged = true;
     FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
     webSocket.sendTXT(num, String("ok").c_str());
     break;
   case 1: // Speed
-    FastLEDManager.config->speed = binary[1];
+    Config.speed = binary[1];
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
     break;
@@ -134,7 +134,7 @@ void handleBinary(uint8_t *binary, uint8_t num)
     }
     break;
   case 5: // Saturation
-    FastLEDManager.config->saturation = binary[1];
+    Config.saturation = binary[1];
     liveDataHasChanged = true;
     webSocket.sendTXT(num, String("ok").c_str());
     break;

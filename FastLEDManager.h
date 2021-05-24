@@ -86,8 +86,6 @@ public:
     Animation *currentAnimation;
     AnimationStatus status = STOPPED;
 
-    /// Config instance
-    ConfigClass *config;
     /// Current brightness value in 10bit
     int16_t brightness10;
 

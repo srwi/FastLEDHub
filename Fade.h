@@ -23,7 +23,7 @@ void handle();
 void begin(FadeMode fadeMode);
 void stop();
 void tick();
-void initialize(ConfigClass *conf);
+void initialize();
 void getSunset(uint16_t d, float Lat, float Long);
 float rad(float deg);
 

@@ -39,3 +39,5 @@ public:
 private:
   const String configFilename = "/config.txt";
 };
+
+extern ConfigClass Config;

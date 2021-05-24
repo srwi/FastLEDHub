@@ -133,3 +133,5 @@ bool ConfigClass::save()
 
   return true;
 }
+
+ConfigClass Config;
