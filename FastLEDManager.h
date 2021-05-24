@@ -13,9 +13,9 @@
 class Animation;
 class ConfigClass;
 
-enum AnimationStatus
+enum class AnimationStatus
 {
-  STOPPED = 0,
+  STOPPED,
   PAUSED,
   RUNNING
 };
@@ -23,6 +23,9 @@ enum AnimationStatus
 class FastLEDManagerClass : public CFastLED
 {
 public:
+    /// Constructor
+    FastLEDManagerClass();
+
     /// Handle every function provided by FastLEDManager. This method
     /// should be called in the main Arduino loop-function.
     void handle();
@@ -88,7 +91,7 @@ public:
     LinkedList<Animation*> animations;
 
     Animation *currentAnimation;
-    AnimationStatus status = STOPPED;
+    AnimationStatus status = AnimationStatus::STOPPED;
 
     /// Current brightness value in 10bit
     int16_t brightness10;
@@ -103,12 +106,12 @@ private:
     /// Start the configured autostart animation
     void autostart();
 
-    Ticker inputTicker;
     bool cycleButtonPushed;
     bool toggleButtonPushed;
     bool autostartHandled;
     float filteredBrightness;
-    uint8_t potiPin;
+    Ticker inputTicker;
+    uint8_t potentiometerPin;
     uint8_t cycleButtonPin;
     uint8_t toggleButtonPin;
 };

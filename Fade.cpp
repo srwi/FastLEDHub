@@ -110,7 +110,7 @@ void stop()
 
 void tick()
 {
-  if (FastLEDManager.status == PAUSED)
+  if (FastLEDManager.status == AnimationStatus::PAUSED)
     return;
 
   if (currentFade == Fade::FadeMode::ALARM && fadeBrightness == 1023)

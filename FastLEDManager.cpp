@@ -10,20 +10,18 @@
 #include <ESPEssentials.h>
 
 
-Ticker inputTicker;
-bool cycleButtonPushed = false;
-bool toggleButtonPushed = false;
-bool autostartHandled = false;
-float filteredBrightness = 128;
-int16_t brightness10 = 1023;
-uint8_t potiPin = -1;
-uint8_t cycleButtonPin = -1;
-uint8_t toggleButtonPin = -1;
-CRGB leds[NUM_LEDS];
-CRGB brightnessCorrectedLeds[NUM_LEDS];
-Animation *currentAnimation;
-AnimationStatus status = STOPPED;
-
+FastLEDManagerClass::FastLEDManagerClass() :
+  status(AnimationStatus::STOPPED),
+  brightness10(1023),
+  cycleButtonPushed(false),
+  toggleButtonPushed(false),
+  autostartHandled(false),
+  filteredBrightness(128),
+  potentiometerPin(-1),
+  cycleButtonPin(-1),
+  toggleButtonPin(-1)
+{
+}
 
 void FastLEDManagerClass::initialize()
 {
@@ -55,7 +53,7 @@ void FastLEDManagerClass::enablePotentiometer(uint8_t pin)
 {
   inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
   pinMode(pin, INPUT);
-  potiPin = pin;
+  potentiometerPin = pin;
 }
 
 void FastLEDManagerClass::handle()
@@ -63,7 +61,7 @@ void FastLEDManagerClass::handle()
   if (!autostartHandled)
     autostart();
 
-  if (status == RUNNING && currentAnimation)
+  if (status == AnimationStatus::RUNNING && currentAnimation)
     currentAnimation->loop();
 
   Fade::handle();
@@ -158,7 +156,7 @@ Animation* FastLEDManagerClass::getAnimation(uint8_t i)
 
 void FastLEDManagerClass::handleInput()
 {
-  if (potiPin >= 0 && Fade::currentFade == Fade::FadeMode::NONE)
+  if (potentiometerPin >= 0 && Fade::currentFade == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
@@ -222,7 +220,7 @@ void FastLEDManagerClass::begin(Animation *animation)
 
   clear();
 
-  status = RUNNING;
+  status = AnimationStatus::RUNNING;
   currentAnimation = animation;
   currentAnimation->reset();
 
@@ -244,10 +242,10 @@ void FastLEDManagerClass::cycle()
 
 void FastLEDManagerClass::stop()
 {
-  if (status == STOPPED)
+  if (status == AnimationStatus::STOPPED)
     return;
 
-  status = STOPPED;
+  status = AnimationStatus::STOPPED;
   clear();
   currentAnimation = NULL;
 
@@ -257,10 +255,10 @@ void FastLEDManagerClass::stop()
 
 void FastLEDManagerClass::resume()
 {
-  if (status != PAUSED)
+  if (status != AnimationStatus::PAUSED)
     return;
 
-  status = RUNNING;
+  status = AnimationStatus::RUNNING;
 
   WebSocket::broadcastStatus();
   Serial.println("Resumed '" + currentAnimation->getName() + "'");
@@ -276,7 +274,7 @@ void FastLEDManagerClass::restart()
 
 void FastLEDManagerClass::pause()
 {
-  status = PAUSED;
+  status = AnimationStatus::PAUSED;
 
   WebSocket::broadcastStatus();
   Serial.println("Paused '" + currentAnimation->getName() + "'");
@@ -284,7 +282,7 @@ void FastLEDManagerClass::pause()
 
 void FastLEDManagerClass::toggle()
 {
-  if (currentAnimation && status == RUNNING)
+  if (currentAnimation && status == AnimationStatus::RUNNING)
     pause();
   else
     resume();
