@@ -7,75 +7,65 @@
 #include "FastLEDManager.h"
 #include "Spectroscope.h"
 
-#include <Hash.h>
-#include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
+#include <ESP8266mDNS.h>
+#include <Hash.h>
 
 
 namespace WebSocket
 {
 
-WebSocketsServer webSocket = WebSocketsServer(81);
-uint8_t websocketConnectionCount = 0;
-bool liveDataHasChanged = false;
+/// Websocket instance used for communication with web interface
+WebSocketsServer socket = WebSocketsServer(81);
+
+/// Number of active websocket connections
+uint8_t connectionCount = 0;
 
 void initialize()
 {
-  webSocket.begin();
-  webSocket.onEvent(handle);
+  socket.begin();
+  socket.onEvent(handle);
   if (MDNS.begin("lightstrip"))
     Serial.println("MDNS responder started");
   MDNS.addService("http", "tcp", 80);
   MDNS.addService("ws", "tcp", 81);
 }
 
-void handle(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
+void handle(uint8_t id, WStype_t type, uint8_t *payload, size_t length)
 {
   switch (type)
   {
   case WStype_DISCONNECTED:
-    // Save config if color, speed or saturation changed
-    if (liveDataHasChanged)
-    {
-      Config.save();
-      liveDataHasChanged = false;
-    }
-    websocketConnectionCount--;
-    Serial.printf("[%u] Disconnected!\n", num);
+    Config.save();
+    connectionCount--;
+    Serial.printf("[%u] Disconnected!\n", id);
     break;
   case WStype_CONNECTED:
   {
-    websocketConnectionCount++;
-    IPAddress ip = webSocket.remoteIP(num);
-    Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+    connectionCount++;
+    IPAddress ip = socket.remoteIP(id);
+    Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
   }
   break;
   case WStype_TEXT:
-    // Serial.printf("[%u] Got text: %s\n", num, payload);
-    handleText(byteArrayToString(payload), num);
+    // Serial.printf("[%u] Got text: %s\n", id, payload);
+    handleText(byteArray2string(payload), id);
     break;
   case WStype_BIN:
-    // Serial.printf("[%u] Got binary: %s\n", num, payload);
-    handleBinary(payload, num);
+    // Serial.printf("[%u] Got binary: %s\n", id, payload);
+    handleBinary(payload, id);
     break;
-  // Suppress warnings:
-  case WStype_ERROR:
-  case WStype_FRAGMENT_TEXT_START:
-  case WStype_FRAGMENT_BIN_START:
-  case WStype_FRAGMENT:
-  case WStype_FRAGMENT_FIN:
-  case WStype_PONG:
-  case WStype_PING:
+  default:
     break;
   }
 }
 
-void handleText(String text, uint8_t num)
+void handleText(String text, uint8_t id)
 {
   char textArray[text.length()];
   text.toCharArray(textArray, text.length());
 
-  if (Config.parseJSON(textArray))
+  if (Config.parseJson(textArray))
   {
     Config.save();
     return;
@@ -94,15 +84,18 @@ void handleText(String text, uint8_t num)
   }
   else if (text == "requesting_config")
   {
-    webSocket.sendTXT(num, Config.getJSON().c_str());
-    // TODO: Also send animations list, status and current animation
-    // doc["status"] = String(FastLEDManager.status);
-    // doc["currentAnimation"] = FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "";
-    // JsonArray animations = doc.createNestedArray("animations");
-    // for (uint8_t i = 0; i < FastLEDManager.animations.size(); i++)
-    // {
-    //   animations.add(FastLEDManager.animations.get(i)->getName());
-    // }
+    DynamicJsonDocument doc(2048);
+    doc = Config.getJson(doc);
+    doc["status"] = String(FastLEDManager.status);
+    doc["currentAnimation"] = FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "";
+    JsonArray animations = doc.createNestedArray("animations");
+    for (uint8_t i = 0; i < FastLEDManager.animations.size(); i++)
+    {
+      animations.add(FastLEDManager.animations.get(i)->getName());
+    }
+    String buffer = "";
+    serializeJson(doc, buffer);
+    socket.sendTXT(id, buffer.c_str());
   }
   else
   {
@@ -110,44 +103,41 @@ void handleText(String text, uint8_t num)
   }
 }
 
-void handleBinary(uint8_t *binary, uint8_t num)
+void handleBinary(uint8_t *binary, uint8_t id)
 {
   switch (binary[0])
   {
   case 0: // Color
     Config.color = rgb2hex(binary[1], binary[2], binary[3]);
-    liveDataHasChanged = true;
     FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
-    webSocket.sendTXT(num, String("ok").c_str());
+    socket.sendTXT(id, String("ok").c_str());
     break;
   case 1: // Speed
     Config.speed = binary[1];
-    liveDataHasChanged = true;
-    webSocket.sendTXT(num, String("ok").c_str());
+    socket.sendTXT(id, String("ok").c_str());
     break;
   case 4: // Spectroscope data
     if (FastLEDManager.currentAnimation)
       FastLEDManager.stop();
     for (uint16_t i = 0; i < NUM_LEDS; i++)
     {
-      // leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
+      FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     }
     break;
   case 5: // Saturation
     Config.saturation = binary[1];
-    liveDataHasChanged = true;
-    webSocket.sendTXT(num, String("ok").c_str());
+    socket.sendTXT(id, String("ok").c_str());
     break;
   case 6: // linearSpectroscope data
-    Spectroscope::linearSpectroscope(binary + 1);
+    Spectroscope::updateSpectroscope(binary + 1, false);
     break;
   case 7: // symmetricalSpectroscope data
-    Spectroscope::symmetricalSpectroscope(binary + 1);
+    Spectroscope::updateSpectroscope(binary + 1, true);
     break;
   }
 }
 
-String byteArrayToString(uint8_t *bytes)
+String byteArray2string(uint8_t *bytes)
 {
   String s = "";
   for (uint16_t i = 0; bytes[i] != '\0'; i++)
@@ -160,9 +150,9 @@ String byteArrayToString(uint8_t *bytes)
 
 void broadcastStatus()
 {
-  // Send status as JSON
-  String msg = "{\n  \"status\": " + String((int)FastLEDManager.status) + ",\n  \"currentAnimation\": \"" + (FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "") + "\"\n}";
-  WebSocket::webSocket.broadcastTXT(msg.c_str());
+  String msg = "{\"status\": " + String((int)FastLEDManager.status) + ",\"currentAnimation\":\"" +
+    (FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "") + "\"\n}";
+  WebSocket::socket.broadcastTXT(msg.c_str());
 }
 
 } // namespace WebSocket

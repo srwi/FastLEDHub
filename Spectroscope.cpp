@@ -13,7 +13,6 @@ namespace Spectroscope
 uint8_t spectroscopeData[22] = {0};
 CRGB color_1, color_2 = CRGB::Red;
 
-
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
   Fade::stop();
@@ -35,29 +34,19 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
   {
     for (int j = 0; j < stripe_width; j++)
     {
-      // leds[current_led].red = color_1.red * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.red * spectroscopeData[i] / 255 * i / 15;
-      // leds[current_led].green = color_1.green * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.green * spectroscopeData[i] / 255 * i / 15;
-      // leds[current_led].blue = color_1.blue * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.blue * spectroscopeData[i] / 255 * i / 15;
-      // // Copy to second half
-      // if (isSymmetrical)
-      // {
-      //   leds[NUM_LEDS - current_led].red = leds[current_led].red;
-      //   leds[NUM_LEDS - current_led].green = leds[current_led].green;
-      //   leds[NUM_LEDS - current_led].blue = leds[current_led].blue;
-      // }
+      FastLEDManager.leds[current_led].red = color_1.red * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.red * spectroscopeData[i] / 255 * i / 15;
+      FastLEDManager.leds[current_led].green = color_1.green * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.green * spectroscopeData[i] / 255 * i / 15;
+      FastLEDManager.leds[current_led].blue = color_1.blue * spectroscopeData[i] / 255 * (15 - i) / 15 + color_2.blue * spectroscopeData[i] / 255 * i / 15;
+      // Copy to second half
+      if (isSymmetrical)
+      {
+        FastLEDManager.leds[NUM_LEDS - current_led].red = FastLEDManager.leds[current_led].red;
+        FastLEDManager.leds[NUM_LEDS - current_led].green = FastLEDManager.leds[current_led].green;
+        FastLEDManager.leds[NUM_LEDS - current_led].blue = FastLEDManager.leds[current_led].blue;
+      }
       current_led++;
     }
   }
-}
-
-void symmetricalSpectroscope(uint8_t *arr)
-{
-  updateSpectroscope(arr, true);
-}
-
-void linearSpectroscope(uint8_t *arr)
-{
-  updateSpectroscope(arr, false);
 }
 
 } // namespace Spectroscope

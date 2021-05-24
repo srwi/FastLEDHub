@@ -62,11 +62,11 @@ void handle()
       bool ledsIlluminated = false;
       for (uint16_t i = 0; i < NUM_LEDS; i++)
       {
-        // if (brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
-        // {
-        //   ledsIlluminated = true;
-        //   break;
-        // }
+        if (FastLEDManager.brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
+        {
+          ledsIlluminated = true;
+          break;
+        }
       }
 
       if (!ledsIlluminated)
@@ -110,7 +110,7 @@ void stop()
 
 void tick()
 {
-  if (FastLEDManager.status == AnimationStatus::PAUSED)
+  if (FastLEDManager.status == PAUSED)
     return;
 
   if (currentFade == Fade::FadeMode::ALARM && fadeBrightness == 1023)

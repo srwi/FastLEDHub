@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Animation.h"
+#include "Config.h"
 #include "FastLEDManager.h"
 
 class Color : public Animation
