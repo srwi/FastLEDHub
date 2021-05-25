@@ -282,10 +282,20 @@ void FastLEDManagerClass::pause()
 
 void FastLEDManagerClass::toggle()
 {
-  if (currentAnimation && status == RUNNING)
+  if (status == RUNNING)
     pause();
   else
     resume();
+}
+
+void FastLEDManagerClass::toggle(Animation *animation)
+{
+  if (currentAnimation && currentAnimation == animation && status == RUNNING)
+    pause();
+  else if (currentAnimation && currentAnimation == animation && status == PAUSED)
+    resume();
+  else
+    begin(animation);
 }
 
 FastLEDManagerClass FastLEDManager;

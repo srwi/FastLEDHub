@@ -75,7 +75,7 @@ void handleText(String text, uint8_t id)
   {
     String animation = text.substring(7);
     Fade::stop();
-    FastLEDManager.toggle();
+    FastLEDManager.toggle(FastLEDManager.getAnimation(animation));
   }
   else if (text == "stop")
   {

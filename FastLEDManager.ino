@@ -5,8 +5,9 @@
 #include "Webserver.h"
 #include "WebSocket.h"
 
-// Include animations here:
 #include "Animations/color.h"
+#include "Animations/rbWave.h"
+#include "Animations/rgbWave.h"
 
 #include <Arduino.h>
 #include <ESPEssentials.h>
@@ -31,6 +32,8 @@ void setup()
   // FastLEDManager.setBrightness(255);
 
   FastLEDManager.registerAnimation(new Color("Color"));
+  FastLEDManager.registerAnimation(new RbWave("RB Wave"));
+  FastLEDManager.registerAnimation(new RgbWave("RGB Wave"));
 }
 
 void loop()

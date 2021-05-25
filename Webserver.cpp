@@ -26,28 +26,23 @@ void initialize()
   });
   WebServer.on("/stop", HTTP_GET, [&]() {
     Fade::stop();
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.stop();
+    FastLEDManager.stop();
     WebServer.send(200, "text/plain", "Animation stopped.");
   });
   WebServer.on("/pause", HTTP_GET, [&]() {
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.pause();
+    FastLEDManager.pause();
     WebServer.send(200, "text/plain", "Animation paused.");
   });
   WebServer.on("/resume", HTTP_GET, [&]() {
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.resume();
+    FastLEDManager.resume();
     WebServer.send(200, "text/plain", "Animation resumed.");
   });
   WebServer.on("/toggle", HTTP_GET, [&]() {
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.toggle();
+    FastLEDManager.toggle();
     WebServer.send(200, "text/plain", "Animation toggled.");
   });
   WebServer.on("/restart", HTTP_GET, [&]() {
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.restart();
+    FastLEDManager.restart();
     WebServer.send(200, "text/plain", "Animation restarted.");
   });
   WebServer.on("/begin", HTTP_GET, [&]() {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ColorUtils.h"
+
 #include <Arduino.h>
 #define FASTLED_INTERNAL
 #include <FastLED.h>
@@ -7,7 +9,7 @@
 #include <Ticker.h>
 
 
-#define NUM_LEDS 100
+#define NUM_LEDS 6
 #define FASTLEDMANAGER_INPUT_TICKER_INTERVAL 10
 
 class Animation;
@@ -86,6 +88,11 @@ public:
   /// and PAUSED animation status. Calling this method will have no effect
   /// if the animation status is STOPPED.
   void toggle();
+
+  /// Toggle a specific animation. If this animation is not currently RUNNING
+  /// or PAUSED it will begin instead.
+  /// @param animation Animation to begin when STOPPED
+  void toggle(Animation *animation);
 
   /// Stops the current animation. The animation status will be STOPPED.
   void stop();
