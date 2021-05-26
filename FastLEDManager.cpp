@@ -117,7 +117,7 @@ void FastLEDManagerClass::show(int16_t bright10)
 
 void FastLEDManagerClass::clear()
 {
-  for(uint8_t i = 0; i < numLeds; i++)
+  for(uint16_t i = 0; i < numLeds; i++)
   {
     leds[i] = CRGB::Black;
   }
