@@ -10,7 +10,7 @@ public:
   using Animation::Animation;
 
   // Division will leave a small remainder but won't be noticable
-  uint8_t ledDiv = HSV2RGB_SMOOTH_RANGE / NUM_LEDS;
+  uint8_t ledDiv = HSV2RGB_SMOOTH_RANGE / FastLEDManager.numLeds;
   uint16_t step;
 
   void reset()
@@ -20,7 +20,7 @@ public:
 
   void loop()
   {
-    for (uint16_t i = 0; i < NUM_LEDS; i++)
+    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
     {
       FastLEDManager.leds[i] = hsv2rgb_smooth((ledDiv * i + step) % HSV2RGB_SMOOTH_RANGE, Config.saturation, 255);
     }

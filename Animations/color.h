@@ -15,7 +15,7 @@ public:
 
   void loop()
   {
-    fill_solid(FastLEDManager.leds, NUM_LEDS, strtol((const char *)&Config.color[0], NULL, 16));
+    fill_solid(FastLEDManager.leds, FastLEDManager.numLeds, strtol((const char *)&Config.color[0], NULL, 16));
 
     FastLEDManager.show();
   }

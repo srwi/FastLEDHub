@@ -16,7 +16,7 @@ public:
 
   void loop()
   {
-    for (uint16_t i = 0; i < NUM_LEDS; i++)
+    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
     {
       FastLEDManager.leds[i] = getCyclicColor((ledDiv * i + step) % (HSV2RGB_SMOOTH_RANGE * 2 / 3));
     }
@@ -30,7 +30,7 @@ public:
 
 private:
   // Division will leave a small remainder but won't be noticable
-  uint8_t ledDiv = 2.0 / 3 * HSV2RGB_SMOOTH_RANGE / NUM_LEDS;
+  uint8_t ledDiv = 2.0 / 3 * HSV2RGB_SMOOTH_RANGE / FastLEDManager.numLeds;
   uint16_t step;
 
   CRGB getCyclicColor(uint16_t index)

@@ -119,7 +119,7 @@ void handleBinary(uint8_t *binary, uint8_t id)
   case 4: // Spectroscope data
     if (FastLEDManager.currentAnimation)
       FastLEDManager.stop();
-    for (uint16_t i = 0; i < NUM_LEDS; i++)
+    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
     {
       FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     }

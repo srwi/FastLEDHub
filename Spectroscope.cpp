@@ -28,7 +28,7 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
   color_1 = CRGB(arr[16], arr[17], arr[18]);
   color_2 = CRGB(arr[19], arr[20], arr[21]);
 
-  uint16_t stripe_width = isSymmetrical ? NUM_LEDS / 32 : NUM_LEDS / 16;
+  uint16_t stripe_width = isSymmetrical ? FastLEDManager.numLeds / 32 : FastLEDManager.numLeds / 16;
   uint16_t current_led = 0;
   for (int i = 0; i < 16; i++)
   {
@@ -40,9 +40,9 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
       // Copy to second half
       if (isSymmetrical)
       {
-        FastLEDManager.leds[NUM_LEDS - current_led].red = FastLEDManager.leds[current_led].red;
-        FastLEDManager.leds[NUM_LEDS - current_led].green = FastLEDManager.leds[current_led].green;
-        FastLEDManager.leds[NUM_LEDS - current_led].blue = FastLEDManager.leds[current_led].blue;
+        FastLEDManager.leds[FastLEDManager.numLeds - current_led].red = FastLEDManager.leds[current_led].red;
+        FastLEDManager.leds[FastLEDManager.numLeds - current_led].green = FastLEDManager.leds[current_led].green;
+        FastLEDManager.leds[FastLEDManager.numLeds - current_led].blue = FastLEDManager.leds[current_led].blue;
       }
       current_led++;
     }

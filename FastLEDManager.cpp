@@ -23,8 +23,11 @@ FastLEDManagerClass::FastLEDManagerClass() :
 {
 }
 
-void FastLEDManagerClass::initialize()
+void FastLEDManagerClass::initialize(uint16_t numberOfLeds)
 {
+  numLeds = numberOfLeds;
+  leds = new CRGB[numLeds];
+  brightnessCorrectedLeds = new CRGB[numLeds];
   brightness10 = 1023;
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
@@ -77,7 +80,7 @@ void FastLEDManagerClass::show(int16_t bright10)
   uint8_t bright8 = gammaCorrectedBrightness / 4;
   uint8_t fract2 = bright8 != 255 ? gammaCorrectedBrightness % 4 : 0;
 
-  for (uint16_t i = 0; i < NUM_LEDS; i++)
+  for (uint16_t i = 0; i < numLeds; i++)
   {
     brightnessCorrectedLeds[i] = leds[i];
     switch (fract2)
@@ -114,7 +117,7 @@ void FastLEDManagerClass::show(int16_t bright10)
 
 void FastLEDManagerClass::clear()
 {
-  for(uint8_t i = 0; i < NUM_LEDS; i++)
+  for(uint8_t i = 0; i < numLeds; i++)
   {
     leds[i] = CRGB::Black;
   }

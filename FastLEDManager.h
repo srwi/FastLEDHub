@@ -8,8 +8,6 @@
 #include <LinkedList.h>
 #include <Ticker.h>
 
-
-#define NUM_LEDS 6
 #define FASTLEDMANAGER_INPUT_TICKER_INTERVAL 10
 
 class Animation;
@@ -33,7 +31,7 @@ public:
   void handle();
 
   /// Initialize FastLEDManager
-  void initialize();
+  void initialize(uint16_t numLeds);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
@@ -121,13 +119,16 @@ public:
   int16_t brightness10;
 
   /// Array holding all led colors. This array should be used to set led colors.
-  CRGB leds[NUM_LEDS];
+  CRGB *leds;
 
   /// Array holding the actual led colors that get used by FastLED.
   /// This will be used internally by FastLEDManager and should only be
   /// used once in combination with FastLEDManager.addLeds(). DO NOT use this
   /// to change led colors within an animation. Use FastLEDManager.leds instead.
-  CRGB brightnessCorrectedLeds[NUM_LEDS];
+  CRGB *brightnessCorrectedLeds;
+
+  /// Number of registered LEDs
+  uint16_t numLeds;
 
 private:
   /// Handle all configured inputs. This will get called periodically.

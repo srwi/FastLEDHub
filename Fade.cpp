@@ -60,7 +60,7 @@ void handle()
     else // brightness10 > 0
     {
       bool ledsIlluminated = false;
-      for (uint16_t i = 0; i < NUM_LEDS; i++)
+      for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
       {
         if (FastLEDManager.brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
         {
