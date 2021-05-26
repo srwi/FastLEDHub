@@ -116,13 +116,15 @@ void FastLEDManagerClass::show(int16_t bright10)
   CFastLED::show();
 }
 
-void FastLEDManagerClass::clear()
+void FastLEDManagerClass::clear(bool writeData)
 {
   for(uint16_t i = 0; i < numLeds; i++)
   {
     leds[i] = CRGB::Black;
   }
-  show();
+
+  if (writeData)
+    show();
 }
 
 void FastLEDManagerClass::delay(uint16_t ms)
@@ -266,6 +268,12 @@ void FastLEDManagerClass::resume()
 
   WebSocket::broadcastStatus();
   PRINTLN("Resumed '" + currentAnimation->getName() + "'");
+}
+
+void FastLEDManagerClass::showColor(const struct CRGB &color, uint8_t scale)
+{
+  fill_solid(leds, numLeds, color);
+  brightness10 = scale * 4 * 1.003;
 }
 
 void FastLEDManagerClass::restart()

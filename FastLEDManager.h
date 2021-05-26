@@ -69,9 +69,19 @@ public:
   /// @param bright10 10 bit brightness value
   void show(int16_t bright10 = -1);
 
+  /// Set all LEDs on the controller to a given color/scale
+  /// @param color Color to set LEDs to
+  /// @param scale Brightness scale to set LEDs to (0 - 255)
+  void showColor(const struct CRGB &color, uint8_t scale);
+
   /// Clear all pixels. This function should be used in combination with
   /// FastLEDManager rather than FastLED.clear().
-  void clear();
+  /// @param writeData Wether to write out the data
+  void clear(bool writeData = false);
+
+  /// Clear all pixels. This function should be used in combination with
+  /// FastLEDManager rather than FastLED.clear().
+  void clearData() { clear(); };
 
   /// Wait for a given amount of milliseconds while still calling
   /// show() periodically. Use this instead of the regular Arduino delay.
