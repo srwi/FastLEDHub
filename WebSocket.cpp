@@ -5,6 +5,7 @@
 #include "Config.h"
 #include "Fade.h"
 #include "FastLEDManager.h"
+#include "SerialOut.h"
 #include "Spectroscope.h"
 
 #include <ArduinoJson.h>
@@ -26,7 +27,7 @@ void initialize()
   socket.begin();
   socket.onEvent(handle);
   if (MDNS.begin("lightstrip"))
-    Serial.println("MDNS responder started");
+    PRINTLN_VERBOSE("MDNS responder started");
   MDNS.addService("http", "tcp", 80);
   MDNS.addService("ws", "tcp", 81);
 }
@@ -38,21 +39,21 @@ void handle(uint8_t id, WStype_t type, uint8_t *payload, size_t length)
   case WStype_DISCONNECTED:
     Config.save();
     connectionCount--;
-    Serial.printf("[%u] Disconnected!\n", id);
+    PRINTF("[%u] Disconnected!\n", id);
     break;
   case WStype_CONNECTED:
   {
     connectionCount++;
     IPAddress ip = socket.remoteIP(id);
-    Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
+    PRINTF("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
   }
   break;
   case WStype_TEXT:
-    // Serial.printf("[%u] Got text: %s\n", id, payload);
+    PRINTF_VERBOSE("[%u] Got text: %s\n", id, payload);
     handleText(byteArray2string(payload), id);
     break;
   case WStype_BIN:
-    // Serial.printf("[%u] Got binary: %s\n", id, payload);
+    PRINTF_VERBOSE("[%u] Got binary: %s\n", id, payload);
     handleBinary(payload, id);
     break;
   default:
@@ -99,7 +100,7 @@ void handleText(String text, uint8_t id)
   }
   else
   {
-    Serial.println("Command '" + text + "' not found!");
+    PRINTLN("Command '" + text + "' not found!");
   }
 }
 

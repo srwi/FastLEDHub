@@ -125,7 +125,7 @@ public:
   /// This will be used internally by FastLEDManager and should only be
   /// used once in combination with FastLEDManager.addLeds(). DO NOT use this
   /// to change led colors within an animation. Use FastLEDManager.leds instead.
-  CRGB *brightnessCorrectedLeds;
+  CRGB *hardwareLeds;
 
   /// Number of registered LEDs
   uint16_t numLeds;

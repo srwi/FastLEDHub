@@ -1,6 +1,7 @@
 #include "Fade.h"
 
 #include "FastLEDManager.h"
+#include "SerialOut.h"
 
 #include <ArduinoJson.h>
 #include <ESPEssentials.h>
@@ -62,7 +63,7 @@ void handle()
       bool ledsIlluminated = false;
       for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
       {
-        if (FastLEDManager.brightnessCorrectedLeds[i] != CRGB(0, 0, 0))
+        if (FastLEDManager.hardwareLeds[i] != CRGB(0, 0, 0))
         {
           ledsIlluminated = true;
           break;
@@ -91,14 +92,14 @@ void begin(FadeMode fadeMode)
   {
     FastLEDManager.begin(FastLEDManager.getAnimation(Config.alarmAnimation));
     fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1024, tick);
-    Serial.println("[Fade] Start fade 'Alarm'");
+    PRINTLN("[Fade] Start fade 'Alarm'");
   }
   else if (fadeMode == Fade::FadeMode::SUNSET)
   {
     FastLEDManager.begin(FastLEDManager.getAnimation(Config.sunsetAnimation));
     sunsetMaximumBrightness = FastLEDManager.brightness10;
     fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, tick);
-    Serial.println("[Fade] Start fade 'Sunset'");
+    PRINTLN("[Fade] Start fade 'Sunset'");
   }
 }
 
@@ -118,12 +119,12 @@ void tick()
     if (Config.postAlarmAnimation != Config.alarmAnimation)
       FastLEDManager.begin(FastLEDManager.getAnimation(Config.postAlarmAnimation));
     fadeTicker.detach();
-    Serial.println("[Fade] End fade 'Alarm'");
+    PRINTLN("[Fade] End fade 'Alarm'");
   }
   else if (currentFade == Fade::FadeMode::SUNSET && fadeBrightness == sunsetMaximumBrightness)
   {
     fadeTicker.detach();
-    Serial.println("[Fade] End fade 'Sunset'");
+    PRINTLN("[Fade] End fade 'Sunset'");
   }
   else
   {
@@ -132,7 +133,7 @@ void tick()
     else
       fadeTicker.detach();
 
-    Serial.println("[Fade] Fade brightness: " + String(fadeBrightness));
+    PRINTLN("[Fade] Fade brightness: " + String(fadeBrightness));
   }
 
   FastLEDManager.brightness10 = fadeBrightness;
@@ -193,7 +194,7 @@ void getSunset(uint16_t d, float Lat, float Long)
   Config.sunsetMinute = (sunset - floor(sunset)) * 60;
   Config.save();
 
-  Serial.println("[Sunset] Got sunset time: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
+  PRINTLN("[Sunset] Got sunset time: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
 }
 
 } // namespace Fade

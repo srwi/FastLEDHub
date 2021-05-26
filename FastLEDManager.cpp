@@ -4,6 +4,7 @@
 #include "ColorUtils.h"
 #include "Config.h"
 #include "Fade.h"
+#include "SerialOut.h"
 #include "Webserver.h"
 #include "WebSocket.h"
 
@@ -27,7 +28,7 @@ void FastLEDManagerClass::initialize(uint16_t numberOfLeds)
 {
   numLeds = numberOfLeds;
   leds = new CRGB[numLeds];
-  brightnessCorrectedLeds = new CRGB[numLeds];
+  hardwareLeds = new CRGB[numLeds];
   brightness10 = 1023;
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
@@ -82,31 +83,31 @@ void FastLEDManagerClass::show(int16_t bright10)
 
   for (uint16_t i = 0; i < numLeds; i++)
   {
-    brightnessCorrectedLeds[i] = leds[i];
+    hardwareLeds[i] = leds[i];
     switch (fract2)
     {
       case 0:
-        brightnessCorrectedLeds[i].nscale8(bright8);
+        hardwareLeds[i].nscale8(bright8);
         break;
       case 2:
         if (i % 2)
         {
-          brightnessCorrectedLeds[i].nscale8(bright8);
+          hardwareLeds[i].nscale8(bright8);
         }
         else
         {
-          brightnessCorrectedLeds[i].nscale8(bright8 + 1);
+          hardwareLeds[i].nscale8(bright8 + 1);
         }
         break;
       case 1:
       case 3:
         if (i % 4 < fract2)
         {
-          brightnessCorrectedLeds[i].nscale8(bright8 + 1);
+          hardwareLeds[i].nscale8(bright8 + 1);
         }
         else
         {
-          brightnessCorrectedLeds[i].nscale8(bright8);
+          hardwareLeds[i].nscale8(bright8);
         }
         break;
     }
@@ -228,7 +229,7 @@ void FastLEDManagerClass::begin(Animation *animation)
   currentAnimation->reset();
 
   WebSocket::broadcastStatus();
-  Serial.println("Started '" + currentAnimation->getName() + "'");
+  PRINTLN("Started '" + currentAnimation->getName() + "'");
 }
 
 void FastLEDManagerClass::cycle()
@@ -253,7 +254,7 @@ void FastLEDManagerClass::stop()
   currentAnimation = NULL;
 
   WebSocket::broadcastStatus();
-  Serial.println("Stopped animation");
+  PRINTLN("Stopped animation");
 }
 
 void FastLEDManagerClass::resume()
@@ -264,7 +265,7 @@ void FastLEDManagerClass::resume()
   status = RUNNING;
 
   WebSocket::broadcastStatus();
-  Serial.println("Resumed '" + currentAnimation->getName() + "'");
+  PRINTLN("Resumed '" + currentAnimation->getName() + "'");
 }
 
 void FastLEDManagerClass::restart()
@@ -272,7 +273,7 @@ void FastLEDManagerClass::restart()
   stop();
   begin(currentAnimation);
 
-  Serial.println("Restarted '" + currentAnimation->getName() + "'");
+  PRINTLN("Restarted '" + currentAnimation->getName() + "'");
 }
 
 void FastLEDManagerClass::pause()
@@ -280,7 +281,7 @@ void FastLEDManagerClass::pause()
   status = PAUSED;
 
   WebSocket::broadcastStatus();
-  Serial.println("Paused '" + currentAnimation->getName() + "'");
+  PRINTLN("Paused '" + currentAnimation->getName() + "'");
 }
 
 void FastLEDManagerClass::toggle()
