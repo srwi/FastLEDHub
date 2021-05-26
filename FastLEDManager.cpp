@@ -132,6 +132,7 @@ void FastLEDManagerClass::delay(uint16_t ms)
   unsigned long start = micros();
   while (micros() - start < 1000.0 * ms * pow(Config.speed - 255, 2) / 16384)
   {
+    show();
     handleESPEssentials();
     Fade::handle();
     WebSocket::socket.loop();

@@ -16,8 +16,7 @@ CRGB color_1, color_2 = CRGB::Red;
 void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
 {
   Fade::stop();
-  if (FastLEDManager.currentAnimation)
-    FastLEDManager.stop();
+  FastLEDManager.stop();
 
   // Spectrum
   for (uint8_t i = 0; i < 16; i++)
@@ -47,6 +46,7 @@ void updateSpectroscope(uint8_t *arr, bool isSymmetrical)
       current_led++;
     }
   }
+  FastLEDManager.show();
 }
 
 } // namespace Spectroscope

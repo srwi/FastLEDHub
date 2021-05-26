@@ -6,6 +6,7 @@
 namespace WebSocket
 {
 
+/// Websocket instance used for communication with web interface
 extern WebSocketsServer socket;
 
 /// Initialize the websocket instance

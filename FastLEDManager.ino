@@ -6,7 +6,7 @@
 
 #include <ESPEssentials.h>
 
-#define NUM_LEDS 6
+#define NUM_LEDS 100
 #define LIGHTSTRIP_PIN 5
 
 
@@ -22,9 +22,10 @@ void setup()
 
   // FastLEDManager.enableCycleButton(4);
   // FastLEDManager.enablePotentiometer(5);
-  // FastLEDManager.setDither(0);
-  // FastLEDManager.setTemperature(Tungsten100W);
-  // FastLEDManager.setBrightness(255);
+
+  FastLEDManager.setDither(0);
+  FastLEDManager.setTemperature(Tungsten100W);
+  FastLEDManager.setBrightness(255);
 }
 
 void loop()

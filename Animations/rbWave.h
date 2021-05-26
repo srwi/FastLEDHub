@@ -25,6 +25,7 @@ public:
     if (step == HSV2RGB_SMOOTH_RANGE * 2 / 3)
       step = 0;
 
+    FastLEDManager.delay(5);
     FastLEDManager.show();
   }
 

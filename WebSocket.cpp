@@ -16,11 +16,7 @@
 namespace WebSocket
 {
 
-/// Websocket instance used for communication with web interface
 WebSocketsServer socket = WebSocketsServer(81);
-
-/// Number of active websocket connections
-uint8_t connectionCount = 0;
 
 void initialize()
 {
@@ -38,12 +34,10 @@ void handle(uint8_t id, WStype_t type, uint8_t *payload, size_t length)
   {
   case WStype_DISCONNECTED:
     Config.save();
-    connectionCount--;
     PRINTF("[%u] Disconnected!\n", id);
     break;
   case WStype_CONNECTED:
   {
-    connectionCount++;
     IPAddress ip = socket.remoteIP(id);
     PRINTF("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
   }

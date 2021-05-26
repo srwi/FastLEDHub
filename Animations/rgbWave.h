@@ -29,8 +29,7 @@ public:
     if (step == HSV2RGB_SMOOTH_RANGE)
       step = 0;
 
-    delay(5);
-
+    FastLEDManager.delay(5);
     FastLEDManager.show();
   }
 };
