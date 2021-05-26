@@ -224,7 +224,7 @@ void FastLEDManagerClass::begin(Animation *animation)
   if (currentAnimation && currentAnimation->getName() == animation->getName())
     return;
 
-  clear();
+  clear(true);
 
   status = RUNNING;
   currentAnimation = animation;
@@ -252,7 +252,7 @@ void FastLEDManagerClass::stop()
     return;
 
   status = STOPPED;
-  clear();
+  clear(true);
   currentAnimation = NULL;
 
   WebSocket::broadcastStatus();

@@ -67,24 +67,43 @@ void handleText(String text, uint8_t id)
   text.toCharArray(textArray, text.length());
 
   if (Config.parseJson(textArray))
-  {
     Config.save();
-    return;
-  }
+}
 
-  if (text.startsWith("toggle"))
+void handleBinary(uint8_t *binary, uint8_t id)
+{
+  switch (binary[0])
   {
-    String animation = text.substring(7);
+  case 0: // Color
+    Config.color = rgb2hex(binary[1], binary[2], binary[3]);
+    FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
+    break;
+  case 1: // Toggle animation
     Fade::stop();
-    FastLEDManager.toggle(FastLEDManager.getAnimation(animation));
-  }
-  else if (text == "stop")
-  {
+    FastLEDManager.toggle(FastLEDManager.getAnimation(binary[1]));
+    break;
+  case 2: // Stop
+    FastLEDManager.stop();
+    break;
+  case 10: // Spectroscope data
     if (FastLEDManager.currentAnimation)
       FastLEDManager.stop();
-  }
-  else if (text == "requesting_config")
-  {
+    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
+      FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
+    break;
+  case 11: // linear spectroscope data
+    Spectroscope::updateSpectroscope(binary + 1, false);
+    break;
+  case 12: // Symmetrical spectroscope data
+    Spectroscope::updateSpectroscope(binary + 1, true);
+    break;
+  case 20: // Speed
+    Config.speed = binary[1];
+    break;
+  case 21: // Saturation
+    Config.saturation = binary[1];
+    break;
+  case 30: // Request configuration
     DynamicJsonDocument doc(2048);
     doc = Config.getJson(doc);
     doc["status"] = String(FastLEDManager.status);
@@ -97,43 +116,6 @@ void handleText(String text, uint8_t id)
     String buffer = "";
     serializeJson(doc, buffer);
     socket.sendTXT(id, buffer.c_str());
-  }
-  else
-  {
-    PRINTLN("Command '" + text + "' not found!");
-  }
-}
-
-void handleBinary(uint8_t *binary, uint8_t id)
-{
-  switch (binary[0])
-  {
-  case 0: // Color
-    Config.color = rgb2hex(binary[1], binary[2], binary[3]);
-    FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
-    socket.sendTXT(id, String("ok").c_str());
-    break;
-  case 1: // Speed
-    Config.speed = binary[1];
-    socket.sendTXT(id, String("ok").c_str());
-    break;
-  case 4: // Spectroscope data
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.stop();
-    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
-    {
-      FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
-    }
-    break;
-  case 5: // Saturation
-    Config.saturation = binary[1];
-    socket.sendTXT(id, String("ok").c_str());
-    break;
-  case 6: // linearSpectroscope data
-    Spectroscope::updateSpectroscope(binary + 1, false);
-    break;
-  case 7: // symmetricalSpectroscope data
-    Spectroscope::updateSpectroscope(binary + 1, true);
     break;
   }
 }

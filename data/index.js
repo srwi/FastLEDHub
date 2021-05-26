@@ -2,14 +2,13 @@ let currentAnimation = '';
 let currentStatus = 0;
 let currentColor = '';
 
-let websocketReady = false;
+let ws_pending_msg;
 let ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
 let connection = new WebSocket(ws_uri, ['arduino']);
 connection.binaryType = 'arraybuffer';
 
 connection.onopen = function (e) {
-  sendText('requesting_config');
-
+  ws_pending_msg = [30]
   connectingOverlayText.innerHTML = 'Waiting for response...';
   refreshButton.style.display = 'none';
 };
@@ -27,7 +26,6 @@ connection.onclose = function (e) {
 connection.onmessage = function (e) {
   console.log('Received: ', e.data);
 
-  websocketReady = true;
   try {
     handleJsonData(JSON.parse(e.data));
 
@@ -38,7 +36,7 @@ connection.onmessage = function (e) {
 
 function handleJsonData(data) {
   if (data.hasOwnProperty('animations')) {
-    data.animations.forEach(animation => {
+    data.animations.forEach((animation, idx) => {
       // Fill animation dropdowns
       alarmAnimation.add(new Option(animation));
       postAlarmAnimation.add(new Option(animation));
@@ -50,7 +48,7 @@ function handleJsonData(data) {
         let btn = document.createElement('button');
         btn.classList.add('btn-secondary', 'btn');
         btn.innerHTML = animation;
-        btn.onclick = () => { sendAnimationButton(animation); };
+        btn.onclick = () => { sendAnimationButton(idx); };
         animationButtons.insertBefore(btn, stopButton);
       }
     })
@@ -164,17 +162,14 @@ function sendConfig() {
 }
 
 function sendBytes() {
-  if (connection.readyState == 1 && websocketReady) {
-    let data = new Uint8Array(arguments.length);
-    for (let i = 0; i < arguments.length; i++) {
-      data[i] = arguments[i];
+  if (connection.readyState == 1 && ws_pending_msg) {
+    let data = new Uint8Array(ws_pending_msg.length);
+    for (let i = 0; i < ws_pending_msg.length; i++) {
+      data[i] = ws_pending_msg[i];
     }
+    ws_pending_msg = undefined;
     connection.send(data.buffer);
-    websocketReady = false;
     console.log('Sent bytes: ' + data);
-  }
-  else {
-    console.log('Not connected. Data not sent!');
   }
 }
 
@@ -189,7 +184,7 @@ function sendText(text) {
 }
 
 function sendAnimationButton(animation) {
-  sendText('toggle ' + animation);
+  ws_pending_msg = [1, animation];
 }
 
 
@@ -219,7 +214,7 @@ let $customColorPicker = $('#colorButton').colorPicker({
     let newColor = this.color.colors.HEX + ''; // dereference by appending ''
     if (currentColor != newColor || toggled === true) {
       let newColorRGB = this.color.colors.RND.rgb;
-      sendBytes(0, newColorRGB.r, newColorRGB.g, newColorRGB.b);
+      ws_pending_msg = [0, newColorRGB.r, newColorRGB.g, newColorRGB.b];
       currentColor = newColor;
       document.querySelector('#colorButton').style.borderColor = '#' + newColor;
     }
@@ -229,8 +224,8 @@ let $customColorPicker = $('#colorButton').colorPicker({
 // Sliders
 noUiSlider.create(speed, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
 noUiSlider.create(saturation, { start: 255, step: 1, range: { 'min': 110, 'max': 255 } });
-speed.noUiSlider.on('update', (values, handle) => { sendBytes(1, values[handle]); });
-saturation.noUiSlider.on('update', (values, handle) => { sendBytes(5, values[handle]); });
+speed.noUiSlider.on('update', (values, handle) => { ws_pending_msg = [20, values[handle]]; });
+saturation.noUiSlider.on('update', (values, handle) => { ws_pending_msg = [21, values[handle]]; });
 document.querySelector('#speed .noUi-handle').innerHTML = 'Speed';
 document.querySelector('#saturation .noUi-handle').innerHTML = 'Sat.';
 
@@ -238,9 +233,12 @@ document.querySelector('#saturation .noUi-handle').innerHTML = 'Sat.';
 let idleTime = 0;
 setInterval(() => {
   idleTime++;
-  if (idleTime > 300)//s
+  if (idleTime > 300) // in s
     connection.close();
 }, 1000);
+
+// Rate limit websocket
+setInterval(sendBytes, 15);
 
 document.addEventListener('mousemove', e => { idleTime = 0; });
 document.addEventListener('keypress', e => { idleTime = 0; });
