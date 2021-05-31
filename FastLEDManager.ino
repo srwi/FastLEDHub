@@ -9,13 +9,17 @@
 #define NUM_LEDS 100
 #define LIGHTSTRIP_PIN 5
 
+template <uint8_t DATA_PIN, EOrder RGB_ORDER = RGB, int WAIT_TIME = 5>
+class WS2812Controller800Khz_noflicker : public ClocklessController<DATA_PIN, C_NS(250), C_NS(625), C_NS(375), RGB_ORDER, 0, false, WAIT_TIME> {};
+template<uint8_t DATA_PIN, EOrder RGB_ORDER>
+class WS2812B_noflicker : public WS2812Controller800Khz_noflicker<DATA_PIN, RGB_ORDER> {};
 
 void setup()
 {
   initESPEssentials("Lightstrip");
 
   FastLEDManager.initialize(NUM_LEDS);
-  FastLEDManager.addLeds<WS2812B, LIGHTSTRIP_PIN, GRB>(FastLEDManager.hardwareLeds, NUM_LEDS);
+  FastLEDManager.addLeds<WS2812B_noflicker, LIGHTSTRIP_PIN>(FastLEDManager.hardwareLeds, NUM_LEDS);
   FastLEDManager.registerAnimation(new Color("Color"));
   FastLEDManager.registerAnimation(new RbWave("RB Wave"));
   FastLEDManager.registerAnimation(new RgbWave("RGB Wave"));
