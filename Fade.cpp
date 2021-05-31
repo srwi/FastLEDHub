@@ -4,6 +4,7 @@
 #include "SerialOut.h"
 
 #include <ArduinoJson.h>
+#include <ESP8266HTTPClient.h>
 #include <ESPEssentials.h>
 #include <Ticker.h>
 #include <time.h>
@@ -18,12 +19,12 @@ uint16_t sunsetMaximumBrightness = 0;
 Ticker fadeTicker;
 Ticker hasBeenStartedResetTicker;
 bool hasBeenStarted = false;
-bool hasSunsetTime = false;
 ConfigClass *config;
 
 void initialize()
 {
   configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
+  getSunsetTime();
 }
 
 void handle()
@@ -37,13 +38,6 @@ void handle()
   if (!n)
     return;
   struct tm *now = gmtime(&n);
-
-  // Get sunset time if not yet done
-  if (!hasSunsetTime && now->tm_year != 70)
-  {
-    getSunset(now->tm_yday, Config.latitude, Config.longitude);
-    hasSunsetTime = true;
-  }
 
   // Check for alarm
   if (Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
@@ -92,14 +86,14 @@ void begin(FadeMode fadeMode)
   {
     FastLEDManager.begin(FastLEDManager.getAnimation(Config.alarmAnimation));
     fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1024, tick);
-    PRINTLN("[Fade] Start fade 'Alarm'");
+    PRINTLN("[FastLEDManager] Start fade 'Alarm'");
   }
   else if (fadeMode == Fade::FadeMode::SUNSET)
   {
     FastLEDManager.begin(FastLEDManager.getAnimation(Config.sunsetAnimation));
     sunsetMaximumBrightness = FastLEDManager.brightness10;
     fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, tick);
-    PRINTLN("[Fade] Start fade 'Sunset'");
+    PRINTLN("[FastLEDManager] Start fade 'Sunset'");
   }
 }
 
@@ -119,12 +113,12 @@ void tick()
     if (Config.postAlarmAnimation != Config.alarmAnimation)
       FastLEDManager.begin(FastLEDManager.getAnimation(Config.postAlarmAnimation));
     fadeTicker.detach();
-    PRINTLN("[Fade] End fade 'Alarm'");
+    PRINTLN("[FastLEDManager] End fade 'Alarm'");
   }
   else if (currentFade == Fade::FadeMode::SUNSET && fadeBrightness == sunsetMaximumBrightness)
   {
     fadeTicker.detach();
-    PRINTLN("[Fade] End fade 'Sunset'");
+    PRINTLN("[FastLEDManager] End fade 'Sunset'");
   }
   else
   {
@@ -133,68 +127,39 @@ void tick()
     else
       fadeTicker.detach();
 
-    PRINTLN("[Fade] Fade brightness: " + String(fadeBrightness));
+    PRINTLN("[FastLEDManager] Fade brightness: " + String(fadeBrightness));
   }
 
   FastLEDManager.brightness10 = fadeBrightness;
 }
 
-float rad(float deg)
+void getSunsetTime()
 {
-  return PI * deg / 180;
-}
+  PRINT("[FastLEDManager] Getting sunset time...");
 
-// https://quantitative-ecology.blogspot.com/2007/10/approximate-sunrise-and-sunset-times.html
-void getSunset(uint16_t d, float Lat, float Long)
-{
-  // This function is copied from:
-  // Teets, D.A. 2003. Predicting sunrise and sunset times.
-  // The College Mathematics Journal 34(4):317-321.
+  WiFiClient client;
+  HTTPClient http;
+  String url = "http://api.sunrise-sunset.org/json?lat=" + String(Config.latitude) + "&lng=" + String(Config.longitude) + "&date=today&formatted=0";
+  http.begin(client, url);
+  String payload = "";
+  if (http.GET() > 0)
+    payload = http.getString();
+  http.end();
 
-  // At the default location the estimates of sunrise and sunset are within
-  // seven minutes of the correct times (http://aa.usno.navy.mil/data/docs/RS_OneYear.php)
-  // with a mean of 2.4 minutes error.
-
-  // Radius of the earth (km)
-  float R = 6378;
-
-  // Radians between the xy-plane and the ecliptic plane
-  float epsilon = rad(23.45);
-
-  // Convert observer's latitude to radians
-  float L = rad(Lat);
-
-  // Calculate offset of sunrise based on longitude (min)
-  // If Long is negative, then the mod represents degrees West of
-  // a standard time meridian, so timing of sunrise and sunset should
-  // be made later.
-  float timezone = -4 * (abs(Long) % 15) * (Long >= 0 ? 1 : -1);
-
-  // The earth's mean distance from the sun (km)
-  float r = 149598000;
-
-  float theta = 2 * PI / 365.25 * (d - 80);
-
-  float zs = r * sin(theta) * sin(epsilon);
-  float rp = sqrt(r * r - zs * zs);
-
-  float t0 = 1440 / (2 * PI) * acos((R - zs * sin(L)) / (rp * cos(L)));
-
-  // A kludge adjustment for the radius of the sun
-  float that = t0 + 5;
-
-  // Adjust "noon" for the fact that the earth's orbit is not circular:
-  float n = 720 - 10 * sin(4 * PI * (d - 80) / 365.25) + 8 * sin(2 * PI * d / 365.25);
-
-  // Now sunrise and sunset are:
-  // float sunrise = (n - that + timezone) / 60;
-  float sunset = (n + that + timezone) / 60;
-
-  Config.sunsetHour = (int)floor(sunset) % 24;
-  Config.sunsetMinute = (sunset - floor(sunset)) * 60;
-  Config.save();
-
-  PRINTLN("[Sunset] Got sunset time: " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
+  DynamicJsonDocument doc(2048);
+  deserializeJson(doc, payload);
+  if(doc.containsKey("results") && doc["results"].containsKey("sunset"))
+  {
+    String sunset = doc["results"]["sunset"].as<String>();
+    Config.sunsetHour = (sunset.substring(11, 13).toInt() + Config.timeZone + Config.summerTime + 24) % 24;
+    Config.sunsetMinute = sunset.substring(14, 16).toInt();
+    Config.save();
+    PRINTLN(" " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
+  }
+  else
+  {
+    PRINTLN("failed. Using last known time instead.");
+  }
 }
 
 } // namespace Fade

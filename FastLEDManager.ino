@@ -6,7 +6,7 @@
 
 #include <ESPEssentials.h>
 
-#define NUM_LEDS 100
+#define NUM_LEDS 6
 #define LIGHTSTRIP_PIN 5
 
 template <uint8_t DATA_PIN, EOrder RGB_ORDER = RGB, int WAIT_TIME = 5>
@@ -19,7 +19,7 @@ void setup()
   initESPEssentials("Lightstrip");
 
   FastLEDManager.initialize(NUM_LEDS);
-  FastLEDManager.addLeds<WS2812B_noflicker, LIGHTSTRIP_PIN>(FastLEDManager.hardwareLeds, NUM_LEDS);
+  FastLEDManager.addLeds<WS2812B_noflicker, LIGHTSTRIP_PIN, GRB>(FastLEDManager.hardwareLeds, NUM_LEDS);
   FastLEDManager.registerAnimation(new Color("Color"));
   FastLEDManager.registerAnimation(new RbWave("RB Wave"));
   FastLEDManager.registerAnimation(new RgbWave("RGB Wave"));

@@ -32,9 +32,9 @@ public:
   /// Sunset duration in minutes
   uint16_t sunsetDuration = 0;
   /// Sunset time hour
-  uint8_t sunsetHour = 0;
+  int8_t sunsetHour = 0;
   /// Sunset time minute
-  uint8_t sunsetMinute = 0;
+  int8_t sunsetMinute = 0;
   /// Sunset time offset in minutes relative to the
   /// automatically obtained local sunset time
   int16_t sunsetOffset = 0;
