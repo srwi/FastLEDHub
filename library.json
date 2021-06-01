@@ -1,0 +1,18 @@
+{
+  "name": "FastLEDManager",
+  "description": "Control multiple FastLED lightstrip animations on the ESP8266 without reuploading and more...",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/stnkl/FastLEDManager.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif8266",
+  "authors":
+  {
+    "name": "Stephan Rumswinkel",
+    "maintainer": true,
+    "url": "https://github.com/stnkl"
+  },
+  "version": "1.0.0"
+}

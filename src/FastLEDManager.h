@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Animation.h"
 #include "ColorUtils.h"
+#include "Config.h"
 
 #include <Arduino.h>
 #define FASTLED_INTERNAL
