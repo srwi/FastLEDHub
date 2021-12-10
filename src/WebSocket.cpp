@@ -6,7 +6,6 @@
 #include "Fade.h"
 #include "FastLEDManager.h"
 #include "SerialOut.h"
-#include "Spectroscope.h"
 
 #include <ArduinoJson.h>
 #include <ESP8266mDNS.h>
@@ -85,12 +84,6 @@ void handleBinary(uint8_t *binary, uint8_t id)
     for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
       FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     break;
-  case 11: // linear spectroscope data
-    Spectroscope::updateSpectroscope(binary + 1, false);
-    break;
-  case 12: // Symmetrical spectroscope data
-    Spectroscope::updateSpectroscope(binary + 1, true);
-    break;
   case 20: // Slider data
     FastLEDManager.getSlider(binary[1])->value = binary[2];
     break;
@@ -107,7 +100,6 @@ void handleBinary(uint8_t *binary, uint8_t id)
     JsonArray sliders = doc.createNestedArray("sliders");
     for (uint8_t i = 0; i < FastLEDManager.sliders.size(); i++)
     {
-      // sliders.add(FastLEDManager.sliders.get(i).name);
       JsonObject slider = sliders.createNestedObject();
       slider["name"] = FastLEDManager.sliders.get(i)->name;
       slider["min"] = FastLEDManager.sliders.get(i)->min;
