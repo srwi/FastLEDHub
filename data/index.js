@@ -25,13 +25,9 @@ connection.onclose = function (e) {
 
 connection.onmessage = function (e) {
   console.log('Received: ', e.data);
-
-  try {
-    handleJsonData(JSON.parse(e.data));
-
-    connectingOverlayText.innerHTML = 'Success!';
-    connectingOverlay.style.display = 'none';
-  } catch (e) { }
+  handleJsonData(JSON.parse(e.data));
+  connectingOverlayText.innerHTML = 'Success!';
+  connectingOverlay.style.display = 'none';
 };
 
 function handleJsonData(data) {
@@ -51,7 +47,27 @@ function handleJsonData(data) {
         btn.onclick = () => { sendAnimationButton(idx); };
         animationButtons.insertBefore(btn, stopButton);
       }
-    })
+    });
+  }
+
+  if (data.hasOwnProperty('sliders')) {
+    data.sliders.forEach((slider, idx) => {
+      let sliderDiv = document.createElement('div')
+      sliderDiv.classList.add('slider')
+      noUiSlider.create(sliderDiv, {
+        start: slider.value,
+        step: slider.step,
+        range: {
+          'min': slider.min,
+          'max': slider.max
+        }
+      });
+      sliderDiv.querySelector(".noUi-handle").innerHTML = slider.name;
+      sliderDiv.noUiSlider.on('update', (values, handle) => {
+        ws_pending_msg = [20, idx, values[handle]];
+      });
+      document.getElementById('slidersWrapper').appendChild(sliderDiv);
+    });
   }
 
   if (data.hasOwnProperty('alarmAnimation'))
@@ -85,10 +101,6 @@ function handleJsonData(data) {
     sunsetDuration.value = data.sunsetDuration;
   if (data.hasOwnProperty('sunsetOffset'))
     sunsetOffset.value = data.sunsetOffset;
-  if (data.hasOwnProperty('speed'))
-    speed.noUiSlider.set(data.speed);
-  if (data.hasOwnProperty('saturation'))
-    saturation.noUiSlider.set(data.saturation);
   if (data.hasOwnProperty('color')) {
     colorButton.value = data.color;
     currentColor = data.color;
@@ -154,8 +166,6 @@ function sendConfig() {
     sunsetOffset: sunsetOffset.value,
     sunsetAnimation: sunsetAnimation.value,
     startupAnimation: useStartupAnimation.checked ? startupAnimation.value : '',
-    speed: speed.noUiSlider.get(),
-    saturation: saturation.noUiSlider.get(),
     color: currentColor
   }, null, 2);
   sendText(json);
@@ -220,14 +230,6 @@ let $customColorPicker = $('#colorButton').colorPicker({
     }
   }
 });
-
-// Sliders
-noUiSlider.create(speed, { start: 128, step: 1, range: { 'min': 0, 'max': 255 } });
-noUiSlider.create(saturation, { start: 255, step: 1, range: { 'min': 110, 'max': 255 } });
-speed.noUiSlider.on('update', (values, handle) => { ws_pending_msg = [20, values[handle]]; });
-saturation.noUiSlider.on('update', (values, handle) => { ws_pending_msg = [21, values[handle]]; });
-document.querySelector('#speed .noUi-handle').innerHTML = 'Speed';
-document.querySelector('#saturation .noUi-handle').innerHTML = 'Sat.';
 
 // Close connection after being ianctive for 5 minutes
 let idleTime = 0;

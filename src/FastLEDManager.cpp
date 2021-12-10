@@ -139,6 +139,11 @@ void FastLEDManagerClass::delay(uint16_t ms)
   }
 }
 
+void FastLEDManagerClass::registerSlider(Slider *slider)
+{
+  sliders.add(slider);
+}
+
 void FastLEDManagerClass::registerAnimation(Animation *animation)
 {
   animations.add(animation);
@@ -159,6 +164,23 @@ Animation* FastLEDManagerClass::getAnimation(String name)
 Animation* FastLEDManagerClass::getAnimation(uint8_t i)
 {
   return (i < animations.size()) ? animations.get(i) : NULL;
+}
+
+Slider* FastLEDManagerClass::getSlider(String name)
+{
+  for (uint8_t i = 0; i < sliders.size(); i++)
+  {
+    Slider *a = sliders.get(i);
+    if (a->name == name)
+      return a;
+  }
+
+  return NULL;
+}
+
+Slider* FastLEDManagerClass::getSlider(uint8_t i)
+{
+  return (i < sliders.size()) ? sliders.get(i) : NULL;
 }
 
 void FastLEDManagerClass::handleInput()

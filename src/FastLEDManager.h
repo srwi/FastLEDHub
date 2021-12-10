@@ -3,6 +3,7 @@
 #include "Animation.h"
 #include "ColorUtils.h"
 #include "Config.h"
+#include "Slider.h"
 
 #include <Arduino.h>
 #define FASTLED_INTERNAL
@@ -48,6 +49,10 @@ public:
   /// @param pin Potentiometer pin
   void enablePotentiometer(uint8_t pin);
 
+  /// Register a slider instance which can be used as a dynamic animation parameter
+  /// @param slider Slider instance
+  void registerSlider(Slider *slider);
+
   /// Register an animation instance to be managed by FastLEDManager
   /// @param animation Pointer to animation instance
   void registerAnimation(Animation *animation);
@@ -65,6 +70,16 @@ public:
   /// @param i Animation index
   /// @return Pointer to animation
   Animation *getAnimation(uint8_t i);
+
+  /// Return a pointer to a slider by name
+  /// @param name Slider name
+  /// @return Pointer to slider
+  Slider *getSlider(String name);
+
+  /// Return a pointer to a slider by index
+  /// @param i Slider index
+  /// @return Pointer to slider
+  Slider *getSlider(uint8_t i);
 
   /// Perform gamma correction on the brightness value and use four neighboring
   /// pixels to further increase the perceived brightness
@@ -118,8 +133,11 @@ public:
   /// calling this method will have no effect.
   void resume();
 
-  /// List of all registered animations
+  /// List of all registered animation pointers
   LinkedList<Animation*> animations;
+
+  /// List of all registered slider pointers
+  LinkedList<Slider*> sliders;
 
   /// Pointer to current animation object
   Animation *currentAnimation;

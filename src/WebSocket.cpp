@@ -79,9 +79,9 @@ void handleBinary(uint8_t *binary, uint8_t id)
   case 2: // Stop
     FastLEDManager.stop();
     break;
-  case 10: // Spectroscope data
-    if (FastLEDManager.currentAnimation)
-      FastLEDManager.stop();
+  case 10: // Color data
+    FastLEDManager.stop();
+    Fade::stop();
     for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
       FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     break;
@@ -91,11 +91,8 @@ void handleBinary(uint8_t *binary, uint8_t id)
   case 12: // Symmetrical spectroscope data
     Spectroscope::updateSpectroscope(binary + 1, true);
     break;
-  case 20: // Speed
-    Config.speed = binary[1];
-    break;
-  case 21: // Saturation
-    Config.saturation = binary[1];
+  case 20: // Slider data
+    FastLEDManager.getSlider(binary[1])->value = binary[2];
     break;
   case 30: // Request configuration
     DynamicJsonDocument doc(2048);
@@ -106,6 +103,17 @@ void handleBinary(uint8_t *binary, uint8_t id)
     for (uint8_t i = 0; i < FastLEDManager.animations.size(); i++)
     {
       animations.add(FastLEDManager.animations.get(i)->getName());
+    }
+    JsonArray sliders = doc.createNestedArray("sliders");
+    for (uint8_t i = 0; i < FastLEDManager.sliders.size(); i++)
+    {
+      // sliders.add(FastLEDManager.sliders.get(i).name);
+      JsonObject slider = sliders.createNestedObject();
+      slider["name"] = FastLEDManager.sliders.get(i)->name;
+      slider["min"] = FastLEDManager.sliders.get(i)->min;
+      slider["max"] = FastLEDManager.sliders.get(i)->max;
+      slider["step"] = FastLEDManager.sliders.get(i)->step;
+      slider["value"] = FastLEDManager.sliders.get(i)->value;
     }
     String buffer = "";
     serializeJson(doc, buffer);
