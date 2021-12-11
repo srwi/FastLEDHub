@@ -145,6 +145,9 @@ public:
   /// Current animation status
   AnimationStatus status = STOPPED;
 
+  /// Current animation speed
+  uint8_t speed = 255;
+
   /// Current brightness value in 10bit
   int16_t brightness10;
 

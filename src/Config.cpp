@@ -72,10 +72,6 @@ bool ConfigClass::parseJson(char *input)
     startupAnimation = doc["startupAnimation"].as<String>();
   if (doc.containsKey("color"))
     color = doc["color"].as<String>();
-  if (doc.containsKey("speed"))
-    speed = doc["speed"];
-  if (doc.containsKey("saturation"))
-    saturation = doc["saturation"];
 
   return !error;
 }
@@ -100,8 +96,6 @@ DynamicJsonDocument ConfigClass::getJson(DynamicJsonDocument doc)
   doc["sunsetAnimation"] = sunsetAnimation;
   doc["startupAnimation"] = startupAnimation;
   doc["color"] = color;
-  doc["speed"] = speed;
-  doc["saturation"] = saturation;
 
   return doc;
 }

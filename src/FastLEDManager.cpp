@@ -37,6 +37,9 @@ void FastLEDManagerClass::initialize(uint16_t numberOfLeds)
     Webserver::initialize();
     Fade::initialize();
   }
+
+  registerSlider(new Slider("Brightness", 0, 255, 255, 1));
+  registerSlider(new Slider("Speed", 0, 255, 127, 1));
 }
 
 void FastLEDManagerClass::enableCycleButton(uint8_t pin)
@@ -130,9 +133,8 @@ void FastLEDManagerClass::clear(bool writeData)
 void FastLEDManagerClass::delay(uint16_t ms)
 {
   unsigned long start = micros();
-  while (micros() - start < 1000.0 * ms * pow(Config.speed - 255, 2) / 16384)
+  while (micros() - start < 1000.0 * ms * pow((FastLEDManager.speed - 255) / 128.0, 2))
   {
-    show();
     handleESPEssentials();
     Fade::handle();
     WebSocket::socket.loop();

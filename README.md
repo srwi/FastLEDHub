@@ -8,8 +8,7 @@ Control multiple FastLED lightstrip animations on the ESP8266 without reuploadin
 
 - Start/stop/pause multiple animations
 - Set custom static color
-- Set animation speed
-- Control saturation
+- Set animation speed and brightness
 - Alarm: Be woken up to an animation slowly fading in
 - Sunset: Automatically fade in an animation when the sun sets at your location
 - Compatible with [ha-bridge](https://github.com/bwssytems/ha-bridge) via [http requests](https://github.com/stnkl/FastLEDManager/blob/master/Webserver.cpp)

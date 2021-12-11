@@ -44,10 +44,6 @@ public:
   String startupAnimation = "";
   /// Lastly used color for Color animation
   String color = "";
-  /// Current animation speed
-  uint8_t speed = 128;
-  /// Current led saturation
-  uint8_t saturation = 255;
 
   /// Initialize config object by mounting file system and
   /// reading the config file.
