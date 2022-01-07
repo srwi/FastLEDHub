@@ -8,6 +8,8 @@
 #include "Webserver.h"
 #include "WebSocket.h"
 
+#include "Animations/Color.h"
+
 #include <ESPEssentials.h>
 
 
@@ -37,6 +39,8 @@ void FastLEDManagerClass::initialize(uint16_t numberOfLeds)
     Webserver::initialize();
     Fade::initialize();
   }
+
+  registerAnimation(new Color("Color"));
 
   registerSlider(new Slider("Brightness", 0, 255, 255, 1));
   registerSlider(new Slider("Speed", 0, 255, 127, 1));
