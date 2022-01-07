@@ -26,8 +26,9 @@ FastLEDManagerClass::FastLEDManagerClass() :
 {
 }
 
-void FastLEDManagerClass::initialize(uint16_t numberOfLeds)
+void FastLEDManagerClass::initialize(String projectName, uint16_t numberOfLeds)
 {
+  initESPEssentials(projectName);
   numLeds = numberOfLeds;
   leds = new CRGB[numLeds];
   hardwareLeds = new CRGB[numLeds];
@@ -69,6 +70,8 @@ void FastLEDManagerClass::enablePotentiometer(uint8_t pin)
 
 void FastLEDManagerClass::handle()
 {
+  handleESPEssentials();
+
   if (!autostartHandled)
     autostart();
 

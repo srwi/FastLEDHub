@@ -79,19 +79,17 @@ Using FastLEDManager to manage your FastLED animations requires mainly three ste
 
 void setup()
 {
-  initESPEssentials("Project Name");
-  FastLEDManager.initialize(NUM_LEDS);
+  FastLEDManager.initialize("Project Name", NUM_LEDS);
   FastLEDManager.addLeds<LED_TYPE, LIGHTSTRIP_PIN, GRB>(FastLEDManager.hardwareLeds, NUM_LEDS);
 }
 
 void loop()
 {
-  handleESPEssentials();
   FastLEDManager.handle();
 }
 ```
 
-Change `NUM_LEDS`, `LED_TYPE` and `LIGHTSTRIP_PIN` according to your hardware configuration. `initESPEssentials("Project Name")` will initialize ESPEssentials which sets up all of the prerequisites for FastLEDManager. You may notice that this is not different than setting up a regular FastLED sketch apart from using `FastLEDManager` instead of `FastLED`.
+Change `NUM_LEDS`, `LED_TYPE` and `LIGHTSTRIP_PIN` according to your hardware configuration. You may notice that this is not different than setting up a regular FastLED sketch apart from using `FastLEDManager` instead of `FastLED`.
 
 ### Adding a new animation
 

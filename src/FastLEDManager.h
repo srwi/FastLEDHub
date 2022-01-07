@@ -34,7 +34,9 @@ public:
   void handle();
 
   /// Initialize FastLEDManager
-  void initialize(uint16_t numLeds);
+  /// @param projectName Project name
+  /// @param numLeds Number of LEDs
+  void initialize(String projectName, uint16_t numLeds);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
