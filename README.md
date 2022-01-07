@@ -1,13 +1,13 @@
-# FastLED Manager
+# FastLEDManager
 
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/EverythingToolbar/blob/master/LICENSE)
+<!--[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/EverythingToolbar/blob/master/LICENSE)-->
 
-FastLEDManager allows you to manage all of your FastLED sketches on the ESP8266 with minimal changes to your existing code. FastLEDManager is compatible with most of the demo sketches at https://github.com/atuline/FastLED-Demos. It requires minimal knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
+FastLEDManager allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. FastLEDManager is compatible with most of the demo sketches at [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos). It requires little knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
 
 ## Features
 
 - Control multiple animations via an intuitive web interface
-- Use hardware inputs to cycle through animations and adjust brightness
+- Use hardware inputs to cycle through animations and adjust the brightness
 - Adjust the animation speed globally
 - Select any constant color via the web interface
 - Define custom numeric sliders to parameterize your animations
@@ -40,22 +40,22 @@ FastLEDManager allows you to manage all of your FastLED sketches on the ESP8266 
 ### Manual Installation
 
 1. Make sure you have installed the dependencies above
-2. Download the desired version from the _"[releases](https://github.com/stnkl/FastLEDManager/releases)"_ page
+2. Download the desired version from the [releases](https://github.com/stnkl/FastLEDManager/releases) page
 3. Extract the contents of the downloaded zip file
-4. Rename the extracted folder to _"FastLEDManager"_
-5. Move this folder to your libraries directory. (under Windows: `C:\Users\<username>\Documents\Arduino\libraries\`)
+4. Rename the extracted folder to `FastLEDManager`
+5. Move this folder to your libraries directory `~/Arduino/libraries`)
 6. Restart your Arduino IDE
 
 ### Using Git
 
-```
+```bash
 cd ~/Arduino/libraries
 git clone https://github.com/stnkl/FastLEDManager.git
 ```
 
 To update to the latest version of the library
 
-```
+```bash
 cd ~/Arduino/libraries/FastLEDManager && git pull
 ```
 
@@ -129,7 +129,7 @@ Keep in mind the following important differences to just using FastLED:
 - Within your animation use `FastLEDManager.numLeds` instead of `NUM_LEDS`
 - Every time you may want to use `FastLED` use `FastLEDManager` instead. Since `FastLEDManager` inherits from `FastLED` all member functions will be available just like before. FastLEDManager just adds some stuff on top of that.
 
-If you want to convert an existing FastLED sketch (e.g. from https://github.com/atuline/FastLED-Demos), so it can be handled by FastLEDManager, those are the necessary changes you have to perform.
+If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDManager, those are the necessary changes you have to perform.
 
 ### Registering animations
 
