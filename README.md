@@ -151,7 +151,7 @@ FastLEDManager allows you to display a static color in the web interface. It wil
 
 ### Pre-defined and custom sliders
 
-You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDManager automatically adds two sliders for brightness (0-255, default: 255) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDManager and don't require any further attention. Changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDManager.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()` or Arduino's standard `delay()`.
+You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDManager automatically adds two sliders for brightness (0-1023, default: 1023) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDManager and don't require any further attention. Changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDManager.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()` or Arduino's standard `delay()`.
 
 To add more custom sliders simply register them in the main sketch via
 

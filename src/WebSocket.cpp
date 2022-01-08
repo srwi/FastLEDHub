@@ -85,17 +85,20 @@ void handleBinary(uint8_t *binary, uint8_t id)
       FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     break;
   case 20: // Slider data
-    switch (binary[1])
     {
-      case 0:
-        FastLEDManager.brightness10 = binary[2] * 4 + 3;
-        break;
-      case 1:
-        FastLEDManager.speed = binary[2];
-        break;
-      default:
-        FastLEDManager.getSlider(binary[1])->value = binary[2];
-        break;
+      int16_t value = (binary[2] << 8) | binary[3];
+      switch (binary[1])
+      {
+        case 0:
+          FastLEDManager.brightness10 = value;
+          break;
+        case 1:
+          FastLEDManager.speed = value;
+          break;
+        default:
+          FastLEDManager.getSlider(binary[1])->value = value;
+          break;
+      }
     }
     break;
   case 30: // Request configuration

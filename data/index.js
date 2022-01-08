@@ -64,7 +64,7 @@ function handleJsonData(data) {
       });
       sliderDiv.querySelector(".noUi-handle").innerHTML = slider.name;
       sliderDiv.noUiSlider.on('update', (values, handle) => {
-        ws_pending_msg = [20, idx, values[handle]];
+        ws_pending_msg = [20, idx, (values[handle] >> 8) & 0xff, values[handle] & 0xff];
       });
       document.getElementById('slidersWrapper').appendChild(sliderDiv);
     });

@@ -43,7 +43,7 @@ void FastLEDManagerClass::initialize(String projectName, uint16_t numberOfLeds)
 
   registerAnimation(new Color("Color"));
 
-  registerSlider(new Slider("Brightness", 0, 255, 255, 1));
+  registerSlider(new Slider("Brightness", 0, 1023, 1023, 1));
   registerSlider(new Slider("Speed", 0, 255, 127, 1));
 }
 
