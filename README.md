@@ -1,8 +1,9 @@
-# FastLEDManager
+# FastLEDHub
 
-<!--[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/EverythingToolbar/blob/master/LICENSE)-->
+[![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/EverythingToolbar/blob/master/LICENSE)
 
-FastLEDManager allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. FastLEDManager is compatible with most of the demo sketches at [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos). It requires little knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
+FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. FastLEDHub is compatible with most of the demo sketches at [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos). It requires little knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
 
 ## Features
 
@@ -17,7 +18,7 @@ FastLEDManager allows you to manage all of your [FastLED]([FastLED](https://gith
 
 ## Web interface
 
-![FastLEDManager web app screenshot](screenshots/screenshot.png "FastLED Manager web app")
+![FastLEDHub web app screenshot](screenshots/screenshot.png "FastLEDHub web app")
 
 ## Installation
 
@@ -34,15 +35,15 @@ FastLEDManager allows you to manage all of your [FastLED]([FastLED](https://gith
 ### Official releases via the Arduino IDE v1.8+
 1. Open the Arduino IDE
 2. Navigate to _"Sketch"_ &#8594; _"Include Library"_ &#8594; _"Manage Libraries..."_
-3. Search for `FastLEDManager` and install the desired version
+3. Search for `FastLEDHub` and install the desired version
 -->
 
 ### Manual Installation
 
 1. Make sure you have installed the dependencies above
-2. Download the desired version from the [releases](https://github.com/stnkl/FastLEDManager/releases) page
+2. Download the desired version from the [releases](https://github.com/stnkl/FastLEDHub/releases) page
 3. Extract the contents of the downloaded zip file
-4. Rename the extracted folder to `FastLEDManager`
+4. Rename the extracted folder to `FastLEDHub`
 5. Move this folder to your libraries directory `~/Arduino/libraries`)
 6. Restart your Arduino IDE
 
@@ -50,27 +51,27 @@ FastLEDManager allows you to manage all of your [FastLED]([FastLED](https://gith
 
 ```bash
 cd ~/Arduino/libraries
-git clone https://github.com/stnkl/FastLEDManager.git
+git clone https://github.com/stnkl/FastLEDHub.git
 ```
 
 To update to the latest version of the library
 
 ```bash
-cd ~/Arduino/libraries/FastLEDManager && git pull
+cd ~/Arduino/libraries/FastLEDHub && git pull
 ```
 
 ## Usage
 
-Using FastLEDManager to manage your FastLED animations requires mainly three steps:
+Using FastLEDHub to manage your FastLED animations requires mainly three steps:
 
-- Creating the main sketch to initialize your lightstrip with FastLEDManager
-- Creating an animation or modifying an existing sketch to be compatible with FastLEDManager
+- Creating the main sketch to initialize your lightstrip with FastLEDHub
+- Creating an animation or modifying an existing sketch to be compatible with FastLEDHub
 - Registering your animations in the main sketch
 
 ### Creating the main sketch
 
 ```cpp
-#include <FastLEDManager.h>
+#include <FastLEDHub.h>
 #include <ESPEssentials.h>
 
 #define NUM_LEDS 6
@@ -79,17 +80,17 @@ Using FastLEDManager to manage your FastLED animations requires mainly three ste
 
 void setup()
 {
-  FastLEDManager.initialize("Project Name", NUM_LEDS);
-  FastLEDManager.addLeds<LED_TYPE, LIGHTSTRIP_PIN, GRB>(FastLEDManager.hardwareLeds, NUM_LEDS);
+  FastLEDHub.initialize("Project Name", NUM_LEDS);
+  FastLEDHub.addLeds<LED_TYPE, LIGHTSTRIP_PIN, GRB>(FastLEDHub.hardwareLeds, NUM_LEDS);
 }
 
 void loop()
 {
-  FastLEDManager.handle();
+  FastLEDHub.handle();
 }
 ```
 
-Change `NUM_LEDS`, `LED_TYPE` and `LIGHTSTRIP_PIN` according to your hardware configuration. You may notice that this is not different than setting up a regular FastLED sketch apart from using `FastLEDManager` instead of `FastLED`.
+Change `NUM_LEDS`, `LED_TYPE` and `LIGHTSTRIP_PIN` according to your hardware configuration. You may notice that this is not different than setting up a regular FastLED sketch apart from using `FastLEDHub` instead of `FastLED`.
 
 ### Adding a new animation
 
@@ -98,7 +99,7 @@ Create a new animation file `Animations/ExampleAnimation.h`:
 ```cpp
 #pragma once
 
-#include <FastLEDManager.h>
+#include <FastLEDHub.h>
 
 class ExampleAnimation : public Animation
 {
@@ -114,7 +115,7 @@ public:
 
     void loop()
     {
-      // animate FastLEDManager.leds
+      // animate FastLEDHub.leds
     }
 };
 ```
@@ -123,11 +124,11 @@ While creating your animation proceed as you usually would with FastLED by defin
 
 Keep in mind the following important differences to just using FastLED:
 - The regular `setup` function is called `reset` to emphasize its purpose
-- Instead of creating your own `leds` array use the existing `FastLEDManager.leds`
-- Within your animation use `FastLEDManager.numLeds` instead of `NUM_LEDS`
-- Every time you may want to use `FastLED` use `FastLEDManager` instead. Since `FastLEDManager` inherits from `FastLED` all member functions will be available just like before. FastLEDManager just adds some stuff on top of that.
+- Instead of creating your own `leds` array use the existing `FastLEDHub.leds`
+- Within your animation use `FastLEDHub.numLeds` instead of `NUM_LEDS`
+- Every time you may want to use `FastLED` use `FastLEDHub` instead. Since `FastLEDHub` inherits from `FastLED` all member functions will be available just like before. FastLEDHub just adds some stuff on top of that.
 
-If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDManager, those are the necessary changes you have to perform.
+If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDHub, those are the necessary changes you have to perform.
 
 ### Registering animations
 
@@ -147,16 +148,16 @@ The animation name can be any unique string and will be used to identify animati
 
 ### Static color display
 
-FastLEDManager allows you to display a static color in the web interface. It will be handled as a separate animation and will always have animation index `0`. This is important if you want to trigger animations using HTTP requests.
+FastLEDHub allows you to display a static color in the web interface. It will be handled as a separate animation and will always have animation index `0`. This is important if you want to trigger animations using HTTP requests.
 
 ### Pre-defined and custom sliders
 
-You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDManager automatically adds two sliders for brightness (0-1023, default: 1023) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDManager and don't require any further attention. Changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDManager.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()` or Arduino's standard `delay()`.
+You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDHub automatically adds two sliders for brightness (0-1023, default: 1023) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDHub and don't require any further attention. Changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDHub.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()` or Arduino's standard `delay()`.
 
 To add more custom sliders simply register them in the main sketch via
 
 ```cpp
-FastLEDManager.registerSlider(new Slider("Saturation", 150, 255, 200, 1));
+FastLEDHub.registerSlider(new Slider("Saturation", 150, 255, 200, 1));
 ```
 
 This example registers a slider with a range of `150-255` and step size `1` defaulting to the value `200`. Again the slider name `"Saturation"` can be any unique string identifying the slider in the web interface.
@@ -164,21 +165,21 @@ This example registers a slider with a range of `150-255` and step size `1` defa
 To access custom slider values inside of your animation use
 
 ```cpp
-int16_t saturation = FastLEDManager.getSlider("Saturation")->value;
+int16_t saturation = FastLEDHub.getSlider("Saturation")->value;
 ```
 
 ### Hardware inputs
 
-FastLEDManager supports a potentiometer for brightness adjustments and a push button to cycle through animations. They have to be specifically enabled with
+FastLEDHub supports a potentiometer for brightness adjustments and a push button to cycle through animations. They have to be specifically enabled with
 
 ```cpp
-FastLEDManager.enablePotentiometer(potentiometerPin);
+FastLEDHub.enablePotentiometer(potentiometerPin);
 ```
 
 and
 
 ```cpp
-FastLEDManager.enableToggleButton(togglePin);
+FastLEDHub.enableToggleButton(togglePin);
 ```
 
 ### Alarm and sunset

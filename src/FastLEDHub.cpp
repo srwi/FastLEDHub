@@ -1,4 +1,4 @@
-#include "FastLEDManager.h"
+#include "FastLEDHub.h"
 
 #include "Animation.h"
 #include "ColorUtils.h"
@@ -13,7 +13,7 @@
 #include <ESPEssentials.h>
 
 
-FastLEDManagerClass::FastLEDManagerClass() :
+FastLEDHubClass::FastLEDHubClass() :
   status(STOPPED),
   speed(255),
   brightness10(1023),
@@ -27,7 +27,7 @@ FastLEDManagerClass::FastLEDManagerClass() :
 {
 }
 
-void FastLEDManagerClass::initialize(String projectName, uint16_t numberOfLeds)
+void FastLEDHubClass::initialize(String projectName, uint16_t numberOfLeds)
 {
   initESPEssentials(projectName);
   numLeds = numberOfLeds;
@@ -54,28 +54,28 @@ void FastLEDManagerClass::initialize(String projectName, uint16_t numberOfLeds)
   registerSlider(new Slider("Speed", 0, 255, 127, 1));
 }
 
-void FastLEDManagerClass::enableCycleButton(uint8_t pin)
+void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
+  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   cycleButtonPin = pin;
 }
 
-void FastLEDManagerClass::enableToggleButton(uint8_t pin)
+void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
+  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   cycleButtonPin = pin;
 }
 
-void FastLEDManagerClass::enablePotentiometer(uint8_t pin)
+void FastLEDHubClass::enablePotentiometer(uint8_t pin)
 {
-  inputTicker.attach_ms(FASTLEDMANAGER_INPUT_TICKER_INTERVAL, std::bind(&FastLEDManagerClass::handleInput, this));
+  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   potentiometerPin = pin;
 }
 
-void FastLEDManagerClass::handle()
+void FastLEDHubClass::handle()
 {
   handleESPEssentials();
 
@@ -89,7 +89,7 @@ void FastLEDManagerClass::handle()
   WebSocket::socket.loop();
 }
 
-void FastLEDManagerClass::show(int16_t bright10)
+void FastLEDHubClass::show(int16_t bright10)
 {
   if (bright10 != -1)
     brightness10 = bright10;
@@ -133,7 +133,7 @@ void FastLEDManagerClass::show(int16_t bright10)
   CFastLED::show();
 }
 
-void FastLEDManagerClass::clear(bool writeData)
+void FastLEDHubClass::clear(bool writeData)
 {
   for(uint16_t i = 0; i < numLeds; i++)
   {
@@ -144,10 +144,10 @@ void FastLEDManagerClass::clear(bool writeData)
     show();
 }
 
-void FastLEDManagerClass::delay(uint16_t ms)
+void FastLEDHubClass::delay(uint16_t ms)
 {
   unsigned long start = micros();
-  while (micros() - start < 1000.0 * ms * pow((FastLEDManager.speed - 255) / 128.0, 2))
+  while (micros() - start < 1000.0 * ms * pow((FastLEDHub.speed - 255) / 128.0, 2))
   {
     handleESPEssentials();
     Fade::handle();
@@ -155,7 +155,7 @@ void FastLEDManagerClass::delay(uint16_t ms)
   }
 }
 
-void FastLEDManagerClass::registerSlider(Slider *slider)
+void FastLEDHubClass::registerSlider(Slider *slider)
 {
   if (Config.sliderValues.size() >= sliders.size())
     slider->value = Config.sliderValues.get(sliders.size());
@@ -163,12 +163,12 @@ void FastLEDManagerClass::registerSlider(Slider *slider)
   sliders.add(slider);
 }
 
-void FastLEDManagerClass::registerAnimation(Animation *animation)
+void FastLEDHubClass::registerAnimation(Animation *animation)
 {
   animations.add(animation);
 }
 
-Animation* FastLEDManagerClass::getAnimation(String name)
+Animation* FastLEDHubClass::getAnimation(String name)
 {
   for (uint8_t i = 0; i < animations.size(); i++)
   {
@@ -180,12 +180,12 @@ Animation* FastLEDManagerClass::getAnimation(String name)
   return NULL;
 }
 
-Animation* FastLEDManagerClass::getAnimation(uint8_t i)
+Animation* FastLEDHubClass::getAnimation(uint8_t i)
 {
   return (i < animations.size()) ? animations.get(i) : NULL;
 }
 
-Slider* FastLEDManagerClass::getSlider(String name)
+Slider* FastLEDHubClass::getSlider(String name)
 {
   for (uint8_t i = 0; i < sliders.size(); i++)
   {
@@ -197,12 +197,12 @@ Slider* FastLEDManagerClass::getSlider(String name)
   return NULL;
 }
 
-Slider* FastLEDManagerClass::getSlider(uint8_t i)
+Slider* FastLEDHubClass::getSlider(uint8_t i)
 {
   return (i < sliders.size()) ? sliders.get(i) : NULL;
 }
 
-void FastLEDManagerClass::handleInput()
+void FastLEDHubClass::handleInput()
 {
   if (potentiometerPin >= 0 && Fade::currentFade == Fade::FadeMode::NONE)
   {
@@ -253,7 +253,7 @@ void FastLEDManagerClass::handleInput()
   }
 }
 
-void FastLEDManagerClass::autostart()
+void FastLEDHubClass::autostart()
 {
   if (Config.startupAnimation != "")
     begin(getAnimation(Config.startupAnimation));
@@ -261,7 +261,7 @@ void FastLEDManagerClass::autostart()
   autostartHandled = true;
 }
 
-void FastLEDManagerClass::begin(Animation *animation)
+void FastLEDHubClass::begin(Animation *animation)
 {
   if (currentAnimation && currentAnimation->getName() == animation->getName())
     return;
@@ -276,7 +276,7 @@ void FastLEDManagerClass::begin(Animation *animation)
   PRINTLN("Started '" + currentAnimation->getName() + "'");
 }
 
-void FastLEDManagerClass::cycle()
+void FastLEDHubClass::cycle()
 {
   for (uint8_t i = 0; i < animations.size(); i++)
   {
@@ -288,7 +288,7 @@ void FastLEDManagerClass::cycle()
   }
 }
 
-void FastLEDManagerClass::stop()
+void FastLEDHubClass::stop()
 {
   if (status == STOPPED)
     return;
@@ -301,7 +301,7 @@ void FastLEDManagerClass::stop()
   PRINTLN("Stopped animation");
 }
 
-void FastLEDManagerClass::resume()
+void FastLEDHubClass::resume()
 {
   if (status != PAUSED)
     return;
@@ -312,13 +312,13 @@ void FastLEDManagerClass::resume()
   PRINTLN("Resumed '" + currentAnimation->getName() + "'");
 }
 
-void FastLEDManagerClass::showColor(const struct CRGB &color, uint8_t scale)
+void FastLEDHubClass::showColor(const struct CRGB &color, uint8_t scale)
 {
   fill_solid(leds, numLeds, color);
   brightness10 = scale * 4 * 1.003;
 }
 
-void FastLEDManagerClass::restart()
+void FastLEDHubClass::restart()
 {
   stop();
   begin(currentAnimation);
@@ -326,7 +326,7 @@ void FastLEDManagerClass::restart()
   PRINTLN("Restarted '" + currentAnimation->getName() + "'");
 }
 
-void FastLEDManagerClass::pause()
+void FastLEDHubClass::pause()
 {
   status = PAUSED;
 
@@ -334,7 +334,7 @@ void FastLEDManagerClass::pause()
   PRINTLN("Paused '" + currentAnimation->getName() + "'");
 }
 
-void FastLEDManagerClass::toggle()
+void FastLEDHubClass::toggle()
 {
   if (status == RUNNING)
     pause();
@@ -342,7 +342,7 @@ void FastLEDManagerClass::toggle()
     resume();
 }
 
-void FastLEDManagerClass::toggle(Animation *animation)
+void FastLEDHubClass::toggle(Animation *animation)
 {
   if (currentAnimation && currentAnimation == animation && status == RUNNING)
     pause();
@@ -352,4 +352,4 @@ void FastLEDManagerClass::toggle(Animation *animation)
     begin(animation);
 }
 
-FastLEDManagerClass FastLEDManager;
+FastLEDHubClass FastLEDHub;

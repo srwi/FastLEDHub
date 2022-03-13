@@ -4,7 +4,7 @@
 #include "ColorUtils.h"
 #include "Config.h"
 #include "Fade.h"
-#include "FastLEDManager.h"
+#include "FastLEDHub.h"
 #include "SerialOut.h"
 
 #include <ArduinoJson.h>
@@ -69,51 +69,51 @@ void handleBinary(uint8_t *binary, uint8_t id)
   {
   case 0: // Color
     Config.color = rgb2hex(binary[1], binary[2], binary[3]);
-    FastLEDManager.begin(FastLEDManager.getAnimation("Color"));
+    FastLEDHub.begin(FastLEDHub.getAnimation("Color"));
     break;
   case 1: // Toggle animation
     Fade::stop();
-    FastLEDManager.toggle(FastLEDManager.getAnimation(binary[1]));
+    FastLEDHub.toggle(FastLEDHub.getAnimation(binary[1]));
     break;
   case 2: // Stop
-    FastLEDManager.stop();
+    FastLEDHub.stop();
     break;
   case 10: // Color data
-    FastLEDManager.stop();
+    FastLEDHub.stop();
     Fade::stop();
-    for (uint16_t i = 0; i < FastLEDManager.numLeds; i++)
-      FastLEDManager.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
+    for (uint16_t i = 0; i < FastLEDHub.numLeds; i++)
+      FastLEDHub.leds[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
     break;
   case 20: // Slider data
     {
       int16_t value = (binary[2] << 8) | binary[3];
       if (binary[1] == 0)
-        FastLEDManager.brightness10 = value;
+        FastLEDHub.brightness10 = value;
       else if (binary[1] == 1)
-        FastLEDManager.speed = value;
+        FastLEDHub.speed = value;
       Config.sliderValues.set(binary[1], value);
-      FastLEDManager.sliders.get(binary[1])->value = value;
+      FastLEDHub.sliders.get(binary[1])->value = value;
       break;
     }
   case 30: // Request configuration
     DynamicJsonDocument doc(2048);
     doc = Config.getJson(doc);
-    doc["status"] = String(FastLEDManager.status);
-    doc["currentAnimation"] = FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "";
+    doc["status"] = String(FastLEDHub.status);
+    doc["currentAnimation"] = FastLEDHub.currentAnimation ? FastLEDHub.currentAnimation->getName() : "";
     JsonArray animations = doc.createNestedArray("animations");
-    for (uint8_t i = 0; i < FastLEDManager.animations.size(); i++)
+    for (uint8_t i = 0; i < FastLEDHub.animations.size(); i++)
     {
-      animations.add(FastLEDManager.animations.get(i)->getName());
+      animations.add(FastLEDHub.animations.get(i)->getName());
     }
     JsonArray sliders = doc.createNestedArray("sliders");
-    for (uint8_t i = 0; i < FastLEDManager.sliders.size(); i++)
+    for (uint8_t i = 0; i < FastLEDHub.sliders.size(); i++)
     {
       JsonObject slider = sliders.createNestedObject();
-      slider["name"] = FastLEDManager.sliders.get(i)->name;
-      slider["min"] = FastLEDManager.sliders.get(i)->min;
-      slider["max"] = FastLEDManager.sliders.get(i)->max;
-      slider["step"] = FastLEDManager.sliders.get(i)->step;
-      slider["value"] = FastLEDManager.sliders.get(i)->value;
+      slider["name"] = FastLEDHub.sliders.get(i)->name;
+      slider["min"] = FastLEDHub.sliders.get(i)->min;
+      slider["max"] = FastLEDHub.sliders.get(i)->max;
+      slider["step"] = FastLEDHub.sliders.get(i)->step;
+      slider["value"] = FastLEDHub.sliders.get(i)->value;
     }
     String buffer = "";
     serializeJson(doc, buffer);
@@ -135,8 +135,8 @@ String byteArray2string(uint8_t *bytes)
 
 void broadcastStatus()
 {
-  String msg = "{\"status\": " + String((int)FastLEDManager.status) + ",\"currentAnimation\":\"" +
-    (FastLEDManager.currentAnimation ? FastLEDManager.currentAnimation->getName() : "") + "\"\n}";
+  String msg = "{\"status\": " + String((int)FastLEDHub.status) + ",\"currentAnimation\":\"" +
+    (FastLEDHub.currentAnimation ? FastLEDHub.currentAnimation->getName() : "") + "\"\n}";
   WebSocket::socket.broadcastTXT(msg.c_str());
 }
 

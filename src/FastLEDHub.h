@@ -11,7 +11,7 @@
 #include <LinkedList.h>
 #include <Ticker.h>
 
-#define FASTLEDMANAGER_INPUT_TICKER_INTERVAL 10
+#define FastLEDHub_INPUT_TICKER_INTERVAL 10
 
 class Animation;
 class ConfigClass;
@@ -23,17 +23,17 @@ enum AnimationStatus
   RUNNING
 };
 
-class FastLEDManagerClass : public CFastLED
+class FastLEDHubClass : public CFastLED
 {
 public:
   /// Constructor
-  FastLEDManagerClass();
+  FastLEDHubClass();
 
-  /// Handle every function provided by FastLEDManager. This method
+  /// Handle every function provided by FastLEDHub. This method
   /// should be called in the main Arduino loop-function.
   void handle();
 
-  /// Initialize FastLEDManager
+  /// Initialize FastLEDHub
   /// @param projectName Project name
   /// @param numLeds Number of LEDs
   void initialize(String projectName, uint16_t numLeds);
@@ -55,7 +55,7 @@ public:
   /// @param slider Slider instance
   void registerSlider(Slider *slider);
 
-  /// Register an animation instance to be managed by FastLEDManager
+  /// Register an animation instance to be managed by FastLEDHub
   /// @param animation Pointer to animation instance
   void registerAnimation(Animation *animation);
 
@@ -94,12 +94,12 @@ public:
   void showColor(const struct CRGB &color, uint8_t scale);
 
   /// Clear all pixels. This function should be used in combination with
-  /// FastLEDManager rather than FastLED.clear().
+  /// FastLEDHub rather than FastLED.clear().
   /// @param writeData Wether to write out the data
   void clear(bool writeData = false);
 
   /// Clear all pixels. This function should be used in combination with
-  /// FastLEDManager rather than FastLED.clear().
+  /// FastLEDHub rather than FastLED.clear().
   void clearData() { clear(); };
 
   /// Wait for a given amount of milliseconds while still calling
@@ -157,9 +157,9 @@ public:
   CRGB *leds;
 
   /// Array holding the actual led colors that get used by FastLED.
-  /// This will be used internally by FastLEDManager and should only be
-  /// used once in combination with FastLEDManager.addLeds(). DO NOT use this
-  /// to change led colors within an animation. Use FastLEDManager.leds instead.
+  /// This will be used internally by FastLEDHub and should only be
+  /// used once in combination with FastLEDHub.addLeds(). DO NOT use this
+  /// to change led colors within an animation. Use FastLEDHub.leds instead.
   CRGB *hardwareLeds;
 
   /// Number of registered LEDs
@@ -182,4 +182,4 @@ private:
   uint8_t toggleButtonPin;
 };
 
-extern FastLEDManagerClass FastLEDManager;
+extern FastLEDHubClass FastLEDHub;

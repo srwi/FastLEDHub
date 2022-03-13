@@ -8,14 +8,14 @@ bool ConfigClass::initialize()
 {
   if (!SPIFFS.begin())
   {
-    PRINTLN("[FastLEDManager] Couldn't mount file system.");
+    PRINTLN("[FastLEDHub] Couldn't mount file system.");
     return false;
   }
 
   File configFile = SPIFFS.open(configFilename, "r");
   if (!configFile)
   {
-    PRINTLN("[FastLEDManager] Opening file '" + configFilename + "' failed.");
+    PRINTLN("[FastLEDHub] Opening file '" + configFilename + "' failed.");
     return false;
   }
 
@@ -127,7 +127,7 @@ bool ConfigClass::save()
   File configFile = SPIFFS.open(configFilename, "w");
   if (!configFile)
   {
-    PRINTLN("[FastLEDManager] Opening file " + configFilename + " for saving failed.");
+    PRINTLN("[FastLEDHub] Opening file " + configFilename + " for saving failed.");
     return false;
   }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <FastLEDManager.h>
+#include <FastLEDHub.h>
 
 class Color : public Animation
 {
@@ -13,8 +13,8 @@ public:
 
   void loop()
   {
-    fill_solid(FastLEDManager.leds, FastLEDManager.numLeds, strtol((const char *)&Config.color[0], NULL, 16));
+    fill_solid(FastLEDHub.leds, FastLEDHub.numLeds, strtol((const char *)&Config.color[0], NULL, 16));
 
-    FastLEDManager.show();
+    FastLEDHub.show();
   }
 };

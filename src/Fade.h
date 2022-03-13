@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 
-class FastLEDManagerClass;
+class FastLEDHubClass;
 
 namespace Fade
 {
