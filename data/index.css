@@ -15,7 +15,7 @@ p {
 	box-shadow: none !important;
 }
 
-.speedSlider, .saturationSlider {
+.slider {
 	margin: 28px 40px;
 }
 
