@@ -157,8 +157,14 @@ void FastLEDHubClass::delay(uint16_t ms)
 
 void FastLEDHubClass::registerSlider(Slider *slider)
 {
-  if (Config.sliderValues.size() >= sliders.size())
+  if (Config.sliderValues.size() > sliders.size())
+  {
     slider->value = Config.sliderValues.get(sliders.size());
+  }
+  else
+  {
+    Config.sliderValues.add(slider->value);
+  }
 
   sliders.add(slider);
 }
