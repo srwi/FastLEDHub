@@ -19,11 +19,10 @@ uint16_t sunsetMaximumBrightness = 0;
 Ticker fadeTicker;
 Ticker hasBeenStartedResetTicker;
 bool hasBeenStarted = false;
-ConfigClass *config;
 
 void initialize()
 {
-  configTime(Config.timeZone * 3600, Config.summerTime * 3600, "pool.ntp.org", "time.nist.gov");
+  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
   getSunsetTime();
 }
 
@@ -38,14 +37,15 @@ void handle()
   if (!n)
     return;
   struct tm *now = gmtime(&n);
+  int8_t hour = (now->tm_hour + Config.timeZone + Config.summerTime) % 24;
 
   // Check for alarm
-  if (Config.alarmEnabled && now->tm_hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
+  if (Config.alarmEnabled && hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
   {
     Fade::begin(Fade::FadeMode::ALARM);
   }
   // Check for sunset
-  else if (Config.sunsetEnabled && now->tm_hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
+  else if (Config.sunsetEnabled && hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
   {
     // Only start sunset if all leds are off
     if (FastLEDHub.brightness10 == 0)
