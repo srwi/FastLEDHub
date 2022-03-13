@@ -16,9 +16,10 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 - Sunset: Automatically fade in an animation when the sun sets at your location
 - Control animations using HTTP requests for easy automation
 
-## Web interface
+## Demo
 
-![FastLEDHub web app screenshot](screenshots/screenshot.png "FastLEDHub web app")
+![FastLEDHub web app screenshot](https://user-images.githubusercontent.com/17520641/158074593-c8d84507-1317-4146-9735-651f1761ee38.gif)
+
 
 ## Installation
 
