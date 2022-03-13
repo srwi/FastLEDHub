@@ -13,11 +13,11 @@ public:
     Slider(String _name,
            int16_t _min,
            int16_t _max,
-           int16_t _value,
+           int16_t _default_value,
            int16_t _step) : name(_name),
                             min(_min),
                             max(_max),
-                            value(_value),
+                            value(_default_value),
                             step(_step)
     {
 

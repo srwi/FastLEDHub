@@ -15,6 +15,7 @@
 
 FastLEDManagerClass::FastLEDManagerClass() :
   status(STOPPED),
+  speed(255),
   brightness10(1023),
   cycleButtonPushed(false),
   toggleButtonPushed(false),
@@ -39,6 +40,12 @@ void FastLEDManagerClass::initialize(String projectName, uint16_t numberOfLeds)
     WebSocket::initialize();
     Webserver::initialize();
     Fade::initialize();
+  }
+
+  if (Config.sliderValues.size() >= 2)
+  {
+    brightness10 = Config.sliderValues.get(0);
+    speed = Config.sliderValues.get(1);
   }
 
   registerAnimation(new Color("Color"));
@@ -150,6 +157,9 @@ void FastLEDManagerClass::delay(uint16_t ms)
 
 void FastLEDManagerClass::registerSlider(Slider *slider)
 {
+  if (Config.sliderValues.size() >= sliders.size())
+    slider->value = Config.sliderValues.get(sliders.size());
+
   sliders.add(slider);
 }
 

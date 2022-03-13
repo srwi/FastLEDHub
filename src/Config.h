@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <LinkedList.h>
 
 
 class ConfigClass
@@ -44,6 +45,8 @@ public:
   String startupAnimation = "";
   /// Lastly used color for Color animation
   String color = "";
+  /// Slider values
+  LinkedList<int16_t> sliderValues;
 
   /// Initialize config object by mounting file system and
   /// reading the config file.

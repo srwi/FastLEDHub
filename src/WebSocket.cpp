@@ -87,20 +87,14 @@ void handleBinary(uint8_t *binary, uint8_t id)
   case 20: // Slider data
     {
       int16_t value = (binary[2] << 8) | binary[3];
-      switch (binary[1])
-      {
-        case 0:
-          FastLEDManager.brightness10 = value;
-          break;
-        case 1:
-          FastLEDManager.speed = value;
-          break;
-        default:
-          FastLEDManager.getSlider(binary[1])->value = value;
-          break;
-      }
+      if (binary[1] == 0)
+        FastLEDManager.brightness10 = value;
+      else if (binary[1] == 1)
+        FastLEDManager.speed = value;
+      Config.sliderValues.set(binary[1], value);
+      FastLEDManager.sliders.get(binary[1])->value = value;
+      break;
     }
-    break;
   case 30: // Request configuration
     DynamicJsonDocument doc(2048);
     doc = Config.getJson(doc);

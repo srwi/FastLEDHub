@@ -72,6 +72,14 @@ bool ConfigClass::parseJson(char *input)
     startupAnimation = doc["startupAnimation"].as<String>();
   if (doc.containsKey("color"))
     color = doc["color"].as<String>();
+  if (doc.containsKey("sliderValues"))
+  {
+    JsonArray sliderValues_ = doc["sliderValues"].as<JsonArray>();
+    for (uint16_t i = 0; i < sliderValues_.size(); i++)
+    {
+      sliderValues.add(sliderValues_[i]);
+    }
+  }
 
   return !error;
 }
@@ -96,6 +104,11 @@ DynamicJsonDocument ConfigClass::getJson(DynamicJsonDocument doc)
   doc["sunsetAnimation"] = sunsetAnimation;
   doc["startupAnimation"] = startupAnimation;
   doc["color"] = color;
+  JsonArray sliderValues_ = doc.createNestedArray("sliderValues");
+  for (uint16_t i = 0; i < sliderValues.size(); i++)
+  {
+    sliderValues_.add(sliderValues.get(i));
+  }
 
   return doc;
 }
