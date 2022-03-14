@@ -1,7 +1,7 @@
 # FastLEDHub
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/EverythingToolbar/blob/master/LICENSE)
+[![LGPL-2.1 license](https://img.shields.io/github/license/stnkl/FastLEDHub)](https://github.com/stnkl/FastLEDHub/blob/master/LICENSE)
 
 FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. FastLEDHub is compatible with most of the demo sketches at [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos). It requires little knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
 
@@ -26,18 +26,16 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 ### Library dependencies
 
 - ArduinoJson
+- ESPEssentials
+- FastLED
 - LinkedList
 - WebSockets
-- FastLED
-- ESPEssentials
-- WiFiManager (≥ 2.0.0)
+- WiFiManager ≥ 2.0.0
 
-<!--
 ### Official releases via the Arduino IDE v1.8+
 1. Open the Arduino IDE
 2. Navigate to _"Sketch"_ &#8594; _"Include Library"_ &#8594; _"Manage Libraries..."_
 3. Search for `FastLEDHub` and install the desired version
--->
 
 ### Manual Installation
 
@@ -203,3 +201,7 @@ Most functions can be triggered via HTTP requests:
 - Trigger sunset: `http://<device-ip>/sunset`
 - Trigger alarm: `http://<device-ip>/alarm`
 - Reset ESP8266: `http://<device-ip>/reboot`
+
+## License & Attribution
+
+FastLEDHub is licensed under LGPL-2.1 and uses the [sunrise-sunset.org](https://sunrise-sunset.org/api) api to retrieve sunset times.
