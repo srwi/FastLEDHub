@@ -151,8 +151,12 @@ void getSunsetTime()
   if(doc.containsKey("results") && doc["results"].containsKey("sunset"))
   {
     String sunset = doc["results"]["sunset"].as<String>();
-    Config.sunsetHour = (sunset.substring(11, 13).toInt() + Config.timeZone + Config.summerTime + 24) % 24;
-    Config.sunsetMinute = sunset.substring(14, 16).toInt();
+    int16_t sunsetHour = (sunset.substring(11, 13).toInt() + Config.timeZone + Config.summerTime + 24) % 24;
+    int16_t sunsetMinute = sunset.substring(14, 16).toInt();
+    int16_t minutesSinceMidnight = sunsetHour * 60 + sunsetMinute;
+    minutesSinceMidnight = (minutesSinceMidnight + Config.sunsetOffset + 1440) % 1440;
+    Config.sunsetHour = minutesSinceMidnight / 60;
+    Config.sunsetMinute = minutesSinceMidnight % 60;
     Config.save();
     PRINTLN(" " + String(Config.sunsetHour) + ":" + String(Config.sunsetMinute));
   }
