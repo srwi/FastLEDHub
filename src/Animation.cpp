@@ -1,6 +1,5 @@
 #include "Animation.h"
 
-
 Animation::Animation(String name)
 {
   m_name = name;

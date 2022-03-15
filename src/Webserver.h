@@ -3,7 +3,7 @@
 namespace Webserver
 {
 
-/// Register Webserver routes
-void initialize();
+  /// Register Webserver routes
+  void initialize();
 
 } // namespace Webserver

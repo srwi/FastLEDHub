@@ -4,7 +4,6 @@
 #include <ArduinoJson.h>
 #include <LinkedList.h>
 
-
 class ConfigClass
 {
 public:

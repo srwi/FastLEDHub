@@ -1,6 +1,5 @@
 #include "ColorUtils.h"
 
-
 CRGB hsv2rgb_smooth(uint16_t hue, uint8_t sat, uint8_t val)
 {
   uint8_t fractHue = hue / 6;

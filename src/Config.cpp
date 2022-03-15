@@ -3,7 +3,6 @@
 
 #include <FS.h>
 
-
 bool ConfigClass::initialize()
 {
   if (!SPIFFS.begin())

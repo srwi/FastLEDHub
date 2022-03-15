@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-
 class Slider
 {
 public:
@@ -20,6 +19,5 @@ public:
                             value(_default_value),
                             step(_step)
     {
-
     }
 };

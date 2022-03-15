@@ -11,18 +11,16 @@
 
 #include <ESPEssentials.h>
 
-
-FastLEDHubClass::FastLEDHubClass() :
-  status(STOPPED),
-  speed(255),
-  brightness10(1023),
-  cycleButtonPushed(false),
-  toggleButtonPushed(false),
-  autostartHandled(false),
-  filteredBrightness(128),
-  potentiometerPin(-1),
-  cycleButtonPin(-1),
-  toggleButtonPin(-1)
+FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
+                                     speed(255),
+                                     brightness10(1023),
+                                     cycleButtonPushed(false),
+                                     toggleButtonPushed(false),
+                                     autostartHandled(false),
+                                     filteredBrightness(128),
+                                     potentiometerPin(-1),
+                                     cycleButtonPin(-1),
+                                     toggleButtonPin(-1)
 {
 }
 
@@ -84,7 +82,7 @@ void FastLEDHubClass::handle()
     currentAnimation->loop();
 
   Fade::handle();
-  WebSocket::socket.loop();
+  WebSocket::handle();
 }
 
 void FastLEDHubClass::show(int16_t bright10)
@@ -101,30 +99,30 @@ void FastLEDHubClass::show(int16_t bright10)
     hardwareLeds[i] = leds[i];
     switch (fract2)
     {
-      case 0:
+    case 0:
+      hardwareLeds[i].nscale8(bright8);
+      break;
+    case 2:
+      if (i % 2)
+      {
         hardwareLeds[i].nscale8(bright8);
-        break;
-      case 2:
-        if (i % 2)
-        {
-          hardwareLeds[i].nscale8(bright8);
-        }
-        else
-        {
-          hardwareLeds[i].nscale8(bright8 + 1);
-        }
-        break;
-      case 1:
-      case 3:
-        if (i % 4 < fract2)
-        {
-          hardwareLeds[i].nscale8(bright8 + 1);
-        }
-        else
-        {
-          hardwareLeds[i].nscale8(bright8);
-        }
-        break;
+      }
+      else
+      {
+        hardwareLeds[i].nscale8(bright8 + 1);
+      }
+      break;
+    case 1:
+    case 3:
+      if (i % 4 < fract2)
+      {
+        hardwareLeds[i].nscale8(bright8 + 1);
+      }
+      else
+      {
+        hardwareLeds[i].nscale8(bright8);
+      }
+      break;
     }
   }
 
@@ -133,7 +131,7 @@ void FastLEDHubClass::show(int16_t bright10)
 
 void FastLEDHubClass::clear(bool writeData)
 {
-  for(uint16_t i = 0; i < numLeds; i++)
+  for (uint16_t i = 0; i < numLeds; i++)
   {
     leds[i] = CRGB::Black;
   }
@@ -165,7 +163,7 @@ void FastLEDHubClass::delay(uint16_t ms)
   {
     handleESPEssentials();
     Fade::handle();
-    WebSocket::socket.loop();
+    WebSocket::handle();
   }
 }
 
@@ -188,7 +186,7 @@ void FastLEDHubClass::registerAnimation(Animation *animation)
   animations.add(animation);
 }
 
-Animation* FastLEDHubClass::getAnimation(String name)
+Animation *FastLEDHubClass::getAnimation(String name)
 {
   for (uint8_t i = 0; i < animations.size(); i++)
   {
@@ -200,12 +198,12 @@ Animation* FastLEDHubClass::getAnimation(String name)
   return NULL;
 }
 
-Animation* FastLEDHubClass::getAnimation(uint8_t i)
+Animation *FastLEDHubClass::getAnimation(uint8_t i)
 {
   return (i < animations.size()) ? animations.get(i) : NULL;
 }
 
-Slider* FastLEDHubClass::getSlider(String name)
+Slider *FastLEDHubClass::getSlider(String name)
 {
   for (uint8_t i = 0; i < sliders.size(); i++)
   {
@@ -217,7 +215,7 @@ Slider* FastLEDHubClass::getSlider(String name)
   return NULL;
 }
 
-Slider* FastLEDHubClass::getSlider(uint8_t i)
+Slider *FastLEDHubClass::getSlider(uint8_t i)
 {
   return (i < sliders.size()) ? sliders.get(i) : NULL;
 }

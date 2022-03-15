@@ -140,10 +140,10 @@ public:
   void resume();
 
   /// List of all registered animation pointers
-  LinkedList<Animation*> animations;
+  LinkedList<Animation *> animations;
 
   /// List of all registered slider pointers
-  LinkedList<Slider*> sliders;
+  LinkedList<Slider *> sliders;
 
   /// Pointer to current animation object
   Animation *currentAnimation;

@@ -4,7 +4,6 @@
 
 #define HSV2RGB_SMOOTH_RANGE 1535
 
-
 /// Convert a hue, saturation and value to RGB by using a higher resolution
 /// of 0 - 1535 which allows for very smooth hue transitions without
 /// noticeable steps. The number 1535 is also defined by HSV2RGB_SMOOTH_RANGE.
