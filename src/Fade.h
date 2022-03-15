@@ -12,19 +12,19 @@ namespace Fade
 
 enum class FadeMode
 {
-  NONE = 0,
+  NONE,
   ALARM,
   SUNSET
 };
 
 extern FadeMode mode;
 
+void tick();
 void handle();
 void begin(FadeMode fadeMode);
 void stop();
-void tick();
 void initialize();
 void getSunsetTime();
-bool getTime(int8_t *hour, int8_t *minute);
+bool getCurrentTime(int8_t *hour, int8_t *minute);
 
 } // namespace Fade

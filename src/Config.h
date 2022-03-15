@@ -50,17 +50,17 @@ public:
 
   /// Initialize config object by mounting file system and
   /// reading the config file.
-  /// @return True if successfull
+  /// @return True if successful
   bool initialize();
 
   /// Save config to file system
-  /// @return True if successfull
+  /// @return True if successful
   bool save();
 
   /// Parse a JSON char array and apply its values to the
   /// config state.
   /// @param input JSON char array
-  /// @return True if successfull
+  /// @return True if successful
   bool parseJson(const char *input);
 
   /// Get config state contained in a DynamicJsonDocument

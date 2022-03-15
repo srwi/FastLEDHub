@@ -1,5 +1,4 @@
 #include "Fade.h"
-
 #include "FastLEDHub.h"
 #include "SerialOut.h"
 
@@ -14,7 +13,6 @@ namespace Fade
 {
 
 FadeMode mode = FadeMode::NONE;
-uint16_t fadeBrightness = 0;
 uint16_t targetBrightness = 0;
 Ticker fadeTicker;
 Ticker debounce;
@@ -31,16 +29,16 @@ void handle()
     return;
 
   int8_t hour, minute;
-  if (!getTime(&hour, &minute))
+  if (!getCurrentTime(&hour, &minute))
     return;
 
   if (Config.alarmEnabled && hour == Config.alarmHour && minute == Config.alarmMinute)
   {
-    Fade::begin(Fade::FadeMode::ALARM);
+    Fade::begin(FadeMode::ALARM);
   }
   else if (Config.sunsetEnabled && hour == Config.sunsetHour && minute == Config.sunsetMinute && FastLEDHub.isDim())
   {
-    Fade::begin(Fade::FadeMode::SUNSET);
+    Fade::begin(FadeMode::SUNSET);
   }
 }
 
@@ -48,18 +46,18 @@ void begin(FadeMode fadeMode)
 {
   mode = fadeMode;
   targetBrightness = FastLEDHub.brightness10;
-  fadeBrightness = 0;
-  FastLEDHub.show(fadeBrightness);
+  FastLEDHub.brightness10 = 0;
+  FastLEDHub.show();
 
   debounce.once(61, [&](){ debounce.detach(); });
 
-  if (fadeMode == Fade::FadeMode::ALARM)
+  if (fadeMode == FadeMode::ALARM)
   {
     FastLEDHub.begin(FastLEDHub.getAnimation(Config.alarmAnimation));
     fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1024, tick);
     PRINTLN("[FastLEDHub] Start fade 'Alarm'");
   }
-  else if (fadeMode == Fade::FadeMode::SUNSET)
+  else if (fadeMode == FadeMode::SUNSET)
   {
     FastLEDHub.begin(FastLEDHub.getAnimation(Config.sunsetAnimation));
     fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / targetBrightness, tick);
@@ -78,7 +76,7 @@ void tick()
   if (FastLEDHub.status == PAUSED)
     return;
 
-  if (mode == Fade::FadeMode::ALARM && fadeBrightness == 1023)
+  if (mode == FadeMode::ALARM && FastLEDHub.brightness10 == 1023)
   {
     if (Config.postAlarmAnimation != Config.alarmAnimation)
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.postAlarmAnimation));
@@ -86,18 +84,18 @@ void tick()
     stop();
     PRINTLN("[FastLEDHub] End fade 'Alarm'");
   }
-  else if (mode == Fade::FadeMode::SUNSET && fadeBrightness == targetBrightness)
+  else if (mode == FadeMode::SUNSET && FastLEDHub.brightness10 == targetBrightness)
   {
     stop();
     PRINTLN("[FastLEDHub] End fade 'Sunset'");
   }
   else
   {
-    fadeBrightness++;
-    PRINTLN("[FastLEDHub] Fade brightness: " + String(fadeBrightness));
+    FastLEDHub.brightness10++;
+    PRINTLN("[FastLEDHub] Fade brightness: " + String(FastLEDHub.brightness10));
   }
 
-  FastLEDHub.brightness10 = fadeBrightness;
+  FastLEDHub.brightness10 = FastLEDHub.brightness10;
 }
 
 void getSunsetTime()
@@ -133,7 +131,7 @@ void getSunsetTime()
   }
 }
 
-bool getTime(int8_t *hour, int8_t *minute)
+bool getCurrentTime(int8_t *hour, int8_t *minute)
 {
   time_t n = time(nullptr);
 

@@ -1,9 +1,8 @@
-#include "FastLEDHub.h"
-
 #include "Animation.h"
 #include "ColorUtils.h"
 #include "Config.h"
 #include "Fade.h"
+#include "FastLEDHub.h"
 #include "SerialOut.h"
 #include "Webserver.h"
 #include "WebSocket.h"
