@@ -13,12 +13,11 @@
 namespace Fade
 {
 
-FadeMode currentFade = FadeMode::NONE;
+FadeMode mode = FadeMode::NONE;
 uint16_t fadeBrightness = 0;
-uint16_t sunsetMaximumBrightness = 0;
+uint16_t targetBrightness = 0;
 Ticker fadeTicker;
-Ticker hasBeenStartedResetTicker;
-bool hasBeenStarted = false;
+Ticker debounce;
 
 void initialize()
 {
@@ -28,59 +27,31 @@ void initialize()
 
 void handle()
 {
-  // Return if fade is running
-  if (currentFade != FadeMode::NONE || hasBeenStarted)
+  if (mode != FadeMode::NONE || debounce.active())
     return;
 
-  // Get current time
-  time_t n = time(nullptr);
-  if (!n)
+  int8_t hour, minute;
+  if (!getTime(&hour, &minute))
     return;
-  struct tm *now = gmtime(&n);
-  int8_t hour = (now->tm_hour + Config.timeZone + Config.summerTime) % 24;
 
-  // Check for alarm
-  if (Config.alarmEnabled && hour == Config.alarmHour && now->tm_min == Config.alarmMinute)
+  if (Config.alarmEnabled && hour == Config.alarmHour && minute == Config.alarmMinute)
   {
     Fade::begin(Fade::FadeMode::ALARM);
   }
-  // Check for sunset
-  else if (Config.sunsetEnabled && hour == Config.sunsetHour && now->tm_min == Config.sunsetMinute)
+  else if (Config.sunsetEnabled && hour == Config.sunsetHour && minute == Config.sunsetMinute && FastLEDHub.isDim())
   {
-    // Only start sunset if all leds are off
-    if (FastLEDHub.brightness10 == 0)
-    {
-      Fade::begin(Fade::FadeMode::SUNSET);
-    }
-    else // brightness10 > 0
-    {
-      bool ledsIlluminated = false;
-      for (uint16_t i = 0; i < FastLEDHub.numLeds; i++)
-      {
-        if (FastLEDHub.hardwareLeds[i] != CRGB(0, 0, 0))
-        {
-          ledsIlluminated = true;
-          break;
-        }
-      }
-
-      if (!ledsIlluminated)
-        Fade::begin(Fade::FadeMode::SUNSET);
-    }
+    Fade::begin(Fade::FadeMode::SUNSET);
   }
 }
 
 void begin(FadeMode fadeMode)
 {
-  // Set fade starting point
-  fadeBrightness = 1;
+  mode = fadeMode;
+  targetBrightness = FastLEDHub.brightness10;
+  fadeBrightness = 0;
   FastLEDHub.show(fadeBrightness);
 
-  currentFade = fadeMode;
-
-  // Prevent starting fade multiple times
-  hasBeenStarted = true;
-  hasBeenStartedResetTicker.attach(90, [&]() { hasBeenStarted = false; }); // TODO: Should only be called once?
+  debounce.once(61, [&](){ debounce.detach(); });
 
   if (fadeMode == Fade::FadeMode::ALARM)
   {
@@ -91,8 +62,7 @@ void begin(FadeMode fadeMode)
   else if (fadeMode == Fade::FadeMode::SUNSET)
   {
     FastLEDHub.begin(FastLEDHub.getAnimation(Config.sunsetAnimation));
-    sunsetMaximumBrightness = FastLEDHub.brightness10;
-    fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / sunsetMaximumBrightness, tick);
+    fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / targetBrightness, tick);
     PRINTLN("[FastLEDHub] Start fade 'Sunset'");
   }
 }
@@ -100,7 +70,7 @@ void begin(FadeMode fadeMode)
 void stop()
 {
   fadeTicker.detach();
-  currentFade = FadeMode::NONE;
+  mode = FadeMode::NONE;
 }
 
 void tick()
@@ -108,25 +78,22 @@ void tick()
   if (FastLEDHub.status == PAUSED)
     return;
 
-  if (currentFade == Fade::FadeMode::ALARM && fadeBrightness == 1023)
+  if (mode == Fade::FadeMode::ALARM && fadeBrightness == 1023)
   {
     if (Config.postAlarmAnimation != Config.alarmAnimation)
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.postAlarmAnimation));
-    fadeTicker.detach();
+
+    stop();
     PRINTLN("[FastLEDHub] End fade 'Alarm'");
   }
-  else if (currentFade == Fade::FadeMode::SUNSET && fadeBrightness == sunsetMaximumBrightness)
+  else if (mode == Fade::FadeMode::SUNSET && fadeBrightness == targetBrightness)
   {
-    fadeTicker.detach();
+    stop();
     PRINTLN("[FastLEDHub] End fade 'Sunset'");
   }
   else
   {
-    if (fadeBrightness < 1023)
-      fadeBrightness++;
-    else
-      fadeTicker.detach();
-
+    fadeBrightness++;
     PRINTLN("[FastLEDHub] Fade brightness: " + String(fadeBrightness));
   }
 
@@ -164,6 +131,20 @@ void getSunsetTime()
   {
     PRINTLN("failed. Using last known time instead.");
   }
+}
+
+bool getTime(int8_t *hour, int8_t *minute)
+{
+  time_t n = time(nullptr);
+
+  if (!n)
+    return false;
+
+  tm *now = gmtime(&n);
+  *hour = (now->tm_hour + Config.timeZone + Config.summerTime) % 24;
+  *minute = now->tm_min;
+
+  return true;
 }
 
 } // namespace Fade

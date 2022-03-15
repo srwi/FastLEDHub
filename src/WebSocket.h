@@ -35,6 +35,6 @@ void broadcastStatus();
 /// Convert a byte array to String
 /// @param bytes Byte array
 /// @return Converted String
-String byteArray2string(uint8_t *bytes);
+String byteArray2String(uint8_t *bytes);
 
 } // namespace Websocket

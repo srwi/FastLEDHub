@@ -31,7 +31,7 @@ bool ConfigClass::initialize()
   return parseJson(json);
 }
 
-bool ConfigClass::parseJson(char *input)
+bool ConfigClass::parseJson(const char *input)
 {
   DynamicJsonDocument doc(2048);
   DeserializationError error = deserializeJson(doc, input);

@@ -93,6 +93,10 @@ public:
   /// @param scale Brightness scale to set LEDs to (0 - 255)
   void showColor(const struct CRGB &color, uint8_t scale);
 
+  /// Check if all leds are turned off (i.e. either brightness is zero or
+  /// all leds are black)
+  bool isDim();
+
   /// Clear all pixels. This function should be used in combination with
   /// FastLEDHub rather than FastLED.clear().
   /// @param writeData Wether to write out the data

@@ -17,7 +17,7 @@ enum class FadeMode
   SUNSET
 };
 
-extern FadeMode currentFade;
+extern FadeMode mode;
 
 void handle();
 void begin(FadeMode fadeMode);
@@ -25,5 +25,6 @@ void stop();
 void tick();
 void initialize();
 void getSunsetTime();
+bool getTime(int8_t *hour, int8_t *minute);
 
 } // namespace Fade

@@ -43,7 +43,7 @@ void handle(uint8_t id, WStype_t type, uint8_t *payload, size_t length)
   break;
   case WStype_TEXT:
     PRINTF_VERBOSE("[%u] Got text: %s\n", id, payload);
-    handleText(byteArray2string(payload), id);
+    handleText(byteArray2String(payload), id);
     break;
   case WStype_BIN:
     PRINTF_VERBOSE("[%u] Got binary: %s\n", id, payload);
@@ -56,10 +56,7 @@ void handle(uint8_t id, WStype_t type, uint8_t *payload, size_t length)
 
 void handleText(String text, uint8_t id)
 {
-  char textArray[text.length()];
-  text.toCharArray(textArray, text.length());
-
-  if (Config.parseJson(textArray))
+  if (Config.parseJson(text.c_str()))
     Config.save();
 }
 
@@ -122,7 +119,7 @@ void handleBinary(uint8_t *binary, uint8_t id)
   }
 }
 
-String byteArray2string(uint8_t *bytes)
+String byteArray2String(uint8_t *bytes)
 {
   String s = "";
   for (uint16_t i = 0; bytes[i] != '\0'; i++)

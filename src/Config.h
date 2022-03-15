@@ -19,19 +19,19 @@ public:
   // Alarm functionality enabled
   bool alarmEnabled = false;
   /// Alarm duration in minutes
-  uint16_t alarmDuration = 0;
+  uint16_t alarmDuration = 1;
   /// Alarm time hour
   uint8_t alarmHour = 0;
   /// Alarm time minute
   uint8_t alarmMinute = 0;
   /// Animation during alarm duration (while the brightness increases)
-  String alarmAnimation = "";
+  String alarmAnimation = "Color";
   /// Animation triggered after the alarm duration has ended
-  String postAlarmAnimation = "";
+  String postAlarmAnimation = "Color";
   /// Sunset functionality enabled
   bool sunsetEnabled = false;
   /// Sunset duration in minutes
-  uint16_t sunsetDuration = 0;
+  uint16_t sunsetDuration = 1;
   /// Sunset time hour
   int8_t sunsetHour = 0;
   /// Sunset time minute
@@ -40,11 +40,11 @@ public:
   /// automatically obtained local sunset time
   int16_t sunsetOffset = 0;
   /// Sunset animation
-  String sunsetAnimation = "";
+  String sunsetAnimation = "Color";
   /// Startup animation that gets triggered when powering up the device
   String startupAnimation = "";
   /// Lastly used color for Color animation
-  String color = "";
+  String color = "ffffff";
   /// Slider values
   LinkedList<int16_t> sliderValues;
 
@@ -61,7 +61,7 @@ public:
   /// config state.
   /// @param input JSON char array
   /// @return True if successfull
-  bool parseJson(char *input);
+  bool parseJson(const char *input);
 
   /// Get config state contained in a DynamicJsonDocument
   /// @return DynamicJsonDocument containing config

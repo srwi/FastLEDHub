@@ -33,7 +33,6 @@ void FastLEDHubClass::initialize(String projectName, uint16_t numberOfLeds)
   numLeds = numberOfLeds;
   leds = new CRGB[numLeds];
   hardwareLeds = new CRGB[numLeds];
-  brightness10 = 1023;
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
   {
@@ -144,6 +143,22 @@ void FastLEDHubClass::clear(bool writeData)
     show();
 }
 
+bool FastLEDHubClass::isDim()
+{
+  if (brightness10 == 0)
+    return true;
+
+  for (uint16_t i = 0; i < numLeds; i++)
+  {
+    if (hardwareLeds[i] != CRGB(0, 0, 0))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void FastLEDHubClass::delay(uint16_t ms)
 {
   unsigned long start = micros();
@@ -210,7 +225,7 @@ Slider* FastLEDHubClass::getSlider(uint8_t i)
 
 void FastLEDHubClass::handleInput()
 {
-  if (potentiometerPin >= 0 && Fade::currentFade == Fade::FadeMode::NONE)
+  if (potentiometerPin >= 0 && Fade::mode == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
