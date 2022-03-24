@@ -7,48 +7,27 @@
 class ConfigClass
 {
 public:
-  /// Time zone
   int8_t timeZone = 0;
-  /// Summer time (0 = false, 1 = true)
   int8_t summerTime = 0;
-  /// Longitude
   float longitude = 0;
-  /// Latitude
   float latitude = 0;
-  // Alarm functionality enabled
   bool alarmEnabled = false;
-  /// Alarm duration in minutes
   uint16_t alarmDuration = 1;
-  /// Alarm time hour
   uint8_t alarmHour = 0;
-  /// Alarm time minute
   uint8_t alarmMinute = 0;
-  /// Animation during alarm duration (while the brightness increases)
   String alarmAnimation = "Color";
-  /// Animation triggered after the alarm duration has ended
   String postAlarmAnimation = "Color";
-  /// Sunset functionality enabled
   bool sunsetEnabled = false;
-  /// Sunset duration in minutes
   uint16_t sunsetDuration = 1;
-  /// Sunset time hour
   int8_t sunsetHour = 0;
-  /// Sunset time minute
   int8_t sunsetMinute = 0;
-  /// Sunset time offset in minutes relative to the
-  /// automatically obtained local sunset time
   int16_t sunsetOffset = 0;
-  /// Sunset animation
   String sunsetAnimation = "Color";
-  /// Startup animation that gets triggered when powering up the device
   String startupAnimation = "";
-  /// Lastly used color for Color animation
   String color = "ffffff";
-  /// Slider values
   LinkedList<int16_t> sliderValues;
 
-  /// Initialize config object by mounting file system and
-  /// reading the config file.
+  /// Initialize config object by reading the config file.
   /// @return True if successful
   bool initialize();
 
@@ -56,23 +35,21 @@ public:
   /// @return True if successful
   bool save();
 
-  /// Parse a JSON char array and apply its values to the
-  /// config state.
+  /// Parse a JSON char array and apply its values to the config.
   /// @param input JSON char array
   /// @return True if successful
   bool parseJson(const char *input);
 
-  /// Get config state contained in a DynamicJsonDocument
-  /// @return DynamicJsonDocument containing config
-  DynamicJsonDocument getJson(DynamicJsonDocument doc);
-
-  /// Get config state serialized as a JSON string
-  /// @return JSON string
-  String getJsonString();
+  /// Get config and (optional) application state as JSON String.
+  /// @param includeApplicationState Wether to include application state
+  /// @return JSON String
+  String asString(bool includeApplicationState = false);
 
 private:
-  /// Constant config filename
   const String configFilename = "/config.txt";
+
+  void getUserConfigJson(JsonDocument &doc);
+  void getApplicationStateJson(JsonDocument &doc);
 };
 
 extern ConfigClass Config;

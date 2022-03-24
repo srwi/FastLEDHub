@@ -79,30 +79,8 @@ namespace WebSocket
         break;
       }
       case 30: // Request configuration
-        DynamicJsonDocument doc(2048);
-        doc = Config.getJson(doc);
-        doc["status"] = String(FastLEDHub.status);
-        doc["currentAnimation"] = FastLEDHub.currentAnimation
-                                      ? FastLEDHub.currentAnimation->getName()
-                                      : "";
-        JsonArray animations = doc.createNestedArray("animations");
-        for (uint8_t i = 0; i < FastLEDHub.animations.size(); i++)
-        {
-          animations.add(FastLEDHub.animations.get(i)->getName());
-        }
-        JsonArray sliders = doc.createNestedArray("sliders");
-        for (uint8_t i = 0; i < FastLEDHub.sliders.size(); i++)
-        {
-          JsonObject slider = sliders.createNestedObject();
-          slider["name"] = FastLEDHub.sliders.get(i)->name;
-          slider["min"] = FastLEDHub.sliders.get(i)->min;
-          slider["max"] = FastLEDHub.sliders.get(i)->max;
-          slider["step"] = FastLEDHub.sliders.get(i)->step;
-          slider["value"] = FastLEDHub.sliders.get(i)->value;
-        }
-        String buffer = "";
-        serializeJson(doc, buffer);
-        WebSocket::socket.sendTXT(id, buffer.c_str());
+        String config = Config.asString(true);
+        WebSocket::socket.sendTXT(id, config.c_str());
         break;
       }
     }

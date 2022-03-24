@@ -4,8 +4,6 @@
 
 #include <Arduino.h>
 
-class FastLEDHubClass;
-
 namespace Fade
 {
 
@@ -16,14 +14,10 @@ namespace Fade
     SUNSET
   };
 
-  extern FadeMode mode;
-
-  void tick();
   void handle();
   void begin(FadeMode fadeMode);
   void stop();
   void initialize();
-  void getSunsetTime();
-  bool getCurrentTime(int8_t *hour, int8_t *minute);
+  FadeMode getMode();
 
 } // namespace Fade

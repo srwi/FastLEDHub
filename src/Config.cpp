@@ -1,5 +1,7 @@
 #include "Config.h"
+
 #include "SerialOut.h"
+#include "FastLEDHub.h"
 
 #include <FS.h>
 
@@ -32,7 +34,7 @@ bool ConfigClass::initialize()
 
 bool ConfigClass::parseJson(const char *input)
 {
-  DynamicJsonDocument doc(2048);
+  StaticJsonDocument<1024> doc;
   DeserializationError error = deserializeJson(doc, input);
 
   if (doc.containsKey("timeZone"))
@@ -84,7 +86,7 @@ bool ConfigClass::parseJson(const char *input)
   return !error;
 }
 
-DynamicJsonDocument ConfigClass::getJson(DynamicJsonDocument doc)
+void ConfigClass::getUserConfigJson(JsonDocument &doc)
 {
   doc["timeZone"] = timeZone;
   doc["summerTime"] = summerTime;
@@ -109,16 +111,42 @@ DynamicJsonDocument ConfigClass::getJson(DynamicJsonDocument doc)
   {
     sliderValueArray.add(sliderValues.get(i));
   }
-
-  return doc;
 }
 
-String ConfigClass::getJsonString()
+void ConfigClass::getApplicationStateJson(JsonDocument &doc)
 {
-  DynamicJsonDocument doc(2048);
-  doc = getJson(doc);
+  doc["status"] = String(FastLEDHub.status);
+  doc["currentAnimation"] = FastLEDHub.currentAnimation ? FastLEDHub.currentAnimation->getName() : "";
+  JsonArray animations = doc.createNestedArray("animations");
+  for (uint8_t i = 0; i < FastLEDHub.animations.size(); i++)
+  {
+    animations.add(FastLEDHub.animations.get(i)->getName());
+  }
+  JsonArray sliders = doc.createNestedArray("sliders");
+  for (uint8_t i = 0; i < FastLEDHub.sliders.size(); i++)
+  {
+    JsonObject slider = sliders.createNestedObject();
+    slider["name"] = FastLEDHub.sliders.get(i)->name;
+    slider["min"] = FastLEDHub.sliders.get(i)->min;
+    slider["max"] = FastLEDHub.sliders.get(i)->max;
+    slider["step"] = FastLEDHub.sliders.get(i)->step;
+    slider["value"] = FastLEDHub.sliders.get(i)->value;
+  }
+}
+
+String ConfigClass::asString(bool includeApplicationState)
+{
+  DynamicJsonDocument doc(3072);
+
+  getUserConfigJson(doc);
+
+  if (includeApplicationState)
+  {
+    getApplicationStateJson(doc);
+  }
+
   String buffer = "";
-  serializeJson(doc, buffer);
+  serializeJsonPretty(doc, buffer);
   return buffer;
 }
 
@@ -131,7 +159,7 @@ bool ConfigClass::save()
     return false;
   }
 
-  configFile.println(getJsonString());
+  configFile.println(asString());
   configFile.close();
 
   return true;

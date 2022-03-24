@@ -1,8 +1,9 @@
+#include "FastLEDHub.h"
+
 #include "Animation.h"
 #include "ColorUtils.h"
 #include "Config.h"
 #include "Fade.h"
-#include "FastLEDHub.h"
 #include "SerialOut.h"
 #include "Webserver.h"
 #include "WebSocket.h"
@@ -222,7 +223,7 @@ Slider *FastLEDHubClass::getSlider(uint8_t i)
 
 void FastLEDHubClass::handleInput()
 {
-  if (potentiometerPin >= 0 && Fade::mode == Fade::FadeMode::NONE)
+  if (potentiometerPin >= 0 && Fade::getMode() == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
@@ -281,7 +282,7 @@ void FastLEDHubClass::autostart()
 
 void FastLEDHubClass::begin(Animation *animation)
 {
-  if (currentAnimation && currentAnimation->getName() == animation->getName())
+  if (animation == NULL || (currentAnimation && currentAnimation->getName() == animation->getName()))
     return;
 
   clear(true);

@@ -58,16 +58,11 @@ namespace Webserver
                      FastLEDHub.begin(FastLEDHub.getAnimation(animationName));
                      WebServer.send(200, "text/plain", "Started '" + animationName + "'");
                    }
-                   else if (WebServer.hasArg("index"))
-                   {
-                     uint8_t animationIndex = WebServer.arg("index").toInt();
-                     if (animationIndex < FastLEDHub.animations.size())
-                       FastLEDHub.begin(FastLEDHub.getAnimation(animationIndex));
-                     WebServer.send(200, "text/plain", "Started animation #" + String(animationIndex));
-                   }
                    else
                    {
-                     FastLEDHub.begin(FastLEDHub.getAnimation(0));
+                     uint8_t animationIndex = WebServer.hasArg("index") ? WebServer.arg("index").toInt() : 0;
+                     FastLEDHub.begin(FastLEDHub.getAnimation(animationIndex));
+                     WebServer.send(200, "text/plain", "Started animation #" + String(animationIndex));
                    }
                  });
   }
