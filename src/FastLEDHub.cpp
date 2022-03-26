@@ -25,7 +25,7 @@ FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
 {
 }
 
-void FastLEDHubClass::initialize(String projectName, uint16_t numberOfLeds)
+void FastLEDHubClass::initialize(const String &projectName, uint16_t numberOfLeds)
 {
   initESPEssentials(projectName);
   numLeds = numberOfLeds;
@@ -91,40 +91,21 @@ void FastLEDHubClass::show(int16_t bright10)
   if (bright10 != -1)
     brightness10 = bright10;
 
-  int16_t gammaCorrectedBrightness = round((float)brightness10 * brightness10 / 1023);
-  uint8_t bright8 = gammaCorrectedBrightness / 4;
-  uint8_t fract2 = bright8 != 255 ? gammaCorrectedBrightness % 4 : 0;
+  uint16_t bright10gamma = round((float)brightness10 * brightness10 / 1023);
+  uint8_t bright8 = bright10gamma / 4;
+  uint8_t res = bright8 != 255 ? bright10gamma % 4 : 0;
 
   for (uint16_t i = 0; i < numLeds; i++)
   {
-    hardwareLeds[i] = leds[i];
-    switch (fract2)
+    uint8_t ledBrightness = bright8;
+    if ((res == 2 && i % 2 == 0) ||
+        (res % 2 && i % 4 < res))
     {
-    case 0:
-      hardwareLeds[i].nscale8(bright8);
-      break;
-    case 2:
-      if (i % 2)
-      {
-        hardwareLeds[i].nscale8(bright8);
-      }
-      else
-      {
-        hardwareLeds[i].nscale8(bright8 + 1);
-      }
-      break;
-    case 1:
-    case 3:
-      if (i % 4 < fract2)
-      {
-        hardwareLeds[i].nscale8(bright8 + 1);
-      }
-      else
-      {
-        hardwareLeds[i].nscale8(bright8);
-      }
-      break;
+      ledBrightness = ledBrightness == 255 ? 255 : ledBrightness + 1;
     }
+
+    hardwareLeds[i] = leds[i];
+    hardwareLeds[i].nscale8(ledBrightness);
   }
 
   CFastLED::show();

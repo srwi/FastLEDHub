@@ -35,8 +35,8 @@ public:
 
   /// Initialize FastLEDHub
   /// @param projectName Project name
-  /// @param numLeds Number of LEDs
-  void initialize(String projectName, uint16_t numLeds);
+  /// @param numberOfLeds Number of LEDs
+  void initialize(const String &projectName, uint16_t numberOfLeds);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
