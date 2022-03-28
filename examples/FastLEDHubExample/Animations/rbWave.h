@@ -14,9 +14,9 @@ public:
 
   void loop()
   {
-    for (uint16_t i = 0; i < FastLEDHub.numLeds; i++)
+    for (uint16_t i = 0; i < FastLEDHub.size(); i++)
     {
-      FastLEDHub.leds[i] = getCyclicColor((ledDiv * i + step) % (HSV2RGB_SMOOTH_RANGE * 2 / 3));
+      FastLEDHub.leds()[i] = getCyclicColor((ledDiv * i + step) % (HSV2RGB_SMOOTH_RANGE * 2 / 3));
     }
 
     step++;
@@ -28,7 +28,7 @@ public:
   }
 
 private:
-  uint8_t ledDiv = 2.0 / 3 * HSV2RGB_SMOOTH_RANGE / FastLEDHub.numLeds;
+  uint8_t ledDiv = 2.0 / 3 * HSV2RGB_SMOOTH_RANGE / FastLEDHub.size();
   uint16_t step;
 
   CRGB getCyclicColor(uint16_t index)

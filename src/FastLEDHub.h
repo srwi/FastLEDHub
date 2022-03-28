@@ -83,28 +83,9 @@ public:
   /// @return Pointer to slider
   Slider *getSlider(uint8_t i);
 
-  /// Perform gamma correction on the brightness value and use four neighboring
-  /// pixels to further increase the perceived brightness
-  /// @param bright10 10 bit brightness value
-  void show(int16_t bright10 = -1);
-
-  /// Set all LEDs on the controller to a given color/scale
-  /// @param color Color to set LEDs to
-  /// @param scale Brightness scale to set LEDs to (0 - 255)
-  void showColor(const struct CRGB &color, uint8_t scale);
-
   /// Check if all leds are turned off (i.e. either brightness is zero or
   /// all leds are black)
   bool isDim();
-
-  /// Clear all pixels. This function should be used in combination with
-  /// FastLEDHub rather than FastLED.clear().
-  /// @param writeData Wether to write out the data
-  void clear(bool writeData = false);
-
-  /// Clear all pixels. This function should be used in combination with
-  /// FastLEDHub rather than FastLED.clear().
-  void clearData() { clear(); };
 
   /// Wait for a given amount of milliseconds while still calling
   /// show() periodically. Use this instead of the regular Arduino delay.
@@ -156,18 +137,6 @@ public:
 
   /// Current brightness value in 10bit
   int16_t brightness10;
-
-  /// Array holding all led colors. This array should be used to set led colors.
-  CRGB *leds;
-
-  /// Array holding the actual led colors that get used by FastLED.
-  /// This will be used internally by FastLEDHub and should only be
-  /// used once in combination with FastLEDHub.addLeds(). DO NOT use this
-  /// to change led colors within an animation. Use FastLEDHub.leds instead.
-  CRGB *hardwareLeds;
-
-  /// Number of registered LEDs
-  uint16_t numLeds;
 
 private:
   /// Handle all configured inputs. This will get called periodically.

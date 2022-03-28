@@ -13,8 +13,7 @@ public:
 
   void loop()
   {
-    fill_solid(FastLEDHub.leds, FastLEDHub.numLeds, strtol((const char *)&Config.color[0], NULL, 16));
-
-    FastLEDHub.show();
+    CRGB color = strtol(Config.color.c_str(), NULL, 16);
+    FastLEDHub.showColor(color);
   }
 };

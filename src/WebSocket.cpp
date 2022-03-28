@@ -63,8 +63,8 @@ namespace WebSocket
       case 10: // Color data
         FastLEDHub.stop();
         Fade::stop();
-        for (uint16_t i = 0; i < FastLEDHub.numLeds; i++)
-          FastLEDHub.leds[i] =
+        for (uint16_t i = 0; i < FastLEDHub.size(); i++)
+          FastLEDHub.leds()[i] =
               CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
         break;
       case 20: // Slider data

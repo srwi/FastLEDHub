@@ -7,7 +7,7 @@ class RgbWave : public Animation
 public:
   using Animation::Animation;
 
-  uint8_t ledDiv = HSV2RGB_SMOOTH_RANGE / FastLEDHub.numLeds;
+  uint8_t ledDiv = HSV2RGB_SMOOTH_RANGE / FastLEDHub.size();
   uint16_t step;
 
   void reset()
@@ -17,9 +17,9 @@ public:
 
   void loop()
   {
-    for (uint16_t i = 0; i < FastLEDHub.numLeds; i++)
+    for (uint16_t i = 0; i < FastLEDHub.size(); i++)
     {
-      FastLEDHub.leds[i] = hsv2rgb_smooth((ledDiv * i + step) % HSV2RGB_SMOOTH_RANGE, FastLEDHub.getSlider("Saturation")->value, 255);
+      FastLEDHub.leds()[i] = hsv2rgb_smooth((ledDiv * i + step) % HSV2RGB_SMOOTH_RANGE, FastLEDHub.getSlider("Saturation")->value, 255);
     }
 
     step++;

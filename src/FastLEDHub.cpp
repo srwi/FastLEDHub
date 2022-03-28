@@ -28,9 +28,6 @@ FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
 void FastLEDHubClass::initialize(const String &projectName, uint16_t numberOfLeds)
 {
   initESPEssentials(projectName);
-  numLeds = numberOfLeds;
-  leds = new CRGB[numLeds];
-  hardwareLeds = new CRGB[numLeds];
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
   {
@@ -86,52 +83,19 @@ void FastLEDHubClass::handle()
   WebSocket::handle();
 }
 
-void FastLEDHubClass::show(int16_t bright10)
-{
-  if (bright10 != -1)
-    brightness10 = bright10;
-
-  uint16_t bright10gamma = round((float)brightness10 * brightness10 / 1023);
-  uint8_t bright8 = bright10gamma / 4;
-  uint8_t res = bright8 != 255 ? bright10gamma % 4 : 0;
-
-  for (uint16_t i = 0; i < numLeds; i++)
-  {
-    uint8_t ledBrightness = bright8;
-    if ((res == 2 && i % 2 == 0) ||
-        (res % 2 && i % 4 < res))
-    {
-      ledBrightness = ledBrightness == 255 ? 255 : ledBrightness + 1;
-    }
-
-    hardwareLeds[i] = leds[i];
-    hardwareLeds[i].nscale8(ledBrightness);
-  }
-
-  CFastLED::show();
-}
-
-void FastLEDHubClass::clear(bool writeData)
-{
-  for (uint16_t i = 0; i < numLeds; i++)
-  {
-    leds[i] = CRGB::Black;
-  }
-
-  if (writeData)
-    show();
-}
-
 bool FastLEDHubClass::isDim()
 {
   if (brightness10 == 0)
     return true;
 
-  for (uint16_t i = 0; i < numLeds; i++)
+  for (uint16_t i = 0; i < FastLEDHub.count(); ++i)
   {
-    if (hardwareLeds[i] != CRGB(0, 0, 0))
+    for (uint16_t j = 0; j < FastLEDHub.size(); ++j)
     {
-      return false;
+      if (FastLEDHub[i].leds()[j] != CRGB(0, 0, 0))
+      {
+        return false;
+      }
     }
   }
 
@@ -310,12 +274,6 @@ void FastLEDHubClass::resume()
 
   WebSocket::broadcastStatus();
   PRINTLN("Resumed '" + currentAnimation->getName() + "'");
-}
-
-void FastLEDHubClass::showColor(const struct CRGB &color, uint8_t scale)
-{
-  fill_solid(leds, numLeds, color);
-  brightness10 = scale * 4 * 1.003;
 }
 
 void FastLEDHubClass::restart()
