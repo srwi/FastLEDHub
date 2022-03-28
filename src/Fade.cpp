@@ -24,7 +24,7 @@ namespace Fade
       if (FastLEDHub.status == PAUSED)
         return;
 
-      if (mode == FadeMode::ALARM && FastLEDHub.brightness10 == 1023)
+      if (mode == FadeMode::ALARM && FastLEDHub.getBrightness() == 255)
       {
         if (Config.postAlarmAnimation != Config.alarmAnimation)
           FastLEDHub.begin(FastLEDHub.getAnimation(Config.postAlarmAnimation));
@@ -32,18 +32,16 @@ namespace Fade
         stop();
         PRINTLN("[FastLEDHub] End fade 'Alarm'");
       }
-      else if (mode == FadeMode::SUNSET && FastLEDHub.brightness10 == targetBrightness)
+      else if (mode == FadeMode::SUNSET && FastLEDHub.getBrightness() == targetBrightness)
       {
         stop();
         PRINTLN("[FastLEDHub] End fade 'Sunset'");
       }
       else
       {
-        FastLEDHub.brightness10++;
-        PRINTLN("[FastLEDHub] Fade brightness: " + String(FastLEDHub.brightness10));
+        FastLEDHub.setBrightness(FastLEDHub.getBrightness() + 1);
+        PRINTLN("[FastLEDHub] Fade brightness: " + String(FastLEDHub.getBrightness()));
       }
-
-      FastLEDHub.brightness10 = FastLEDHub.brightness10;
     }
 
     void getSunsetTime()
@@ -123,8 +121,8 @@ namespace Fade
   void begin(FadeMode fadeMode)
   {
     mode = fadeMode;
-    targetBrightness = FastLEDHub.brightness10;
-    FastLEDHub.brightness10 = 0;
+    targetBrightness = FastLEDHub.getBrightness();
+    FastLEDHub.setBrightness(0);
     FastLEDHub.show();
 
     debounce.once(61, [&]()
@@ -133,7 +131,7 @@ namespace Fade
     if (fadeMode == FadeMode::ALARM)
     {
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.alarmAnimation));
-      fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 1023, tick);
+      fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 255, tick);
       PRINTLN("[FastLEDHub] Start fade 'Alarm'");
     }
     else if (fadeMode == FadeMode::SUNSET)

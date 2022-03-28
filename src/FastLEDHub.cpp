@@ -14,7 +14,6 @@
 
 FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
                                      speed(255),
-                                     brightness10(1023),
                                      cycleButtonPushed(false),
                                      toggleButtonPushed(false),
                                      autostartHandled(false),
@@ -38,13 +37,13 @@ void FastLEDHubClass::initialize(const String &projectName, uint16_t numberOfLed
 
   if (Config.sliderValues.size() >= 2)
   {
-    brightness10 = Config.sliderValues.get(0);
+    setBrightness(Config.sliderValues.get(0));
     speed = Config.sliderValues.get(1);
   }
 
   registerAnimation(new Color("Color"));
 
-  registerSlider(new Slider("Brightness", 0, 1023, 1023, 1));
+  registerSlider(new Slider("Brightness", 0, 255, 255, 1));
   registerSlider(new Slider("Speed", 0, 255, 127, 1));
 }
 
@@ -85,7 +84,7 @@ void FastLEDHubClass::handle()
 
 bool FastLEDHubClass::isDim()
 {
-  if (brightness10 == 0)
+  if (getBrightness() == 0)
     return true;
 
   for (uint16_t i = 0; i < FastLEDHub.count(); ++i)
@@ -184,7 +183,8 @@ void FastLEDHubClass::handleInput()
     // potentiometers.
     if (!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
     {
-      brightness10 = (float)potiBrightness * potiBrightness / 1023;
+      uint16_t brightness = (float)potiBrightness * potiBrightness / 1023 / 4;
+      setBrightness(brightness);
     }
   }
 
@@ -215,6 +215,11 @@ void FastLEDHubClass::handleInput()
       toggleButtonPushed = false;
     }
   }
+}
+
+void FastLEDHubClass::setSpeed(uint8_t newSpeed)
+{
+  speed = newSpeed;
 }
 
 void FastLEDHubClass::autostart()

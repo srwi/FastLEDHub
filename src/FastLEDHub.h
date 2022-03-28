@@ -120,6 +120,9 @@ public:
   /// calling this method will have no effect.
   void resume();
 
+  /// Set global animation speed
+  void setSpeed(uint8_t newSpeed);
+
   /// List of all registered animation pointers
   LinkedList<Animation *> animations;
 
@@ -131,12 +134,6 @@ public:
 
   /// Current animation status
   AnimationStatus status = STOPPED;
-
-  /// Current animation speed
-  uint8_t speed;
-
-  /// Current brightness value in 10bit
-  int16_t brightness10;
 
 private:
   /// Handle all configured inputs. This will get called periodically.
@@ -150,6 +147,7 @@ private:
   bool autostartHandled;
   float filteredBrightness;
   Ticker inputTicker;
+  uint8_t speed;
   uint8_t potentiometerPin;
   uint8_t cycleButtonPin;
   uint8_t toggleButtonPin;

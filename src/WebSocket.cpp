@@ -71,9 +71,9 @@ namespace WebSocket
       {
         int16_t value = (binary[2] << 8) | binary[3];
         if (binary[1] == 0)
-          FastLEDHub.brightness10 = value;
+          FastLEDHub.setBrightness(value);
         else if (binary[1] == 1)
-          FastLEDHub.speed = value;
+          FastLEDHub.setSpeed(value);
         Config.sliderValues.set(binary[1], value);
         FastLEDHub.sliders.get(binary[1])->value = value;
         break;
