@@ -8,7 +8,7 @@ public:
   Animation() = delete;
 
   /// Constructor
-  /// @param name Animation name
+  /// @param name Unique animation name
   Animation(String name);
 
   /// Get the animation name
@@ -24,6 +24,5 @@ public:
   virtual void reset() = 0;
 
 private:
-  /// Animation name
   String m_name;
 };

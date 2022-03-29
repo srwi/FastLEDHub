@@ -41,7 +41,7 @@ public:
   bool parseJson(const char *input);
 
   /// Get config and (optional) application state as JSON String.
-  /// @param includeApplicationState Wether to include application state
+  /// @param includeApplicationState Include application state (default: false)
   /// @return JSON String
   String asString(bool includeApplicationState = false);
 

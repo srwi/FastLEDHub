@@ -115,8 +115,8 @@ void ConfigClass::getUserConfigJson(JsonDocument &doc)
 
 void ConfigClass::getApplicationStateJson(JsonDocument &doc)
 {
-  doc["status"] = String(FastLEDHub.status);
-  doc["currentAnimation"] = FastLEDHub.currentAnimation ? FastLEDHub.currentAnimation->getName() : "";
+  doc["status"] = String(FastLEDHub.getStatus());
+  doc["currentAnimation"] = FastLEDHub.getCurrentAnimationName();
   JsonArray animations = doc.createNestedArray("animations");
   for (uint8_t i = 0; i < FastLEDHub.animations.size(); i++)
   {

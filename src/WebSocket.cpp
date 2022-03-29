@@ -19,26 +19,12 @@ namespace WebSocket
 
     WebSocketsServer socket = WebSocketsServer(81);
 
-    /// Convert a byte array to String
-    /// @param bytes Byte array
-    /// @return Converted String
-    String byteArray2String(uint8_t *bytes)
-    {
-      String s = "";
-      for (uint16_t i = 0; bytes[i] != '\0'; i++)
-      {
-        s += char(bytes[i]);
-      }
-      s += '\0';
-      return s;
-    }
-
     /// Handle websocket events of type WStype_TEXT
-    /// @param text Text
+    /// @param text Text String
     /// @param id Connection id that triggered event
-    void onText(String text, uint8_t id)
+    void onText(uint8_t *text, uint8_t id)
     {
-      if (Config.parseJson(text.c_str()))
+      if (Config.parseJson((const char *)text))
         Config.save();
     }
 
@@ -107,11 +93,11 @@ namespace WebSocket
       break;
       case WStype_TEXT:
         PRINTF_VERBOSE("[%u] Got text: %s\n", id, payload);
-        onText(byteArray2String(payload), id);
+        onText(payload, id);
         break;
       case WStype_BIN:
         PRINTF_VERBOSE("[%u] Got binary: %s\n", id, payload);
-        onBinary(payload, id);
+        onBinary((uint8_t *)payload, id);
         break;
       default:
         break;
@@ -136,8 +122,7 @@ namespace WebSocket
 
   void broadcastStatus()
   {
-    String currentAnimation = (FastLEDHub.currentAnimation ? FastLEDHub.currentAnimation->getName() : "");
-    String msg = "{\"status\": " + String((int)FastLEDHub.status) + ",\"currentAnimation\":\"" + currentAnimation + "\"\n}";
+    String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ",\"currentAnimation\":\"" + FastLEDHub.getCurrentAnimationName() + "\"\n}";
     WebSocket::socket.broadcastTXT(msg.c_str());
   }
 

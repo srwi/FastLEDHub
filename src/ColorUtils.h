@@ -13,7 +13,7 @@
 /// @return CRGB color
 CRGB hsv2rgb_smooth(uint16_t hue, uint8_t sat, uint8_t val);
 
-/// Convert RGB color to Hex string representation
+/// Convert RGB color to hex string representation
 /// @param r Red
 /// @param g Green
 /// @param b Blue

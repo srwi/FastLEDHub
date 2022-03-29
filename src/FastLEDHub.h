@@ -35,8 +35,7 @@ public:
 
   /// Initialize FastLEDHub
   /// @param projectName Project name
-  /// @param numberOfLeds Number of LEDs
-  void initialize(const String &projectName, uint16_t numberOfLeds);
+  void initialize(const String &projectName);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
@@ -85,6 +84,7 @@ public:
 
   /// Check if all leds are turned off (i.e. either brightness is zero or
   /// all leds are black)
+  /// @return True if all leds are dim
   bool isDim();
 
   /// Wait for a given amount of milliseconds while still calling
@@ -120,7 +120,12 @@ public:
   /// calling this method will have no effect.
   void resume();
 
+  /// Get the current animation status.
+  /// @return Current animation status
+  AnimationStatus getStatus();
+
   /// Set global animation speed
+  /// @param newSpeed New speed value from 0-255
   void setSpeed(uint8_t newSpeed);
 
   /// List of all registered animation pointers
@@ -129,11 +134,9 @@ public:
   /// List of all registered slider pointers
   LinkedList<Slider *> sliders;
 
-  /// Pointer to current animation object
-  Animation *currentAnimation;
-
-  /// Current animation status
-  AnimationStatus status = STOPPED;
+  /// Get the name of the currently selected animation
+  /// @return Current animation name
+  String getCurrentAnimationName();
 
 private:
   /// Handle all configured inputs. This will get called periodically.
@@ -147,6 +150,8 @@ private:
   bool autostartHandled;
   float filteredBrightness;
   Ticker inputTicker;
+  Animation *currentAnimation;
+  AnimationStatus status = STOPPED;
   uint8_t speed;
   uint8_t potentiometerPin;
   uint8_t cycleButtonPin;

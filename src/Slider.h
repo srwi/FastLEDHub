@@ -3,11 +3,11 @@
 class Slider
 {
 public:
-    String name;
-    int16_t min;
-    int16_t max;
+    const String name;
+    const int16_t min;
+    const int16_t max;
     int16_t value;
-    int16_t step;
+    const int16_t step;
 
     Slider(String _name,
            int16_t _min,

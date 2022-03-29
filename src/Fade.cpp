@@ -21,7 +21,7 @@ namespace Fade
 
     void tick()
     {
-      if (FastLEDHub.status == PAUSED)
+      if (FastLEDHub.getStatus() == PAUSED)
         return;
 
       if (mode == FadeMode::ALARM && FastLEDHub.getBrightness() == 255)

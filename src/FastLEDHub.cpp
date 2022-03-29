@@ -24,7 +24,7 @@ FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
 {
 }
 
-void FastLEDHubClass::initialize(const String &projectName, uint16_t numberOfLeds)
+void FastLEDHubClass::initialize(const String &projectName)
 {
   initESPEssentials(projectName);
   Config.initialize();
@@ -220,6 +220,19 @@ void FastLEDHubClass::handleInput()
 void FastLEDHubClass::setSpeed(uint8_t newSpeed)
 {
   speed = newSpeed;
+}
+
+AnimationStatus FastLEDHubClass::getStatus()
+{
+  return status;
+}
+
+String FastLEDHubClass::getCurrentAnimationName()
+{
+  if (!currentAnimation)
+    return "";
+
+  return currentAnimation->getName();
 }
 
 void FastLEDHubClass::autostart()
