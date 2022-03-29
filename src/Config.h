@@ -46,7 +46,7 @@ public:
   String asString(bool includeApplicationState = false);
 
 private:
-  const String configFilename = "/config.txt";
+  const String m_configFilename = "/config.txt";
 
   void getUserConfigJson(JsonDocument &doc);
   void getApplicationStateJson(JsonDocument &doc);

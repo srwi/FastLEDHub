@@ -1,8 +1,7 @@
 #include "Animation.h"
 
-Animation::Animation(String name)
+Animation::Animation(String name) : m_name(name)
 {
-  m_name = name;
 }
 
 String Animation::getName()

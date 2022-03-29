@@ -17,7 +17,7 @@ namespace WebSocket
   namespace
   {
 
-    WebSocketsServer socket = WebSocketsServer(81);
+    WebSocketsServer m_socket = WebSocketsServer(81);
 
     /// Handle websocket events of type WStype_TEXT
     /// @param text Text String
@@ -66,7 +66,7 @@ namespace WebSocket
       }
       case 30: // Request configuration
         String config = Config.asString(true);
-        WebSocket::socket.sendTXT(id, config.c_str());
+        WebSocket::m_socket.sendTXT(id, config.c_str());
         break;
       }
     }
@@ -86,9 +86,8 @@ namespace WebSocket
         break;
       case WStype_CONNECTED:
       {
-        IPAddress ip = socket.remoteIP(id);
-        PRINTF("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1],
-               ip[2], ip[3], payload);
+        IPAddress ip = m_socket.remoteIP(id);
+        PRINTF("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
       }
       break;
       case WStype_TEXT:
@@ -108,8 +107,8 @@ namespace WebSocket
 
   void initialize()
   {
-    socket.begin();
-    socket.onEvent(onEvent);
+    m_socket.begin();
+    m_socket.onEvent(onEvent);
     MDNS.begin("fastledhub");
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("ws", "tcp", 81);
@@ -117,13 +116,13 @@ namespace WebSocket
 
   void handle()
   {
-    socket.loop();
+    m_socket.loop();
   }
 
   void broadcastStatus()
   {
     String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ",\"currentAnimation\":\"" + FastLEDHub.getCurrentAnimationName() + "\"\n}";
-    WebSocket::socket.broadcastTXT(msg.c_str());
+    WebSocket::m_socket.broadcastTXT(msg.c_str());
   }
 
 } // namespace WebSocket

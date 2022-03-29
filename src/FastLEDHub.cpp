@@ -12,15 +12,15 @@
 
 #include <ESPEssentials.h>
 
-FastLEDHubClass::FastLEDHubClass() : status(STOPPED),
-                                     speed(255),
-                                     cycleButtonPushed(false),
-                                     toggleButtonPushed(false),
-                                     autostartHandled(false),
-                                     filteredBrightness(128),
-                                     potentiometerPin(-1),
-                                     cycleButtonPin(-1),
-                                     toggleButtonPin(-1)
+FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
+                                     m_toggleButtonPushed(false),
+                                     m_autostartHandled(false),
+                                     m_filteredBrightness(128),
+                                     m_status(STOPPED),
+                                     m_speed(255),
+                                     m_potentiometerPin(-1),
+                                     m_cycleButtonPin(-1),
+                                     m_toggleButtonPin(-1)
 {
 }
 
@@ -38,7 +38,7 @@ void FastLEDHubClass::initialize(const String &projectName)
   if (Config.sliderValues.size() >= 2)
   {
     setBrightness(Config.sliderValues.get(0));
-    speed = Config.sliderValues.get(1);
+    m_speed = Config.sliderValues.get(1);
   }
 
   registerAnimation(new Color("Color"));
@@ -49,34 +49,34 @@ void FastLEDHubClass::initialize(const String &projectName)
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
-  cycleButtonPin = pin;
+  m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
-  cycleButtonPin = pin;
+  m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
 {
-  inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
-  potentiometerPin = pin;
+  m_potentiometerPin = pin;
 }
 
 void FastLEDHubClass::handle()
 {
   handleESPEssentials();
 
-  if (!autostartHandled)
+  if (!m_autostartHandled)
     autostart();
 
-  if (status == RUNNING && currentAnimation)
-    currentAnimation->loop();
+  if (m_status == RUNNING && m_currentAnimation)
+    m_currentAnimation->loop();
 
   Fade::handle();
   WebSocket::handle();
@@ -104,7 +104,7 @@ bool FastLEDHubClass::isDim()
 void FastLEDHubClass::delay(uint16_t ms)
 {
   unsigned long start = micros();
-  while (micros() - start < 1000.0 * ms * pow((FastLEDHub.speed - 255) / 128.0, 2))
+  while (micros() - start < 1000.0 * ms * pow((m_speed - 255) / 128.0, 2))
   {
     handleESPEssentials();
     Fade::handle();
@@ -167,7 +167,7 @@ Slider *FastLEDHubClass::getSlider(uint8_t i)
 
 void FastLEDHubClass::handleInput()
 {
-  if (potentiometerPin >= 0 && Fade::getMode() == Fade::FadeMode::NONE)
+  if (m_potentiometerPin >= 0 && Fade::getMode() == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
@@ -175,64 +175,64 @@ void FastLEDHubClass::handleInput()
     potiBrightness = constrain(potiBrightness, 0, 1023);
 
     // Low pass filter the potentiometer value to smoothen it out
-    filteredBrightness = filteredBrightness - 0.01 * (filteredBrightness - potiBrightness);
+    m_filteredBrightness = m_filteredBrightness - 0.01 * (m_filteredBrightness - potiBrightness);
 
     // Only set brightness if it's not near the filtered brightness value.
     // This will cause the actual brightness to lock in place once the potentiometer
     // hasn't been adjusted to prevent it from changing randomly for low quality
     // potentiometers.
-    if (!(filteredBrightness - 1 < potiBrightness && potiBrightness < filteredBrightness + 1))
+    if (!(m_filteredBrightness - 1 < potiBrightness && potiBrightness < m_filteredBrightness + 1))
     {
       uint16_t brightness = (float)potiBrightness * potiBrightness / 1023 / 4;
       setBrightness(brightness);
     }
   }
 
-  if (cycleButtonPin >= 0)
+  if (m_cycleButtonPin >= 0)
   {
-    if (!digitalRead(cycleButtonPin) && !cycleButtonPushed)
+    if (!digitalRead(m_cycleButtonPin) && !m_cycleButtonPushed)
     {
       Fade::stop();
       cycle();
-      cycleButtonPushed = true;
+      m_cycleButtonPushed = true;
     }
-    else if (digitalRead(cycleButtonPin) && cycleButtonPushed)
+    else if (digitalRead(m_cycleButtonPin) && m_cycleButtonPushed)
     {
-      cycleButtonPushed = false;
+      m_cycleButtonPushed = false;
     }
   }
 
-  if (toggleButtonPin >= 0)
+  if (m_toggleButtonPin >= 0)
   {
-    if (!digitalRead(toggleButtonPin) && !toggleButtonPushed)
+    if (!digitalRead(m_toggleButtonPin) && !m_toggleButtonPushed)
     {
       Fade::stop();
       toggle();
-      toggleButtonPushed = true;
+      m_toggleButtonPushed = true;
     }
-    else if (digitalRead(toggleButtonPin) && toggleButtonPushed)
+    else if (digitalRead(m_toggleButtonPin) && m_toggleButtonPushed)
     {
-      toggleButtonPushed = false;
+      m_toggleButtonPushed = false;
     }
   }
 }
 
-void FastLEDHubClass::setSpeed(uint8_t newSpeed)
+void FastLEDHubClass::setSpeed(uint8_t speed)
 {
-  speed = newSpeed;
+  m_speed = speed;
 }
 
 AnimationStatus FastLEDHubClass::getStatus()
 {
-  return status;
+  return m_status;
 }
 
 String FastLEDHubClass::getCurrentAnimationName()
 {
-  if (!currentAnimation)
+  if (!m_currentAnimation)
     return "";
 
-  return currentAnimation->getName();
+  return m_currentAnimation->getName();
 }
 
 void FastLEDHubClass::autostart()
@@ -240,29 +240,29 @@ void FastLEDHubClass::autostart()
   if (Config.startupAnimation != "")
     begin(getAnimation(Config.startupAnimation));
 
-  autostartHandled = true;
+  m_autostartHandled = true;
 }
 
 void FastLEDHubClass::begin(Animation *animation)
 {
-  if (animation == NULL || (currentAnimation && currentAnimation->getName() == animation->getName()))
+  if (animation == NULL || (m_currentAnimation && m_currentAnimation->getName() == animation->getName()))
     return;
 
   clear(true);
 
-  status = RUNNING;
-  currentAnimation = animation;
-  currentAnimation->reset();
+  m_status = RUNNING;
+  m_currentAnimation = animation;
+  m_currentAnimation->reset();
 
   WebSocket::broadcastStatus();
-  PRINTLN("Started '" + currentAnimation->getName() + "'");
+  PRINTLN("Started '" + m_currentAnimation->getName() + "'");
 }
 
 void FastLEDHubClass::cycle()
 {
   for (uint8_t i = 0; i < animations.size(); i++)
   {
-    if (currentAnimation == getAnimation(i))
+    if (m_currentAnimation == getAnimation(i))
     {
       begin(getAnimation((i + 1) % animations.size()));
       return;
@@ -272,12 +272,12 @@ void FastLEDHubClass::cycle()
 
 void FastLEDHubClass::stop()
 {
-  if (status == STOPPED)
+  if (m_status == STOPPED)
     return;
 
-  status = STOPPED;
+  m_status = STOPPED;
   clear(true);
-  currentAnimation = NULL;
+  m_currentAnimation = NULL;
 
   WebSocket::broadcastStatus();
   PRINTLN("Stopped animation");
@@ -285,34 +285,34 @@ void FastLEDHubClass::stop()
 
 void FastLEDHubClass::resume()
 {
-  if (status != PAUSED)
+  if (m_status != PAUSED)
     return;
 
-  status = RUNNING;
+  m_status = RUNNING;
 
   WebSocket::broadcastStatus();
-  PRINTLN("Resumed '" + currentAnimation->getName() + "'");
+  PRINTLN("Resumed '" + m_currentAnimation->getName() + "'");
 }
 
 void FastLEDHubClass::restart()
 {
   stop();
-  begin(currentAnimation);
+  begin(m_currentAnimation);
 
-  PRINTLN("Restarted '" + currentAnimation->getName() + "'");
+  PRINTLN("Restarted '" + m_currentAnimation->getName() + "'");
 }
 
 void FastLEDHubClass::pause()
 {
-  status = PAUSED;
+  m_status = PAUSED;
 
   WebSocket::broadcastStatus();
-  PRINTLN("Paused '" + currentAnimation->getName() + "'");
+  PRINTLN("Paused '" + m_currentAnimation->getName() + "'");
 }
 
 void FastLEDHubClass::toggle()
 {
-  if (status == RUNNING)
+  if (m_status == RUNNING)
     pause();
   else
     resume();
@@ -320,9 +320,9 @@ void FastLEDHubClass::toggle()
 
 void FastLEDHubClass::toggle(Animation *animation)
 {
-  if (currentAnimation && currentAnimation == animation && status == RUNNING)
+  if (m_currentAnimation && m_currentAnimation == animation && m_status == RUNNING)
     pause();
-  else if (currentAnimation && currentAnimation == animation && status == PAUSED)
+  else if (m_currentAnimation && m_currentAnimation == animation && m_status == PAUSED)
     resume();
   else
     begin(animation);

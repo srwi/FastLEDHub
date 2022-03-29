@@ -125,8 +125,8 @@ public:
   AnimationStatus getStatus();
 
   /// Set global animation speed
-  /// @param newSpeed New speed value from 0-255
-  void setSpeed(uint8_t newSpeed);
+  /// @param speed Speed value (0 - 255)
+  void setSpeed(uint8_t speed);
 
   /// List of all registered animation pointers
   LinkedList<Animation *> animations;
@@ -145,17 +145,17 @@ private:
   /// Start the configured autostart animation
   void autostart();
 
-  bool cycleButtonPushed;
-  bool toggleButtonPushed;
-  bool autostartHandled;
-  float filteredBrightness;
-  Ticker inputTicker;
-  Animation *currentAnimation;
-  AnimationStatus status = STOPPED;
-  uint8_t speed;
-  uint8_t potentiometerPin;
-  uint8_t cycleButtonPin;
-  uint8_t toggleButtonPin;
+  bool m_cycleButtonPushed;
+  bool m_toggleButtonPushed;
+  bool m_autostartHandled;
+  float m_filteredBrightness;
+  Ticker m_inputTicker;
+  Animation *m_currentAnimation;
+  AnimationStatus m_status = STOPPED;
+  uint8_t m_speed;
+  uint8_t m_potentiometerPin;
+  uint8_t m_cycleButtonPin;
+  uint8_t m_toggleButtonPin;
 };
 
 extern FastLEDHubClass FastLEDHub;

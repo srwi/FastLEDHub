@@ -13,10 +13,10 @@ bool ConfigClass::initialize()
     return false;
   }
 
-  File configFile = SPIFFS.open(configFilename, "r");
+  File configFile = SPIFFS.open(m_configFilename, "r");
   if (!configFile)
   {
-    PRINTLN("[FastLEDHub] Opening file '" + configFilename + "' failed.");
+    PRINTLN("[FastLEDHub] Opening file '" + m_configFilename + "' failed.");
     return false;
   }
 
@@ -152,10 +152,10 @@ String ConfigClass::asString(bool includeApplicationState)
 
 bool ConfigClass::save()
 {
-  File configFile = SPIFFS.open(configFilename, "w");
+  File configFile = SPIFFS.open(m_configFilename, "w");
   if (!configFile)
   {
-    PRINTLN("[FastLEDHub] Opening file " + configFilename + " for saving failed.");
+    PRINTLN("[FastLEDHub] Opening file " + m_configFilename + " for saving failed.");
     return false;
   }
 
