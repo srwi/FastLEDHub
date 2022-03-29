@@ -11,10 +11,7 @@
 #include <LinkedList.h>
 #include <Ticker.h>
 
-#define FastLEDHub_INPUT_TICKER_INTERVAL 10
-
-class Animation;
-class ConfigClass;
+#define FASTLEDHUB_INPUT_TICKER_INTERVAL 10
 
 enum AnimationStatus
 {
@@ -35,7 +32,8 @@ public:
 
   /// Initialize FastLEDHub
   /// @param projectName Project name
-  void initialize(const String &projectName);
+  /// @param enableGammaCorrection Enable brightness gamma correction (default: true)
+  void initialize(const String &projectName, bool enableGammaCorrection = true);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
@@ -128,15 +126,24 @@ public:
   /// @param speed Speed value (0 - 255)
   void setSpeed(uint8_t speed);
 
+  /// Set global brightness value. This will apply gamma correction if it
+  /// is enabled from the initialize method.
+  /// @param brightness Brightness value
+  void setBrightness(uint8_t brightness);
+
+  /// Get current global brightness value.
+  /// @return Brightness value
+  uint8_t getBrightness();
+
+  /// Get the name of the currently selected animation
+  /// @return Current animation name
+  String getCurrentAnimationName();
+
   /// List of all registered animation pointers
   LinkedList<Animation *> animations;
 
   /// List of all registered slider pointers
   LinkedList<Slider *> sliders;
-
-  /// Get the name of the currently selected animation
-  /// @return Current animation name
-  String getCurrentAnimationName();
 
 private:
   /// Handle all configured inputs. This will get called periodically.
@@ -148,6 +155,7 @@ private:
   bool m_cycleButtonPushed;
   bool m_toggleButtonPushed;
   bool m_autostartHandled;
+  bool m_gammaCorrectionEnabled;
   float m_filteredBrightness;
   Ticker m_inputTicker;
   Animation *m_currentAnimation;
@@ -156,6 +164,7 @@ private:
   uint8_t m_potentiometerPin;
   uint8_t m_cycleButtonPin;
   uint8_t m_toggleButtonPin;
+  uint8_t m_brightness;
 };
 
 extern FastLEDHubClass FastLEDHub;

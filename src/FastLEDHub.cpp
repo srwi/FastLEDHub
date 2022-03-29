@@ -15,17 +15,20 @@
 FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
                                      m_toggleButtonPushed(false),
                                      m_autostartHandled(false),
+                                     m_gammaCorrectionEnabled(false),
                                      m_filteredBrightness(128),
                                      m_status(STOPPED),
                                      m_speed(255),
                                      m_potentiometerPin(-1),
                                      m_cycleButtonPin(-1),
-                                     m_toggleButtonPin(-1)
+                                     m_toggleButtonPin(-1),
+                                     m_brightness(255)
 {
 }
 
-void FastLEDHubClass::initialize(const String &projectName)
+void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorrection)
 {
+  m_gammaCorrectionEnabled = enableGammaCorrection;
   initESPEssentials(projectName);
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
@@ -37,8 +40,9 @@ void FastLEDHubClass::initialize(const String &projectName)
 
   if (Config.sliderValues.size() >= 2)
   {
-    setBrightness(Config.sliderValues.get(0));
     m_speed = Config.sliderValues.get(1);
+    m_brightness = Config.sliderValues.get(0);
+    setBrightness(m_brightness);
   }
 
   registerAnimation(new Color("Color"));
@@ -49,21 +53,21 @@ void FastLEDHubClass::initialize(const String &projectName)
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FastLEDHub_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
   pinMode(pin, INPUT);
   m_potentiometerPin = pin;
 }
@@ -99,6 +103,21 @@ bool FastLEDHubClass::isDim()
   }
 
   return true;
+}
+
+void FastLEDHubClass::setBrightness(uint8_t brightness)
+{
+  m_brightness = brightness;
+
+  if (m_gammaCorrectionEnabled)
+    brightness = round((float)brightness * brightness / 255.);
+
+  CFastLED::setBrightness(brightness);
+}
+
+uint8_t FastLEDHubClass::getBrightness()
+{
+  return m_brightness;
 }
 
 void FastLEDHubClass::delay(uint16_t ms)

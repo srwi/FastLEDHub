@@ -24,7 +24,7 @@ namespace Fade
       if (FastLEDHub.getStatus() == PAUSED)
         return;
 
-      if (m_mode == FadeMode::ALARM && FastLEDHub.getBrightness() == 255)
+      if (m_mode == FadeMode::ALARM && FastLEDHub.getBrightness() == m_targetBrightness)
       {
         if (Config.postAlarmAnimation != Config.alarmAnimation)
           FastLEDHub.begin(FastLEDHub.getAnimation(Config.postAlarmAnimation));
@@ -121,7 +121,7 @@ namespace Fade
   void begin(FadeMode fadeMode)
   {
     m_mode = fadeMode;
-    m_targetBrightness = FastLEDHub.getBrightness();
+    uint8_t currentBrightness = FastLEDHub.getBrightness();
     FastLEDHub.setBrightness(0);
     FastLEDHub.show();
 
@@ -130,12 +130,14 @@ namespace Fade
 
     if (fadeMode == FadeMode::ALARM)
     {
+      m_targetBrightness = 255;
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.alarmAnimation));
-      m_fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / 255, tick);
+      m_fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / m_targetBrightness, tick);
       PRINTLN("[FastLEDHub] Start fade 'Alarm'");
     }
     else if (fadeMode == FadeMode::SUNSET)
     {
+      m_targetBrightness = currentBrightness;
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.sunsetAnimation));
       m_fadeTicker.attach_ms(Config.sunsetDuration * 60 * 1000 / m_targetBrightness, tick);
       PRINTLN("[FastLEDHub] Start fade 'Sunset'");
