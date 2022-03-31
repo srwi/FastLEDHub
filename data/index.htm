@@ -35,95 +35,92 @@
 
     <div id="slidersWrapper"></div>
 
-    <div id="accordion">
-      <div class="card">
-        <div class="card-header" data-toggle="collapse" data-target="#alarmCollapse" aria-expanded="false"
-          aria-controls="alarmCollapse">Alarm</div>
-        <div id="alarmCollapse" class="collapse" data-parent="#accordion">
-          <div class="card-body">
-            <p>Be woken up by an animation that slowly fades in over a custom duration.</p>
+    <p class="text-center mt-5">
+      <a class="btn btn-link text-decoration-none" style="color: #444" data-toggle="collapse" href="#settingsCollapse" role="button" aria-expanded="false" aria-controls="settingsCollapse">
+        Settings <span style="font-size: 8pt; margin-left: 5px">▼</span>
+      </a>
+    </p>
 
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="alarmEnabled" checked="">
-              <label class="custom-control-label" for="alarmEnabled" style="margin-top: 0px">Enabled</label>
-            </div>
+    <div id="settingsCollapse" class="collapse">
+      <div class="card card-body">
 
-            <label for="alarmTimepickerContainer">Time</label>
-            <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
-              <input id="alarmTime" type="text" class="form-control" value="10:10" readonly="true">
-            </div>
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active px-4" id="pills-settings-tab" data-toggle="pill" href="#pills-settings" role="tab" aria-controls="pills-settings" aria-selected="true">Settings</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link px-4" id="pills-alarm-tab" data-toggle="pill" href="#pills-alarm" role="tab" aria-controls="pills-alarm" aria-selected="false">Alarm</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link px-4" id="pills-sunset-tab" data-toggle="pill" href="#pills-sunset" role="tab" aria-controls="pills-sunset" aria-selected="false">Sunset</a>
+          </li>
+        </ul>
 
-            <label for="alarmDuration">Duration</label>
-            <input id="alarmDuration" name="alarmDuration">
+        <div class="tab-content" id="pills-tabContent">
 
-            <label for="alarmAnimation">Animation</label>
-            <select class="custom-select" id="alarmAnimation"></select>
-
-            <label for="postAlarmAnimation">Animation (after end)</label>
-            <select class="custom-select" id="postAlarmAnimation"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" data-toggle="collapse" data-target="#sunsetCollapse" aria-expanded="false"
-          aria-controls="sunsetCollapse">Sunset</div>
-        <div id="sunsetCollapse" class="collapse" data-parent="#accordion">
-          <div class="card-body">
-            <p>Automatically fade in an animation when the sun sets at your location. You can set the fade in duration
-              and an offset to the determined sunset time.</p>
-
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="sunsetEnabled" checked="">
-              <label class="custom-control-label" for="sunsetEnabled" style="margin-top: 0px">Enabled</label>
-            </div>
-
-            <label for="sunsetDuration">Duration</label>
-            <input id="sunsetDuration" name="sunsetDuration">
-
-            <label for="sunsetOffset">Delay</label>
-            <input id="sunsetOffset" name="sunsetOffset">
-
-            <label for="sunsetAnimation">Animation</label>
-            <select class="custom-select" id="sunsetAnimation"></select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" class="card-heading" data-toggle="collapse" data-target="#settingsCollapse"
-          aria-expanded="false" aria-controls="settingsCollapse">Settings</div>
-        <div id="settingsCollapse" class="collapse" data-parent="#accordion">
-          <div class="card-body">
+          <div class="tab-pane fade show active" id="pills-settings" role="tabpanel" aria-labelledby="pills-settings-tab">
             <label for="longitude" style="margin-top: 0px">Longitude</label>
             <input type="text" class="form-control" id="longitude" name="longitude">
-
             <label for="latitude">Latitude</label>
             <input type="text" class="form-control" id="latitude" name="latitude">
-
             <label for="timeZone">Time zone</label>
             <input id="timeZone" name="timeZone">
-
             <div class="custom-control custom-switch">
               <input type="checkbox" class="custom-control-input" id="summerTime" checked="">
               <label class="custom-control-label" for="summerTime">Summer time</label>
             </div>
-
             <div class="custom-control custom-switch"
               onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
               <input type="checkbox" class="custom-control-input" id="useStartupAnimation" checked="">
               <label class="custom-control-label" for="useStartupAnimation">Use startup animation</label>
             </div>
-
             <label id="startupAnimationLabel" for="startupAnimation">Startup animation</label>
             <select class="custom-select" id="startupAnimation" disabled></select>
           </div>
+
+          <div class="tab-pane fade" id="pills-alarm" role="tabpanel" aria-labelledby="pills-alarm-tab">
+            <p>
+              Be woken up by an animation that slowly fades in over a custom duration.
+            </p>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="alarmEnabled" checked="">
+              <label class="custom-control-label" for="alarmEnabled" style="margin-top: 0px">Enabled</label>
+            </div>
+            <label for="alarmTime">Time</label>
+            <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
+              <input id="alarmTime" type="text" class="form-control" value="10:10" readonly>
+            </div>
+            <label for="alarmDuration">Duration</label>
+            <input id="alarmDuration" name="alarmDuration">
+            <label for="alarmAnimation">Animation</label>
+            <select class="custom-select" id="alarmAnimation"></select>
+            <label for="postAlarmAnimation">Animation (after end)</label>
+            <select class="custom-select" id="postAlarmAnimation"></select>
+          </div>
+
+          <div class="tab-pane fade" id="pills-sunset" role="tabpanel" aria-labelledby="pills-sunset-tab">
+            <p>
+              Automatically fade in an animation when the sun sets at your location.
+              You can set the fade in duration and an offset to the determined sunset time.
+            </p>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="sunsetEnabled" checked="">
+              <label class="custom-control-label" for="sunsetEnabled" style="margin-top: 0px">Enabled</label>
+            </div>
+            <label for="sunsetDuration">Duration</label>
+            <input id="sunsetDuration" name="sunsetDuration">
+            <label for="sunsetOffset">Delay</label>
+            <input id="sunsetOffset" name="sunsetOffset">
+            <label for="sunsetAnimation">Animation</label>
+            <select class="custom-select" id="sunsetAnimation"></select>
+          </div>
+
         </div>
       </div>
+
+      <button onClick="sendConfig();" type="button" class="btn btn-primary btn-block mt-4 w-100">Save!</button>
+
     </div>
-
-    <button onClick="sendConfig();" width="100%" type="button" class="btn btn-primary btn-block">Save!</button>
-
   </div>
 
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"

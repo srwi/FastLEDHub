@@ -1,5 +1,4 @@
 html, body {
-	height: 100%;
 	background-color: black !important;
 }
 
@@ -48,15 +47,6 @@ p {
 	margin: 6px;
 	padding: 10px 15px;
 	transition: none !important;
-}
-
-body .card {
-	margin-bottom: 20px;
-}
-
-body .card-header {
-	padding: 0.6rem 1.25rem;
-	cursor: pointer;
 }
 
 body .cp-disp {
