@@ -19,5 +19,6 @@ namespace Fade
   void stop();
   void initialize();
   FadeMode getMode();
+  uint16_t getBrightness10();
 
 } // namespace Fade

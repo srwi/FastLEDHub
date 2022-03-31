@@ -122,6 +122,13 @@ public:
   /// @return Current animation status
   AnimationStatus getStatus();
 
+  /// Update all controllers with the current led colors, using the passed in brightness
+  /// @param brightness Temporarily used brightness
+  void show(uint8_t brightness);
+
+  /// Update all controllers with the current led colors
+  void show();
+
   /// Set global animation speed
   /// @param speed Speed value (0 - 255)
   void setSpeed(uint8_t speed);

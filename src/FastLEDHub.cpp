@@ -29,6 +29,7 @@ FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
 void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorrection)
 {
   m_gammaCorrectionEnabled = enableGammaCorrection;
+  clear();
   initESPEssentials(projectName);
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
@@ -103,6 +104,56 @@ bool FastLEDHubClass::isDim()
   }
 
   return true;
+}
+
+void FastLEDHubClass::show(uint8_t brightness)
+{
+  if (Fade::getMode() != Fade::FadeMode::NONE)
+  {
+    CRGB *strips[FastLEDHub.count()];
+    for (uint8_t j = 0; j < FastLEDHub.count(); j++)
+    {
+      CRGB stripBackup[FastLEDHub[j].size()];
+      memcpy(stripBackup, FastLEDHub[j].leds(), FastLEDHub[j].size() * 3);
+      strips[j] = (CRGB *)stripBackup;
+    }
+
+    uint8_t bright8 = Fade::getBrightness10() / 4;
+    uint8_t res = bright8 != 255 ? Fade::getBrightness10() % 4 : 0;
+
+    for (uint8_t j = 0; j < FastLEDHub.count(); j++)
+    {
+      for (uint16_t i = 0; i < FastLEDHub[j].size(); i++)
+      {
+        uint8_t ledBrightness = bright8;
+        if ((res == 2 && i % 2 == 0) ||
+            (res % 2 && i % 4 < res))
+        {
+          ledBrightness = ledBrightness == 255 ? 255 : ledBrightness + 1;
+        }
+
+        FastLEDHub[j].leds()[i].nscale8(ledBrightness);
+      }
+    }
+
+    CFastLED::show(255);
+
+    for (uint8_t j = 0; j < FastLEDHub.count(); j++)
+    {
+      memcpy(FastLEDHub[j].leds(), strips[j], FastLEDHub[j].size() * 3);
+    }
+
+    // TODO: showColor
+  }
+  else
+  {
+    CFastLED::show(brightness);
+  }
+}
+
+void FastLEDHubClass::show()
+{
+  show(m_brightness);
 }
 
 void FastLEDHubClass::setBrightness(uint8_t brightness)

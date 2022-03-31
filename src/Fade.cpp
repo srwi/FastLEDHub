@@ -16,6 +16,7 @@ namespace Fade
 
     FadeMode m_mode = FadeMode::NONE;
     uint16_t m_targetBrightness = 0;
+    uint16_t m_currentBrightness = 0;
     Ticker m_fadeTicker;
     Ticker m_debounce;
 
@@ -24,7 +25,7 @@ namespace Fade
       if (FastLEDHub.getStatus() == PAUSED)
         return;
 
-      if (m_mode == FadeMode::ALARM && FastLEDHub.getBrightness() == m_targetBrightness)
+      if (m_mode == FadeMode::ALARM && m_currentBrightness == m_targetBrightness)
       {
         if (Config.postAlarmAnimation != Config.alarmAnimation)
           FastLEDHub.begin(FastLEDHub.getAnimation(Config.postAlarmAnimation));
@@ -32,15 +33,15 @@ namespace Fade
         stop();
         PRINTLN("[FastLEDHub] End fade 'Alarm'");
       }
-      else if (m_mode == FadeMode::SUNSET && FastLEDHub.getBrightness() == m_targetBrightness)
+      else if (m_mode == FadeMode::SUNSET && m_currentBrightness == m_targetBrightness)
       {
         stop();
         PRINTLN("[FastLEDHub] End fade 'Sunset'");
       }
       else
       {
-        FastLEDHub.setBrightness(FastLEDHub.getBrightness() + 1);
-        PRINTLN("[FastLEDHub] Fade brightness: " + String(FastLEDHub.getBrightness()));
+        m_currentBrightness++;
+        PRINTLN("[FastLEDHub] Fade brightness: " + String(m_currentBrightness));
       }
     }
 
@@ -121,8 +122,8 @@ namespace Fade
   void begin(FadeMode fadeMode)
   {
     m_mode = fadeMode;
-    uint8_t currentBrightness = FastLEDHub.getBrightness();
-    FastLEDHub.setBrightness(0);
+    uint16_t currentBrightness = FastLEDHub.getBrightness() * 4 + 3;
+    m_currentBrightness = 0;
     FastLEDHub.show();
 
     m_debounce.once(61, [&]()
@@ -130,7 +131,7 @@ namespace Fade
 
     if (fadeMode == FadeMode::ALARM)
     {
-      m_targetBrightness = 255;
+      m_targetBrightness = 1023;
       FastLEDHub.begin(FastLEDHub.getAnimation(Config.alarmAnimation));
       m_fadeTicker.attach_ms(Config.alarmDuration * 60 * 1000 / m_targetBrightness, tick);
       PRINTLN("[FastLEDHub] Start fade 'Alarm'");
@@ -153,6 +154,11 @@ namespace Fade
   FadeMode getMode()
   {
     return m_mode;
+  }
+
+  uint16_t getBrightness10()
+  {
+    return m_currentBrightness;
   }
 
 } // namespace Fade
