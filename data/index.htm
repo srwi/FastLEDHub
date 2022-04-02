@@ -1,142 +1,140 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>FastLEDHub</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="index.png">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css">
+  </head>
+  <body>
 
-<head>
-  <title>FastLEDHub</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="icon" sizes="192x192" href="index.png">
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css">
-</head>
-
-<body>
-  <div id="connectingOverlay">
-    <h4 id="connectingOverlayText">Connecting...</h4>
-    <button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary"
-      style="display: none;">Connect!</button>
-  </div>
-
-  <div id="wrapper">
-    <h1 style="text-align: center">FastLEDHub</h1>
-
-    <div id="animationButtons">
-      <button type="button" class="btn btn-secondary color no-alpha" id="colorButton">Color</button>
-      <button type="button" class="btn btn-danger color no-alpha" id="stopButton"
-        onclick="ws_pending_msg = [2]">Stop</button>
+    <div id="connectingOverlay">
+      <h4 id="connectingOverlayText">Connecting...</h4>
+      <button id="refreshButton" onClick="location.reload();" type="button" class="btn btn-primary"
+        style="display: none;">Connect!</button>
     </div>
 
-    <div id="slidersWrapper"></div>
+    <div id="wrapper">
+      <h1 style="text-align: center">FastLEDHub</h1>
 
-    <p class="text-center mt-5">
-      <a class="btn btn-link text-decoration-none" style="color: #444" data-toggle="collapse" href="#settingsCollapse" role="button" aria-expanded="false" aria-controls="settingsCollapse">
-        Settings <span style="font-size: 8pt; margin-left: 5px">▼</span>
-      </a>
-    </p>
-
-    <div id="settingsCollapse" class="collapse">
-      <div class="card card-body">
-
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <a class="nav-link active px-4" id="pills-settings-tab" data-toggle="pill" href="#pills-settings" role="tab" aria-controls="pills-settings" aria-selected="true">Settings</a>
-          </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link px-4" id="pills-alarm-tab" data-toggle="pill" href="#pills-alarm" role="tab" aria-controls="pills-alarm" aria-selected="false">Alarm</a>
-          </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link px-4" id="pills-sunset-tab" data-toggle="pill" href="#pills-sunset" role="tab" aria-controls="pills-sunset" aria-selected="false">Sunset</a>
-          </li>
-        </ul>
-
-        <div class="tab-content" id="pills-tabContent">
-
-          <div class="tab-pane fade show active" id="pills-settings" role="tabpanel" aria-labelledby="pills-settings-tab">
-            <label for="longitude" style="margin-top: 0px">Longitude</label>
-            <input type="text" class="form-control" id="longitude" name="longitude">
-            <label for="latitude">Latitude</label>
-            <input type="text" class="form-control" id="latitude" name="latitude">
-            <label for="timeZone">Time zone</label>
-            <input id="timeZone" name="timeZone">
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="summerTime" checked="">
-              <label class="custom-control-label" for="summerTime">Summer time</label>
-            </div>
-            <div class="custom-control custom-switch"
-              onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
-              <input type="checkbox" class="custom-control-input" id="useStartupAnimation" checked="">
-              <label class="custom-control-label" for="useStartupAnimation">Use startup animation</label>
-            </div>
-            <label id="startupAnimationLabel" for="startupAnimation">Startup animation</label>
-            <select class="custom-select" id="startupAnimation" disabled></select>
-          </div>
-
-          <div class="tab-pane fade" id="pills-alarm" role="tabpanel" aria-labelledby="pills-alarm-tab">
-            <p>
-              Be woken up by an animation that slowly fades in over a custom duration.
-            </p>
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="alarmEnabled" checked="">
-              <label class="custom-control-label" for="alarmEnabled" style="margin-top: 0px">Enabled</label>
-            </div>
-            <label for="alarmTime">Time</label>
-            <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
-              <input id="alarmTime" type="text" class="form-control" value="10:10" readonly>
-            </div>
-            <label for="alarmDuration">Duration</label>
-            <input id="alarmDuration" name="alarmDuration">
-            <label for="alarmAnimation">Animation</label>
-            <select class="custom-select" id="alarmAnimation"></select>
-            <label for="postAlarmAnimation">Animation (after end)</label>
-            <select class="custom-select" id="postAlarmAnimation"></select>
-          </div>
-
-          <div class="tab-pane fade" id="pills-sunset" role="tabpanel" aria-labelledby="pills-sunset-tab">
-            <p>
-              Automatically fade in an animation when the sun sets at your location.
-              You can set the fade in duration and an offset to the determined sunset time.
-            </p>
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="sunsetEnabled" checked="">
-              <label class="custom-control-label" for="sunsetEnabled" style="margin-top: 0px">Enabled</label>
-            </div>
-            <label for="sunsetDuration">Duration</label>
-            <input id="sunsetDuration" name="sunsetDuration">
-            <label for="sunsetOffset">Delay</label>
-            <input id="sunsetOffset" name="sunsetOffset">
-            <label for="sunsetAnimation">Animation</label>
-            <select class="custom-select" id="sunsetAnimation"></select>
-          </div>
-
-        </div>
+      <div id="animationButtons">
+        <button type="button" class="btn btn-secondary color no-alpha" id="colorButton">Color</button>
+        <button type="button" class="btn btn-danger color no-alpha" id="stopButton"
+          onclick="ws_pending_msg = [2]">Stop</button>
       </div>
 
-      <button onClick="sendConfig();" type="button" class="btn btn-primary btn-block mt-4 w-100">Save!</button>
+      <div id="slidersWrapper"></div>
 
+      <p class="text-center mt-5">
+        <a class="btn btn-link text-decoration-none" style="color: #444" data-toggle="collapse" href="#settingsCollapse" role="button" aria-expanded="false" aria-controls="settingsCollapse" onclick="this.classList.toggle('settings-shown')">
+          Settings <span style="font-size: 16pt; display: inline-block; margin-left: 5px">&#8250;</span>
+        </a>
+      </p>
+
+      <div id="settingsCollapse" class="collapse">
+        <div class="card card-body">
+
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active px-4" id="pills-settings-tab" data-toggle="pill" href="#pills-settings" role="tab" aria-controls="pills-settings" aria-selected="true">Settings</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link px-4" id="pills-alarm-tab" data-toggle="pill" href="#pills-alarm" role="tab" aria-controls="pills-alarm" aria-selected="false">Alarm</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link px-4" id="pills-sunset-tab" data-toggle="pill" href="#pills-sunset" role="tab" aria-controls="pills-sunset" aria-selected="false">Sunset</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+
+            <div class="tab-pane fade show active" id="pills-settings" role="tabpanel" aria-labelledby="pills-settings-tab">
+              <label for="longitude" style="margin-top: 0px">Longitude</label>
+              <input type="text" class="form-control" id="longitude" name="longitude">
+              <label for="latitude">Latitude</label>
+              <input type="text" class="form-control" id="latitude" name="latitude">
+              <label for="timeZone">Time zone</label>
+              <input id="timeZone" name="timeZone">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="summerTime" checked="">
+                <label class="custom-control-label" for="summerTime">Summer time</label>
+              </div>
+              <div class="custom-control custom-switch"
+                onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
+                <input type="checkbox" class="custom-control-input" id="useStartupAnimation" checked="">
+                <label class="custom-control-label" for="useStartupAnimation">Use startup animation</label>
+              </div>
+              <label id="startupAnimationLabel" for="startupAnimation">Startup animation</label>
+              <select class="custom-select" id="startupAnimation" disabled></select>
+            </div>
+
+            <div class="tab-pane fade" id="pills-alarm" role="tabpanel" aria-labelledby="pills-alarm-tab">
+              <p>
+                Be woken up by an animation that slowly fades in over a custom duration.
+              </p>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="alarmEnabled" checked="">
+                <label class="custom-control-label" for="alarmEnabled" style="margin-top: 0px">Enabled</label>
+              </div>
+              <label for="alarmTime">Time</label>
+              <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
+                <input id="alarmTime" type="text" class="form-control" value="10:10" readonly>
+              </div>
+              <label for="alarmDuration">Duration</label>
+              <input id="alarmDuration" name="alarmDuration">
+              <label for="alarmAnimation">Animation</label>
+              <select class="custom-select" id="alarmAnimation"></select>
+              <label for="postAlarmAnimation">Animation (after end)</label>
+              <select class="custom-select" id="postAlarmAnimation"></select>
+            </div>
+
+            <div class="tab-pane fade" id="pills-sunset" role="tabpanel" aria-labelledby="pills-sunset-tab">
+              <p>
+                Automatically fade in an animation when the sun sets at your location.
+                You can set the fade in duration and an offset to the determined sunset time.
+              </p>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="sunsetEnabled" checked="">
+                <label class="custom-control-label" for="sunsetEnabled" style="margin-top: 0px">Enabled</label>
+              </div>
+              <label for="sunsetDuration">Duration</label>
+              <input id="sunsetDuration" name="sunsetDuration">
+              <label for="sunsetOffset">Delay</label>
+              <input id="sunsetOffset" name="sunsetOffset">
+              <label for="sunsetAnimation">Animation</label>
+              <select class="custom-select" id="sunsetAnimation"></select>
+            </div>
+
+          </div>
+        </div>
+
+        <button onClick="sendConfig();" type="button" class="btn btn-primary btn-block mt-4 w-100">Save!</button>
+
+      </div>
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
-  <script src="index.js"></script>
-</body>
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
+    <script src="index.js"></script>
+  </body>
 </html>

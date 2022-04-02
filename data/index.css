@@ -10,6 +10,12 @@ p {
 	color: #777;
 }
 
+.settings-shown > span {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+  transform-origin: 3px 19px;
+}
+
 .btn:focus {
 	box-shadow: none !important;
 }
