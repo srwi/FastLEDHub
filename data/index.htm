@@ -3,12 +3,11 @@
   <head>
     <title>FastLEDHub</title>
     <meta charset="utf-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#28292e">
     <link rel="icon" sizes="192x192" href="index.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="index.css">
@@ -32,16 +31,18 @@
         </button>
       </div>
 
-      <div class="my-4 mx-2 d-flex justify-content-between">
+      <div class="py-4 mx-2 d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#colorPickerCollapse">
         <label class="form-label my-1 d-flex align-items-center">
           <i class="bi bi-eyedropper" style="margin-right: 1.5rem; font-size: 1.25rem;"></i>
           <span>Color picker</span>
         </label>
         <button class="btn" id="colorButton" style="height: 2.5rem; width: 2.5rem; border-radius: 50%;"></button>
       </div>
-
-      <div id="slidersWrapper" class="m-2">
+      <div class="collapse" id="colorPickerCollapse">
+        <div id="picker" class="text-center"></div>
       </div>
+
+      <div id="slidersWrapper" class="m-2"></div>
     </div>
 
     <div class="settings-collapse">
@@ -62,9 +63,7 @@
         <label class="form-check-label" for="alarmEnabled">Enabled</label>
       </div>
       <label for="alarmTime" class="form-label">Time</label>
-      <div id="alarmTimepickerContainer" class="input-group clockpicker" data-autoclose="true">
-        <input id="alarmTime" type="text" class="form-control" value="10:10" readonly>
-      </div>
+      <input id="alarmTime" type="time" class="form-control">
       <label for="alarmDuration" class="form-label">Duration</label>
       <input id="alarmDuration" name="alarmDuration">
       <label for="alarmAnimation" class="form-label">Animation</label>
@@ -116,14 +115,13 @@
         <span>${slider.name}</span>
       </label>
       <input type="range" class="form-range" min="${slider.min}" max="${slider.max}" step="${slider.step}" value="${slider.value}" id="brightness"
-        oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);" style="padding-left: 2.813rem; margin: 0.625rem 0rem">
+        oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);" style="margin: 0.625rem 0rem">
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
     <script src="index.js"></script>
   </body>
 </html>

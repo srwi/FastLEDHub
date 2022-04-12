@@ -165,23 +165,6 @@ body .popover {
 	background-color: #252529;
 	padding-top: 7px
 }
-body .clockpicker-popover .popover-title, body .clockpicker-popover .popover-content {
-	background: none;
-}
-body .clockpicker-plate {
-	background-color: #1d1d1f;
-	border: 1px solid #464545;
-}
-#connectingOverlay {
-	opacity: 1;
-	background: black;
-	color: rgb(241, 241, 241);
-	width: 100%;
-	height: 100%;
-	z-index: 9999;
-	top: 0;
-	left: 0;
-	position: fixed;
-	padding-top: 160px;
-	text-align: center;
+#colorButton {
+	transition: none;
 }

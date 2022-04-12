@@ -30,7 +30,7 @@ function openWebsocketConnection() {
 function handleJsonData(data) {
   if (data.hasOwnProperty('animations')) {
     let buffer = '';
-    const template = $('#animationButtonTemplate').html();
+    const template = document.getElementById("animationButtonTemplate").innerHTML;
     data.animations.forEach((animation, idx) => {
       alarmAnimation.add(new Option(animation));
       postAlarmAnimation.add(new Option(animation));
@@ -45,7 +45,7 @@ function handleJsonData(data) {
 
   if (data.hasOwnProperty('sliders')) {
     let buffer = '';
-    const template = $('#sliderTemplate').html();
+    const template = document.getElementById("sliderTemplate").innerHTML;
     data.sliders.forEach((slider, idx) => {
       buffer += eval('`' + template + '`')
     });
@@ -182,21 +182,28 @@ function main() {
     document.querySelector('.settings-collapse').classList.toggle('open')
   });
 
-  $('.clockpicker').clockpicker();
-  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
-  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
-  $('#colorButton').colorPicker({
-    opacity: false,
-    renderCallback: function () {
-      const hex = this.color.colors.HEX;
-      if (currentColor != hex) {
-        const rgb = this.color.colors.RND.rgb;
-        sendBytes([0, rgb.r, rgb.g, rgb.b]);
-        currentColor = hex;
+  // $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  // $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
+  // $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  // $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
+
+  var colorPicker = new iro.ColorPicker('#picker', {
+    width: 250,
+    display: "inline-block",
+    layout: [
+      {
+        component: iro.ui.Wheel,
+        options: {}
       }
-    }
+    ]
+  });
+  colorPicker.on('color:change', function(color) {
+    if (currentColor == color.hexString)
+      return;
+
+    colorButton.style.backgroundColor = color.hexString;
+    currentColor = color.hexString;
+    sendBytes([0, color.red, color.green, color.blue]);
   });
 }
 
