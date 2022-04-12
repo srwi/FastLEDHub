@@ -1,33 +1,177 @@
-html, body {
-	background-color: black !important;
+body {
+	padding-top: 56px;
+	color: #e2e1e6 !important;
+	background-color: #141414 !important;
 }
-
-label {
-	margin-top: 16px;
-}
-
 p {
-	color: #777;
+	margin: 0px !important;
 }
-
-.settings-shown > span {
-  -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
-  transform-origin: 3px 19px;
+body .navbar {
+	background-color: #28292e !important;
 }
-
+.btn-rounded {
+	padding: 0px 25px !important;
+	border-radius: 15px !important;
+	padding: 15px 20px !important;
+}
+.btn {
+	border-width: 0px;
+    outline:0px !important;
+}
+.btn-default:hover {
+	color: rgb(192, 192, 192);
+}
+.settings-collapse {
+	position: fixed;
+	top: 56px;
+	bottom: 0;
+	left: 100%;
+	width: 100%;
+	padding: 0 1rem 1rem;
+	overflow-y: auto;
+	visibility: hidden;
+	background-color: #141414;
+	transition: transform .25s ease-in-out, visibility .25s ease-in-out;
+}
+.settings-collapse.open {
+	visibility: visible;
+	transform: translateX(-100%);
+}
+.navbar-expand-always {
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+}
 .btn:focus {
 	box-shadow: none !important;
 }
-
-.slider {
-	margin: 28px 40px;
+.form-select {
+	background-color: #1d1d1f !important;
+	border-color: #1d1d1f !important;
+	color: rgb(241, 241, 241) !important;
+	border-radius: 50vh !important;
+	border-width: 0px;
 }
-
+.form-select[disabled] {
+	background-color: #1d1d1f !important;
+	border-width: 0px;
+}
+input, textarea {
+	background-color: #1d1d1f !important;
+	color: rgb(241, 241, 241) !important;
+	border-radius: 50vh !important;
+}
+.input-group {
+	background-color: #1d1d1f;
+	border-radius: 50vh;
+}
+.input-group button {
+	color: white;
+}
+.input-group-addon {
+	padding: 0px 15px;
+	margin: auto;
+}
+.input-group-btn {
+	margin: 0px 4px;
+}
+.form-control {
+	border-width: 0px !important;
+}
+.form-check {
+	margin-top: 10px;
+}
+.form-check-input {
+	border-color: transparent !important;
+	height: 25px !important;
+	width: 42px !important;
+}
+.form-check-label {
+	margin: 4px 13px;
+}
+.form-label {
+	margin: 10px 0px;
+}
+body .form-range {
+	background: transparent !important;
+}
+input[type=range]::-webkit-slider-runnable-track {
+	cursor: pointer;
+	background: #3e3e3e;
+	height: 6px;
+}
+input[type=range]::-moz-range-track {
+	cursor: pointer;
+	background: #3e3e3e;
+	height: 6px;
+}
+input[type=range]::-moz-range-thumb {
+	height: 28px;
+	width: 28px;
+	border-radius: 50%;
+	background: #5990eb;
+	cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+	height: 28px;
+	width: 28px;
+	border-radius: 50%;
+	background: #5990eb;
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin-top: -11.5px;
+}
+body .form-range::-moz-range-progress {
+	background-color: #365078 !important;
+	height:6px;
+	border-radius: 50vh;
+}
+body .cp-disp {
+	display: none;
+}
+body .cp-xy-slider {
+	width: 230px;
+	height: 230px;
+	z-index: 9999;
+}
+body .cp-xy-cursor {
+	width: 16px;
+	height: 16px;
+	border-width: 2px;
+	margin: -8px;
+	z-index: 9999;
+}
+body .cp-z-slider {
+	height: 230px;
+	width: 40px;
+	z-index: 9999;
+}
+body .cp-z-cursor {
+	border-width: 8px;
+	margin-top: -8px;
+	z-index: 9999;
+}
+body .cp-alpha {
+	display: none;
+}
+body .cp-color-picker {
+	z-index: 9999;
+	background-color: #1d1d1f;
+}
+body .popover {
+	background-color: #252529;
+	padding-top: 7px
+}
+body .clockpicker-popover .popover-title, body .clockpicker-popover .popover-content {
+	background: none;
+}
+body .clockpicker-plate {
+	background-color: #1d1d1f;
+	border: 1px solid #464545;
+}
 #connectingOverlay {
 	opacity: 1;
 	background: black;
-	color: white;
+	color: rgb(241, 241, 241);
 	width: 100%;
 	height: 100%;
 	z-index: 9999;
@@ -36,134 +180,4 @@ p {
 	position: fixed;
 	padding-top: 160px;
 	text-align: center;
-}
-
-#wrapper {
-	margin: auto;
-	padding: 20px;
-	max-width: 450px;
-}
-
-#animationButtons {
-	text-align: center;
-	margin-top: 20px;
-}
-
-#animationButtons button {
-	margin: 6px;
-	padding: 10px 15px;
-	transition: none !important;
-}
-
-body .cp-disp {
-	display: none;
-}
-
-body .cp-xy-slider {
-	width: 230px;
-	height: 230px;
-	z-index: 9999;
-}
-
-body .cp-xy-cursor {
-	width: 16px;
-	height: 16px;
-	border-width: 2px;
-	margin: -8px;
-	z-index: 9999;
-}
-
-body .cp-z-slider {
-	height: 230px;
-	width: 40px;
-	z-index: 9999;
-}
-
-body .cp-z-cursor {
-	border-width: 8px;
-	margin-top: -8px;
-	z-index: 9999;
-}
-
-body .cp-alpha {
-	display: none;
-}
-
-body .cp-color-picker {
-	z-index: 9999;
-	background-color: #222;
-}
-
-body .noUi-target {
-	background-color: #222;
-	box-shadow: none;
-	border-width: 0px;
-}
-
-body .noUi-handle:after, body .noUi-handle:before {
-	display: none;
-}
-
-body .noUi-horizontal .noUi-handle {
-	width: 80px;
-	left: -40px;
-	padding-top: 3px;
-	text-align: center;
-}
-
-body .noUi-handle {
-	background-color: #464545;
-	box-shadow: none;
-	border-width: 0px;
-	cursor: pointer;
-}
-
-body .noUi-active {
-	box-shadow: none;
-}
-
-body .custom-select {
-	background-color: #222;
-	color: white;
-}
-
-body .custom-select[readonly] {
-	background-color: #222;
-	color: #585858;
-}
-
-body .custom-select[disabled] {
-	background-color: #222;
-}
-
-body input, body textarea {
-	background-color: #222 !important;
-	color: white !important;
-}
-
-body .input-group {
-	background-color: #464545;
-	border-radius: 4px;
-}
-
-body .input-group-addon {
-	padding: 0px 10px;
-	margin: auto;
-}
-
-body .form-control {
-	border-width: 0px !important;
-}
-
-body .clockpicker-popover .popover-title, body .clockpicker-popover .popover-content {
-	background: none;
-}
-
-body .clockpicker-plate {
-	background-color: #222222;
-	border: 1px solid #464545;
-}
-
-.custom-control-label::before {
-	background-color: #222;
 }

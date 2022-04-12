@@ -3,7 +3,7 @@ let currentStatus = 0;
 let currentColor = '';
 
 let ws_pending_msg;
-let ws_uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+let ws_uri =  "ws://192.168.0.35:81/"// 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
 let connection = new WebSocket(ws_uri, ['arduino']);
 connection.binaryType = 'arraybuffer';
 
@@ -205,6 +205,10 @@ $('#timeZone').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
 $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
 $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
+document.querySelector('#navbarSideCollapse').addEventListener('click', function () {
+  document.querySelector('.settings-collapse').classList.toggle('open')
+});
+
 // Color picker
 let $customColorPicker = $('#colorButton').colorPicker({
   opacity: false,
@@ -226,30 +230,10 @@ let $customColorPicker = $('#colorButton').colorPicker({
       let newColorRGB = this.color.colors.RND.rgb;
       ws_pending_msg = [0, newColorRGB.r, newColorRGB.g, newColorRGB.b];
       currentColor = newColor;
-      document.querySelector('#colorButton').style.borderColor = '#' + newColor;
+      // document.querySelector('#colorButton').style.borderColor = '#' + newColor;
     }
   }
 });
 
-// Close connection after being ianctive for 5 minutes
-let idleTime = 0;
-setInterval(() => {
-  idleTime++;
-  if (idleTime > 300) // in s
-    connection.close();
-}, 1000);
-
 // Rate limit websocket
 setInterval(sendBytes, 15);
-
-document.addEventListener('mousemove', e => { idleTime = 0; });
-document.addEventListener('keypress', e => { idleTime = 0; });
-document.addEventListener('visibilitychange', () => {
-  // Close connection on mobile when page loses focus
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    if (document.hidden)
-      connection.close();
-    else
-      location.reload();
-  }
-})
