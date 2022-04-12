@@ -121,7 +121,7 @@ namespace WebSocket
 
   void broadcastStatus()
   {
-    String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ",\"currentAnimation\":\"" + FastLEDHub.getCurrentAnimationName() + "\"\n}";
+    String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ",\"currentAnimation\":\"" + FastLEDHub.getCurrentAnimationName() + "\"}";
     WebSocket::m_socket.broadcastTXT(msg.c_str());
   }
 

@@ -3,87 +3,44 @@
   <head>
     <title>FastLEDHub</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#28292e">
     <link rel="icon" sizes="192x192" href="index.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="index.css">
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-always fixed-top navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-always fixed-top navbar-dark">
       <div class="container-fluid px-4">
         <a class="navbar-brand">FastLEDHub</a>
         <button class="navbar-toggler border-0 p-1 shadow-none" type="button" id="navbarSideCollapse">
-          <span class=""><i class="bi bi-gear"></i></span>
+          <i class="bi bi-gear"></i>
         </button>
       </div>
     </nav>
 
     <div class="p-3">
-      <div id="animationButtons" class="w-100" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 18px;">
-        <button type="button" class="btn btn-dark btn-rounded text-light">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Color</span>
-          </div>
-        </button>
-        <button type="button" class="btn btn-dark btn-rounded text-light">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Sinelon</span>
-          </div>
-        </button>
-        <button type="button" class="btn btn-dark btn-rounded text-light">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Fire</span>
-          </div>
-        </button>
-        <button type="button" class="btn btn-dark btn-rounded text-light">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Wave</span>
-            <i class="bi bi-play-fill"></i>
-          </div>
-        </button>
-        <button type="button" class="btn btn-dark btn-rounded text-light">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Glitter</span>
-          </div>
-        </button>
-        <button type="button" class="btn btn-danger btn-rounded" onclick="ws_pending_msg = [2]">
-          <div style="display: flex; justify-content: space-between;">
-            <span>Stop</span>
-          </div>
+      <div id="animationButtons" class="w-100" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 1.125rem;">
+        <button type="button" class="btn btn-danger btn-rounded text-light" onclick="ws_pending_msg = [2]" style="display: flex; justify-content: space-between;">
+          <span>Stop</span>
+          <i class="bi"></i>
         </button>
       </div>
 
       <div class="my-4 mx-2 d-flex justify-content-between">
         <label class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-eyedropper" style="margin-right: 24px; font-size: 1.25rem;"></i>
+          <i class="bi bi-eyedropper" style="margin-right: 1.5rem; font-size: 1.25rem;"></i>
           <span>Color picker</span>
         </label>
-        <button class="btn btn-dark" id="colorButton" style="height: 40px; width: 40px; border-radius: 50%;"></button>
+        <button class="btn" id="colorButton" style="height: 2.5rem; width: 2.5rem; border-radius: 50%;"></button>
       </div>
 
       <div id="slidersWrapper" class="m-2">
-        <label for="brightness" class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-brightness-high" style="margin-right: 24px; min-width: 16px; display: inline-block; font-size: 1.25rem;"></i>
-          <span>Brightness</span>
-        </label>
-        <input type="range" class="form-range" min="0" max="255" step="1" id="brightness" style="padding-left: 45px; margin: 10px 0px">
-        <label for="speed" class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-speedometer2" style="margin-right: 24px; min-width: 16px; display: inline-block; font-size: 1.25rem;"></i>
-          <span>Speed</span>
-        </label>
-        <input type="range" class="form-range" min="0" max="255" step="1" id="speed" style="padding-left: 45px; margin: 10px 0px">
-        <label for="saturation" class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-palette" style="margin-right: 24px; min-width: 16px; display: inline-block; font-size: 1.25rem;"></i>
-          <span>Saturation</span>
-        </label>
-        <input type="range" class="form-range" min="0" max="255" step="1" id="saturation" style="padding-left: 45px; margin: 10px 0px">
       </div>
     </div>
 
@@ -143,10 +100,27 @@
       <button onClick="sendConfig();" type="button" class="btn btn-primary btn-rounded btn-block mt-4 w-100 text-dark" style="background-color: #5990eb;">Save</button>
 
     </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+
+    <script type="text/template" id="animationButtonTemplate">
+      <button type="button" class="btn btn-dark btn-rounded text-light" onclick="sendAnimationButton(${idx});">
+        <div style="display: flex; justify-content: space-between; vertical-align: middle;">
+          <span>${animation}</span>
+          <i style="font-size: 1.25rem; margin: -0.188rem 0rem;"></i>
+        </div>
+      </button>
+    </script>
+
+    <script type="text/template" id="sliderTemplate">
+      <label for="brightness" class="form-label my-1 d-flex align-items-center">
+        <i class="bi bi-sliders" style="margin-right: 1.5rem; min-width: 1rem; display: inline-block; font-size: 1.25rem;"></i>
+        <span>${slider.name}</span>
+      </label>
+      <input type="range" class="form-range" min="${slider.min}" max="${slider.max}" step="${slider.step}" value="${slider.value}" id="brightness"
+        oninput="ws_pending_msg = [20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]" style="padding-left: 2.813rem; margin: 0.625rem 0rem">
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>

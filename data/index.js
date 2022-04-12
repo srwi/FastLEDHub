@@ -3,7 +3,7 @@ let currentStatus = 0;
 let currentColor = '';
 
 let ws_pending_msg;
-let ws_uri =  "ws://192.168.0.35:81/"// 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+let ws_uri =  'ws://192.168.0.35:81/'// 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
 let connection = new WebSocket(ws_uri, ['arduino']);
 connection.binaryType = 'arraybuffer';
 
@@ -32,52 +32,38 @@ connection.onmessage = function (e) {
 
 function handleJsonData(data) {
   if (data.hasOwnProperty('animations')) {
+    let buffer = '';
+    let template = $('#animationButtonTemplate').html();
     data.animations.forEach((animation, idx) => {
-      // Fill animation dropdowns
       alarmAnimation.add(new Option(animation));
       postAlarmAnimation.add(new Option(animation));
       sunsetAnimation.add(new Option(animation));
       startupAnimation.add(new Option(animation));
 
-      // Add buttons to button collection
-      if (animation != 'Color') {
-        let btn = document.createElement('button');
-        btn.classList.add('btn-secondary', 'btn');
-        btn.innerHTML = animation;
-        btn.onclick = () => { sendAnimationButton(idx); };
-        animationButtons.insertBefore(btn, stopButton);
-      }
+      buffer += eval('`' + template + '`')
     });
+    animationButtons = document.getElementById('animationButtons')
+    animationButtons.innerHTML = buffer + animationButtons.innerHTML;
   }
 
   if (data.hasOwnProperty('sliders')) {
+    let buffer = '';
+    let template = $('#sliderTemplate').html();
     data.sliders.forEach((slider, idx) => {
-      let sliderDiv = document.createElement('div')
-      sliderDiv.classList.add('slider')
-      noUiSlider.create(sliderDiv, {
-        start: slider.value,
-        step: slider.step,
-        range: {
-          'min': slider.min,
-          'max': slider.max
-        }
-      });
-      sliderDiv.querySelector(".noUi-handle").innerHTML = slider.name;
-      sliderDiv.noUiSlider.on('update', (values, handle) => {
-        ws_pending_msg = [20, idx, (values[handle] >> 8) & 0xff, values[handle] & 0xff];
-      });
-      document.getElementById('slidersWrapper').appendChild(sliderDiv);
+      buffer += eval('`' + template + '`')
     });
+    slidersWrapper = document.getElementById('slidersWrapper')
+    slidersWrapper.innerHTML = buffer;
   }
 
   if (data.hasOwnProperty('alarmAnimation'))
-    alarmAnimation.value = data.alarmAnimation || 'Color';
+    alarmAnimation.value = data.alarmAnimation;
   if (data.hasOwnProperty('postAlarmAnimation'))
-    postAlarmAnimation.value = data.postAlarmAnimation || 'Color';
+    postAlarmAnimation.value = data.postAlarmAnimation;
   if (data.hasOwnProperty('sunsetAnimation'))
-    sunsetAnimation.value = data.sunsetAnimation || 'Color';
+    sunsetAnimation.value = data.sunsetAnimation;
   if (data.hasOwnProperty('startupAnimation')) {
-    startupAnimation.value = data.startupAnimation || 'Color';
+    startupAnimation.value = data.startupAnimation;
     useStartupAnimation.checked = data.startupAnimation != '';
     startupAnimation.disabled = data.startupAnimation == '';
   }
@@ -102,11 +88,10 @@ function handleJsonData(data) {
   if (data.hasOwnProperty('sunsetOffset'))
     sunsetOffset.value = data.sunsetOffset;
   if (data.hasOwnProperty('color')) {
-    colorButton.value = data.color;
+    colorButton.style.backgroundColor = '#' + data.color;
     currentColor = data.color;
   }
 
-  // Update buttons list
   if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
     updateButtons(data.status, data.currentAnimation);
 }
@@ -115,35 +100,22 @@ function updateButtons(status, animation) {
   currentStatus = status;
   currentAnimation = animation;
 
-  // Cycle through all animation buttons and change class/style accordingly
-  document.querySelectorAll('#animationButtons button:not(:last-child)').forEach(btn => {
-    if (currentAnimation == btn.innerHTML) {
+  document.querySelectorAll('#animationButtons button').forEach(btn => {
+    buttonIcon = btn.querySelector('div i')
+    buttonContent = btn.querySelector('div span').innerHTML
+    if (currentAnimation == buttonContent) {
       if (currentStatus == 2) {
-        // Running
-        if (btn.innerHTML == 'Color') {
-          let colorInstance = $customColorPicker.colorPicker.color;
-          let colors = colorInstance.colors;
-          colors.HEX = currentColor;
-          colorInstance.setColor(null, 'HEX');
-          btn.value = '#' + colors.HEX;
-          btn.style.backgroundColor = '#' + colors.HEX;
-          btn.style.borderColor = '#' + colors.HEX;
-          btn.style.color = colors.rgbaMixBGMixCustom.luminance > 0.22 ? '#222' : '#ddd';
-        }
-        else {
-          btn.classList.value = 'btn btn-success';
-        }
+        buttonIcon.classList = 'bi bi-play-fill'
       }
       else if (currentStatus == 1) {
-        // Paused
-        btn.classList.value = 'btn btn-warning';
+        buttonIcon.classList = 'bi bi-pause'
       }
     }
+    else if (buttonContent == 'Stop' && currentStatus == 0) {
+      buttonIcon.classList = 'bi bi-stop-fill'
+    }
     else {
-      btn.classList.value = 'btn btn-secondary';
-      btn.style.backgroundColor = '';
-      btn.style.borderColor = '';
-      btn.style.color = '';
+      buttonIcon.classList = 'bi'
     }
   });
 }
@@ -230,7 +202,6 @@ let $customColorPicker = $('#colorButton').colorPicker({
       let newColorRGB = this.color.colors.RND.rgb;
       ws_pending_msg = [0, newColorRGB.r, newColorRGB.g, newColorRGB.b];
       currentColor = newColor;
-      // document.querySelector('#colorButton').style.borderColor = '#' + newColor;
     }
   }
 });

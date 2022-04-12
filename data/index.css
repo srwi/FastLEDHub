@@ -1,4 +1,8 @@
+html {
+	height: 100%;
+}
 body {
+	height: 100%;
 	padding-top: 56px;
 	color: #e2e1e6 !important;
 	background-color: #141414 !important;
@@ -12,7 +16,7 @@ body .navbar {
 .btn-rounded {
 	padding: 0px 25px !important;
 	border-radius: 15px !important;
-	padding: 15px 20px !important;
+	padding: 15px 20px 18px !important;
 }
 .btn {
 	border-width: 0px;
