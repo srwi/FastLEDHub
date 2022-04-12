@@ -2,38 +2,35 @@ let currentAnimation = '';
 let currentStatus = 0;
 let currentColor = '';
 
-let ws_pending_msg;
-let ws_uri =  'ws://192.168.0.35:81/'// 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
-let connection = new WebSocket(ws_uri, ['arduino']);
-connection.binaryType = 'arraybuffer';
+let connection;
+let ws_queue;
+let ws_cooldown_timer;
 
-connection.onopen = function (e) {
-  ws_pending_msg = [30]
-  connectingOverlayText.innerHTML = 'Waiting for response...';
-  refreshButton.style.display = 'none';
-};
-
-connection.onerror = function (e) {
-  console.log('WebSocket Error', e);
-};
-
-connection.onclose = function (e) {
-  connectingOverlayText.innerHTML = 'Connection interrupted.';
-  refreshButton.style.display = '';
-  connectingOverlay.style.display = '';
-};
-
-connection.onmessage = function (e) {
-  console.log('Received: ', e.data);
-  handleJsonData(JSON.parse(e.data));
-  connectingOverlayText.innerHTML = 'Success!';
-  connectingOverlay.style.display = 'none';
-};
+function openWebsocketConnection() {
+  const ws_uri =  'ws://192.168.0.35:81/' // 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  connection = new WebSocket(ws_uri, ['arduino']);
+  connection.binaryType = 'arraybuffer';
+  connection.onopen = function (e) {
+    document.getElementById('navbarTitle').innerHTML = "FastLEDHub";
+    document.getElementById('navbarSideCollapse').style.display = "inline";
+  };
+  connection.onerror = function (e) {
+    console.log('WebSocket Error', e);
+  };
+  connection.onclose = function (e) {
+    document.getElementById('navbarTitle').innerHTML = "Connection lost...";
+    document.getElementById('navbarSideCollapse').style.display = "none";
+  };
+  connection.onmessage = function (e) {
+    console.log('Received: ', e.data);
+    handleJsonData(JSON.parse(e.data));
+  };
+}
 
 function handleJsonData(data) {
   if (data.hasOwnProperty('animations')) {
     let buffer = '';
-    let template = $('#animationButtonTemplate').html();
+    const template = $('#animationButtonTemplate').html();
     data.animations.forEach((animation, idx) => {
       alarmAnimation.add(new Option(animation));
       postAlarmAnimation.add(new Option(animation));
@@ -48,7 +45,7 @@ function handleJsonData(data) {
 
   if (data.hasOwnProperty('sliders')) {
     let buffer = '';
-    let template = $('#sliderTemplate').html();
+    const template = $('#sliderTemplate').html();
     data.sliders.forEach((slider, idx) => {
       buffer += eval('`' + template + '`')
     });
@@ -93,17 +90,18 @@ function handleJsonData(data) {
   }
 
   if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
-    updateButtons(data.status, data.currentAnimation);
+    updateAnimationButtons(data.status, data.currentAnimation);
 }
 
-function updateButtons(status, animation) {
+function updateAnimationButtons(status, animation) {
   currentStatus = status;
   currentAnimation = animation;
 
-  document.querySelectorAll('#animationButtons button').forEach(btn => {
+  animationButtons = document.querySelectorAll('#animationButtons button');
+  animationButtons.forEach((btn, idx) => {
     buttonIcon = btn.querySelector('div i')
     buttonContent = btn.querySelector('div span').innerHTML
-    if (currentAnimation == buttonContent) {
+    if (animation == buttonContent) {
       if (currentStatus == 2) {
         buttonIcon.classList = 'bi bi-play-fill'
       }
@@ -111,7 +109,7 @@ function updateButtons(status, animation) {
         buttonIcon.classList = 'bi bi-pause'
       }
     }
-    else if (buttonContent == 'Stop' && currentStatus == 0) {
+    else if (idx == animationButtons.length - 1 && currentStatus == 0) {
       buttonIcon.classList = 'bi bi-stop-fill'
     }
     else {
@@ -121,8 +119,8 @@ function updateButtons(status, animation) {
 }
 
 function sendConfig() {
-  let time = alarmTime.value.split(':');
-  let json = JSON.stringify({
+  const time = alarmTime.value.split(':');
+  const json = JSON.stringify({
     alarmHour: time[0],
     alarmMinute: time[1],
     alarmEnabled: alarmEnabled.checked,
@@ -143,68 +141,65 @@ function sendConfig() {
   sendText(json);
 }
 
-function sendBytes() {
-  if (connection.readyState == 1 && ws_pending_msg) {
-    let data = new Uint8Array(ws_pending_msg.length);
-    for (let i = 0; i < ws_pending_msg.length; i++) {
-      data[i] = ws_pending_msg[i];
-    }
-    ws_pending_msg = undefined;
-    connection.send(data.buffer);
-    console.log('Sent bytes: ' + data);
-  }
+function sendBytes(bytes) {
+  ws_queue = bytes;
+
+  if (ws_cooldown_timer)
+    return;
+
+  sendBytesQueue()
+  ws_cooldown_timer = setTimeout(() => {
+    ws_cooldown_timer = null;
+    sendBytesQueue();
+  }, 15);
+}
+
+function sendBytesQueue() {
+  if (!ws_queue || connection.readyState != 1)
+    return;
+
+  const data = Uint8Array.from(ws_queue);
+  connection.send(data.buffer);
+  console.log('Sent bytes: ' + data);
+
+  ws_queue = null;
 }
 
 function sendText(text) {
-  if (connection.readyState == 1) {
-    connection.send(text);
-    console.log('Sent text: ' + text);
-  }
-  else {
+  if (connection.readyState != 1) {
     console.log('Not connected. Text not sent!');
+    return;
   }
+
+  connection.send(text);
+  console.log('Sent text: ' + text);
 }
 
-function sendAnimationButton(animation) {
-  ws_pending_msg = [1, animation];
-}
+function main() {
+  openWebsocketConnection();
 
+  document.querySelector('#navbarSideCollapse').addEventListener('click', function () {
+    document.querySelector('.settings-collapse').classList.toggle('open')
+  });
 
-// Inputs
-$('.clockpicker').clockpicker();
-$('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('#timeZone').TouchSpin({ prefix: 'GMT+', max: 23, min: -23 });
-$('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-$('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
-
-document.querySelector('#navbarSideCollapse').addEventListener('click', function () {
-  document.querySelector('.settings-collapse').classList.toggle('open')
-});
-
-// Color picker
-let $customColorPicker = $('#colorButton').colorPicker({
-  opacity: false,
-  preventFocus: true,
-  buildCallback: function ($elm) { $('#colorButton').on('click', function (e) { e.preventDefault && e.preventDefault(); }); },
-  renderCallback: function ($elm, toggled) {
-    if (toggled === true) {
-      updateButtons(2, 'Color');
-    }
-    else if (toggled === false) {
-      if (currentAnimation != 'Color' || currentStatus == 0) {
-        colorButton.style.backgroundColor = '';
-        colorButton.style.borderColor = '';
-        colorButton.style.color = '';
+  $('.clockpicker').clockpicker();
+  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
+  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
+  $('#colorButton').colorPicker({
+    opacity: false,
+    renderCallback: function () {
+      const hex = this.color.colors.HEX;
+      if (currentColor != hex) {
+        const rgb = this.color.colors.RND.rgb;
+        sendBytes([0, rgb.r, rgb.g, rgb.b]);
+        currentColor = hex;
       }
     }
-    let newColor = this.color.colors.HEX + ''; // dereference by appending ''
-    if (currentColor != newColor || toggled === true) {
-      let newColorRGB = this.color.colors.RND.rgb;
-      ws_pending_msg = [0, newColorRGB.r, newColorRGB.g, newColorRGB.b];
-      currentColor = newColor;
-    }
-  }
-});
+  });
+}
 
-// Rate limit websocket
-setInterval(sendBytes, 15);
+window.onload = function() {
+  main();
+};

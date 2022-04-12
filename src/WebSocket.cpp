@@ -64,11 +64,6 @@ namespace WebSocket
         FastLEDHub.sliders.get(binary[1])->value = value;
         break;
       }
-      case 30: // Request configuration
-        String config = Config.asString(true);
-        WebSocket::m_socket.sendTXT(id, config.c_str());
-        break;
-      }
     }
 
     /// Callback function for websocket events
@@ -88,6 +83,8 @@ namespace WebSocket
       {
         IPAddress ip = m_socket.remoteIP(id);
         PRINTF("[%u] Connected from %d.%d.%d.%d url: %s\n", id, ip[0], ip[1], ip[2], ip[3], payload);
+        String config = Config.asString(true);
+        WebSocket::m_socket.sendTXT(id, config.c_str());
       }
       break;
       case WStype_TEXT:
@@ -121,7 +118,7 @@ namespace WebSocket
 
   void broadcastStatus()
   {
-    String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ",\"currentAnimation\":\"" + FastLEDHub.getCurrentAnimationName() + "\"}";
+    String msg = "{\"status\": " + String((int)FastLEDHub.getStatus()) + ", \"currentAnimation\": \"" + FastLEDHub.getCurrentAnimationName() + "\"}";
     WebSocket::m_socket.broadcastTXT(msg.c_str());
   }
 
