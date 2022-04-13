@@ -2,9 +2,10 @@ let colorPicker;
 let connection;
 let ws_queue;
 let ws_cooldown_timer;
+let prevent_send_color = false;
 
 function openWebsocketConnection() {
-  const ws_uri =  'ws://192.168.0.35:81/' // 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  const ws_uri =  'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
   connection = new WebSocket(ws_uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
@@ -45,7 +46,6 @@ function handleJsonData(data) {
     animationButtons = document.getElementById('animationButtons')
     animationButtons.innerHTML = buffer + animationButtons.innerHTML;
   }
-
   if (data.hasOwnProperty('sliders')) {
     let buffer = '';
     const template = document.getElementById("sliderTemplate").innerHTML;
@@ -55,7 +55,6 @@ function handleJsonData(data) {
     slidersWrapper = document.getElementById('slidersWrapper')
     slidersWrapper.innerHTML = buffer;
   }
-
   if (data.hasOwnProperty('alarmAnimation'))
     alarmAnimation.value = data.alarmAnimation;
   if (data.hasOwnProperty('postAlarmAnimation'))
@@ -65,7 +64,8 @@ function handleJsonData(data) {
   if (data.hasOwnProperty('startupAnimation')) {
     startupAnimation.value = data.startupAnimation;
     useStartupAnimation.checked = data.startupAnimation != '';
-    startupAnimation.disabled = data.startupAnimation == '';
+    if (data.startupAnimation != '')
+      new bootstrap.Collapse(document.getElementById("useStartupAnimationCollapse"), {toggle: false}).show();
   }
   if (data.hasOwnProperty('timeZone'))
     timeZone.value = data.timeZone;
@@ -76,22 +76,30 @@ function handleJsonData(data) {
   if (data.hasOwnProperty('latitude'))
     latitude.value = data.latitude;
   if (data.hasOwnProperty('alarmEnabled'))
+  {
     alarmEnabled.checked = data.alarmEnabled;
+    if (data.alarmEnabled)
+      new bootstrap.Collapse(document.getElementById("alarmEnabledCollapse"), {toggle: false}).show();
+  }
   if (data.hasOwnProperty('alarmDuration'))
     alarmDuration.value = data.alarmDuration;
   if (data.hasOwnProperty('alarmHour') && data.hasOwnProperty('alarmMinute'))
     alarmTime.value = (data.alarmHour < 10 ? '0' + data.alarmHour.toString() : data.alarmHour) + ':' + (data.alarmMinute < 10 ? '0' + data.alarmMinute.toString() : data.alarmMinute);
   if (data.hasOwnProperty('sunsetEnabled'))
+  {
     sunsetEnabled.checked = data.sunsetEnabled;
+    if (data.sunsetEnabled)
+      new bootstrap.Collapse(document.getElementById("sunsetEnabledCollapse"), {toggle: false}).show();
+  }
   if (data.hasOwnProperty('sunsetDuration'))
     sunsetDuration.value = data.sunsetDuration;
   if (data.hasOwnProperty('sunsetOffset'))
     sunsetOffset.value = data.sunsetOffset;
   if (data.hasOwnProperty('color')) {
     colorButton.style.backgroundColor = data.color;
+    prevent_send_color = true;
     colorPicker.color.hexString = data.color;
   }
-
   if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
     updateAnimationButtons(data.status, data.currentAnimation);
 }
@@ -194,6 +202,11 @@ window.onload = () => {
   });
   colorPicker.on('color:change', function(color) {
     colorButton.style.backgroundColor = color.hexString;
+    if (prevent_send_color)
+    {
+      prevent_send_color = false;
+      return;
+    }
     sendBytes([0, color.red, color.green, color.blue]);
   });
 

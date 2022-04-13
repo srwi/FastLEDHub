@@ -55,47 +55,54 @@
         <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body">
-        <h6>General</h6>
-        <div class="form-check form-switch" onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
-          <input type="checkbox" class="form-check-input" id="useStartupAnimation">
-          <label class="form-check-label" for="useStartupAnimation">Enable startup animation</label>
+        <h6>Startup animation</h6>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="useStartupAnimation" data-bs-toggle="collapse" data-bs-target="#useStartupAnimationCollapse" aria-controls="useStartupAnimationCollapse">
+          <label class="form-check-label" for="useStartupAnimation">Enabled</label>
         </div>
-        <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Startup animation</label>
-        <select class="form-select" id="startupAnimation" disabled></select>
+        <div id="useStartupAnimationCollapse" class="collapse">
+          <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Animation</label>
+          <select class="form-select" id="startupAnimation"></select>
+        </div>
+
         <h6>Alarm</h6>
         <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" id="alarmEnabled">
+          <input type="checkbox" class="form-check-input" id="alarmEnabled" data-bs-toggle="collapse" data-bs-target="#alarmEnabledCollapse" aria-controls="alarmEnabledCollapse">
           <label class="form-check-label" for="alarmEnabled">Enabled</label>
         </div>
-        <label for="alarmTime" class="form-label">Time</label>
-        <input id="alarmTime" type="time" class="form-control">
-        <label for="alarmDuration" class="form-label">Duration</label>
-        <input id="alarmDuration" name="alarmDuration">
-        <label for="alarmAnimation" class="form-label">Animation</label>
-        <select class="form-select" id="alarmAnimation"></select>
-        <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
-        <select class="form-select" id="postAlarmAnimation"></select>
+        <div id="alarmEnabledCollapse" class="collapse">
+          <label for="alarmTime" class="form-label">Time</label>
+          <input id="alarmTime" type="time" class="form-control">
+          <label for="alarmDuration" class="form-label">Duration</label>
+          <input id="alarmDuration" name="alarmDuration">
+          <label for="alarmAnimation" class="form-label">Animation</label>
+          <select class="form-select" id="alarmAnimation"></select>
+          <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
+          <select class="form-select" id="postAlarmAnimation"></select>
+        </div>
+
         <h6>Sunset</h6>
         <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" id="sunsetEnabled">
+          <input type="checkbox" class="form-check-input" id="sunsetEnabled" data-bs-toggle="collapse" data-bs-target="#sunsetEnabledCollapse" aria-controls="sunsetEnabledCollapse">
           <label class="form-check-label" for="sunsetEnabled">Enabled</label>
         </div>
-        <label for="sunsetDuration" class="form-label">Duration</label>
-        <input id="sunsetDuration" name="sunsetDuration">
-        <label for="sunsetOffset" class="form-label">Offset</label>
-        <input id="sunsetOffset" name="sunsetOffset">
-        <label for="sunsetAnimation" class="form-label">Animation</label>
-        <select class="form-select" id="sunsetAnimation"></select>
-        <h6>Time</h6>
-        <label for="longitude" class="form-label">Longitude</label>
-        <input type="text" class="form-control" id="longitude" name="longitude">
-        <label for="latitude" class="form-label">Latitude</label>
-        <input type="text" class="form-control" id="latitude" name="latitude">
-        <label for="timeZone" class="form-label">Time zone</label>
-        <input id="timeZone" name="timeZone">
-        <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" id="summerTime">
-          <label class="form-check-label" for="summerTime">Summer time</label>
+        <div id="sunsetEnabledCollapse" class="collapse">
+          <label for="sunsetDuration" class="form-label">Duration</label>
+          <input id="sunsetDuration" name="sunsetDuration">
+          <label for="sunsetOffset" class="form-label">Offset</label>
+          <input id="sunsetOffset" name="sunsetOffset">
+          <label for="sunsetAnimation" class="form-label">Animation</label>
+          <select class="form-select" id="sunsetAnimation"></select>
+          <label for="longitude" class="form-label">Longitude</label>
+          <input type="text" class="form-control" id="longitude" name="longitude">
+          <label for="latitude" class="form-label">Latitude</label>
+          <input type="text" class="form-control" id="latitude" name="latitude">
+          <label for="timeZone" class="form-label">Time zone</label>
+          <input id="timeZone" name="timeZone">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="summerTime">
+            <label class="form-check-label" for="summerTime">Summer time</label>
+          </div>
         </div>
       </div>
 
