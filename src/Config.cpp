@@ -1,5 +1,6 @@
 #include "Config.h"
 
+#include "ColorUtils.h"
 #include "SerialOut.h"
 #include "FastLEDHub.h"
 
@@ -82,6 +83,15 @@ bool ConfigClass::parseJson(const char *input)
       sliderValues.add(sliderValueArray[i]);
     }
   }
+  if (doc.containsKey("colorPickerValues"))
+  {
+    colorPickerValues.clear();
+    JsonArray colorPickerValueArray = doc["colorPickerValues"].as<JsonArray>();
+    for (uint16_t i = 0; i < colorPickerValueArray.size(); i++)
+    {
+      colorPickerValues.add(hex2rgb(colorPickerValueArray[i]));
+    }
+  }
 
   return !error;
 }
@@ -111,6 +121,11 @@ void ConfigClass::getUserConfigJson(JsonDocument &doc)
   {
     sliderValueArray.add(sliderValues.get(i));
   }
+  JsonArray colorPickerValueArray = doc.createNestedArray("colorPickerValues");
+  for (uint16_t i = 0; i < colorPickerValues.size(); i++)
+  {
+    colorPickerValueArray.add(rgb2hex(colorPickerValues.get(i)));
+  }
 }
 
 void ConfigClass::getApplicationStateJson(JsonDocument &doc)
@@ -132,6 +147,14 @@ void ConfigClass::getApplicationStateJson(JsonDocument &doc)
     slider["step"] = FastLEDHub.sliders.get(i)->step;
     slider["value"] = FastLEDHub.sliders.get(i)->value;
     slider["icon"] = FastLEDHub.sliders.get(i)->icon;
+  }
+  JsonArray colorPickers = doc.createNestedArray("colorPickers");
+  for (uint8_t i = 0; i < FastLEDHub.colorPickers.size(); i++)
+  {
+    JsonObject colorPicker = colorPickers.createNestedObject();
+    colorPicker["name"] = FastLEDHub.colorPickers.get(i)->name;
+    colorPicker["value"] = rgb2hex(FastLEDHub.colorPickers.get(i)->value);
+    colorPicker["icon"] = FastLEDHub.colorPickers.get(i)->icon;
   }
 }
 

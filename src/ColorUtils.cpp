@@ -12,24 +12,29 @@ CRGB hsv2rgb_smooth(uint16_t hue, uint8_t sat, uint8_t val)
   return blend(leftColor, rightColor, 42 * fractBlend);
 }
 
-String rgb2hex(uint8_t r, uint8_t g, uint8_t b)
+String rgb2hex(CRGB rgb)
 {
   String output = "";
 
-  if (r == 0)
+  if (rgb.r == 0)
     output += "00";
   else
-    output += (r < 16 ? "0" : "") + String(r, HEX);
+    output += (rgb.r < 16 ? "0" : "") + String(rgb.r, HEX);
 
-  if (g == 0)
+  if (rgb.g == 0)
     output += "00";
   else
-    output += (g < 16 ? "0" : "") + String(g, HEX);
+    output += (rgb.g < 16 ? "0" : "") + String(rgb.g, HEX);
 
-  if (b == 0)
+  if (rgb.b == 0)
     output += "00";
   else
-    output += (b < 16 ? "0" : "") + String(b, HEX);
+    output += (rgb.b < 16 ? "0" : "") + String(rgb.b, HEX);
 
   return output;
+}
+
+CRGB hex2rgb(String hex)
+{
+  return strtol(hex.c_str(), NULL, 16);
 }

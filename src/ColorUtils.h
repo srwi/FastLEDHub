@@ -14,8 +14,11 @@
 CRGB hsv2rgb_smooth(uint16_t hue, uint8_t sat, uint8_t val);
 
 /// Convert RGB color to hex string representation
-/// @param r Red
-/// @param g Green
-/// @param b Blue
+/// @param rgb CRGB color
 /// @return Hex string representation
-String rgb2hex(uint8_t r, uint8_t g, uint8_t b);
+String rgb2hex(CRGB rgb);
+
+/// Convert hex string representation of a color to RGB color
+/// @param hex Hex string
+/// @return CRGB color
+CRGB hex2rgb(String hex);

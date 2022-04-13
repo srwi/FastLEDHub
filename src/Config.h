@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <FastLED.h>
 #include <LinkedList.h>
 
 class ConfigClass
@@ -26,6 +27,7 @@ public:
   String startupAnimation = "";
   String color = "ffffff";
   LinkedList<int16_t> sliderValues;
+  LinkedList<CRGB> colorPickerValues;
 
   /// Initialize config object by reading the config file.
   /// @return True if successful

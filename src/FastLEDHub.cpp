@@ -45,8 +45,6 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
     setBrightness(m_brightness);
   }
 
-  registerAnimation(new Color("Color"));
-
   registerSlider(new Slider("Brightness", 0, 255, 255, 1, "brightness-high"));
   registerSlider(new Slider("Speed", 0, 255, 127, 1, "speedometer"));
 }
@@ -145,6 +143,20 @@ void FastLEDHubClass::registerSlider(Slider *slider)
   sliders.add(slider);
 }
 
+void FastLEDHubClass::registerColorPicker(ColorPicker *colorPicker)
+{
+  if (Config.colorPickerValues.size() > colorPickers.size())
+  {
+    colorPicker->value = Config.colorPickerValues.get(colorPickers.size());
+  }
+  else
+  {
+    Config.colorPickerValues.add(colorPicker->value);
+  }
+
+  colorPickers.add(colorPicker);
+}
+
 void FastLEDHubClass::registerAnimation(Animation *animation)
 {
   animations.add(animation);
@@ -182,6 +194,23 @@ Slider *FastLEDHubClass::getSlider(String name)
 Slider *FastLEDHubClass::getSlider(uint8_t i)
 {
   return (i < sliders.size()) ? sliders.get(i) : NULL;
+}
+
+ColorPicker *FastLEDHubClass::getColorPicker(String name)
+{
+  for (uint8_t i = 0; i < colorPickers.size(); i++)
+  {
+    ColorPicker *a = colorPickers.get(i);
+    if (a->name == name)
+      return a;
+  }
+
+  return NULL;
+}
+
+ColorPicker *FastLEDHubClass::getColorPicker(uint8_t i)
+{
+  return (i < colorPickers.size()) ? colorPickers.get(i) : NULL;
 }
 
 void FastLEDHubClass::handleInput()

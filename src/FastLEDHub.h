@@ -2,6 +2,7 @@
 
 #include "Animation.h"
 #include "ColorUtils.h"
+#include "ColorPicker.h"
 #include "Config.h"
 #include "Slider.h"
 
@@ -52,6 +53,10 @@ public:
   /// @param slider Slider instance
   void registerSlider(Slider *slider);
 
+  /// Register a color picker instance which can be used as a dynamic animation parameter
+  /// @param colorPicker Color picker instance
+  void registerColorPicker(ColorPicker *colorPicker);
+
   /// Register an animation instance to be managed by FastLEDHub
   /// @param animation Pointer to animation instance
   void registerAnimation(Animation *animation);
@@ -79,6 +84,16 @@ public:
   /// @param i Slider index
   /// @return Pointer to slider
   Slider *getSlider(uint8_t i);
+
+  /// Return a pointer to a color picker by name
+  /// @param name Color picker name
+  /// @return Pointer to color picker
+  ColorPicker *getColorPicker(String name);
+
+  /// Return a pointer to a color picker by index
+  /// @param i Color picker index
+  /// @return Pointer to color picker
+  ColorPicker *getColorPicker(uint8_t i);
 
   /// Check if all leds are turned off (i.e. either brightness is zero or
   /// all leds are black)
@@ -144,6 +159,9 @@ public:
 
   /// List of all registered slider pointers
   LinkedList<Slider *> sliders;
+
+  /// List of all registered color pickers
+  LinkedList<ColorPicker *> colorPickers;
 
 private:
   /// Handle all configured inputs. This will get called periodically.

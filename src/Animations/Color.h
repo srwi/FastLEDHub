@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ColorUtils.h"
+
 #include <FastLEDHub.h>
 
 class Color : public Animation
@@ -13,7 +15,7 @@ public:
 
   void loop()
   {
-    CRGB color = strtol(Config.color.c_str(), NULL, 16);
+    CRGB color = FastLEDHub.getColorPicker(0)->value;
     FastLEDHub.showColor(color);
   }
 };

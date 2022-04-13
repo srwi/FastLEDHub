@@ -35,16 +35,9 @@
         </button>
       </div>
 
-      <div id="colorPickerWrapper" class="py-4 mx-2 d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#colorPicker">
-        <label class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-eyedropper"></i>
-          <span>Color picker</span>
-        </label>
-        <button id="colorButton" class="btn"></button>
-      </div>
-      <div id="colorPicker" class="text-center collapse"></div>
+      <div id="colorPickersWrapper"></div>
 
-      <div id="slidersWrapper" class="m-2"></div>
+      <div id="slidersWrapper"></div>
 
     </div>
 
@@ -122,6 +115,17 @@
       </label>
       <input type="range" class="form-range" min="${slider.min}" max="${slider.max}" step="${slider.step}" value="${slider.value}" id="brightness"
         oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);">
+    </script>
+
+    <script type="text/template" id="colorPickerTemplate">
+      <div class="colorPickerLabel py-3 d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#${colorPickerId}">
+        <label class="form-label my-1 d-flex align-items-center">
+          <i class="bi bi-${colorPicker.icon}"></i>
+          <span>${colorPicker.name}</span>
+        </label>
+        <button id="${colorPickerButtonId}" class="btn colorPickerButton"></button>
+      </div>
+      <div id="${colorPickerId}" class="text-center collapse"></div>
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

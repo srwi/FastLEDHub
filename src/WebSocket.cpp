@@ -2,6 +2,7 @@
 
 #include <ArduinoJson.h>
 #include <ESP8266mDNS.h>
+#include <FastLED.h>
 #include <Hash.h>
 
 #include "Animation.h"
@@ -36,9 +37,12 @@ namespace WebSocket
       switch (binary[0])
       {
       case 0: // Color
-        Config.color = rgb2hex(binary[1], binary[2], binary[3]);
-        FastLEDHub.begin(FastLEDHub.getAnimation("Color"));
+      {
+        CRGB color = CRGB(binary[2], binary[3], binary[4]);
+        Config.colorPickerValues.set(binary[1], color);
+        FastLEDHub.getColorPicker(binary[1])->value = color;
         break;
+      }
       case 1: // Toggle animation
         Fade::stop();
         FastLEDHub.toggle(FastLEDHub.getAnimation(binary[1]));
@@ -50,8 +54,7 @@ namespace WebSocket
         FastLEDHub.stop();
         Fade::stop();
         for (uint16_t i = 0; i < FastLEDHub.size(); i++)
-          FastLEDHub.leds()[i] =
-              CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
+          FastLEDHub.leds()[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
         break;
       case 20: // Slider data
       {
@@ -61,7 +64,7 @@ namespace WebSocket
         else if (binary[1] == 1)
           FastLEDHub.setSpeed(value);
         Config.sliderValues.set(binary[1], value);
-        FastLEDHub.sliders.get(binary[1])->value = value;
+        FastLEDHub.getSlider(binary[1])->value = value;
         break;
       }
       }

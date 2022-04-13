@@ -26,15 +26,21 @@ h6 {
 	font-size: 1.25rem;
 	margin: -0.188rem 0rem;
 }
-#colorPickerWrapper label i {
+#colorPickersWrapper {
+	margin: 10px 8px;
+}
+.colorPickerLabel label i {
 	margin-right: 1.5rem;
 	font-size: 1.25rem;
 }
-#colorButton {
+.colorPickerButton {
 	transition: none;
 	height: 2.5rem;
 	width: 2.5rem;
 	border-radius: 50%;
+}
+#slidersWrapper {
+	margin: 21px 8px;
 }
 #slidersWrapper label i {
 	display: inline-block;
