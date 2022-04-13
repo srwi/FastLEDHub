@@ -15,7 +15,7 @@
   <body>
 
     <nav class="navbar navbar-expand-always fixed-top navbar-dark">
-      <div class="container-fluid px-4">
+      <div class="container-fluid px-4" id="navbarContent">
         <a class="navbar-brand" id="navbarTitle">FastLEDHub</a>
         <button class="navbar-toggler border-0 p-1 shadow-none" type="button" id="navbarSideCollapse">
           <i class="bi bi-gear"></i>
@@ -23,7 +23,7 @@
       </div>
     </nav>
 
-    <div class="p-3">
+    <div id="controlsWrapper" class="p-3">
       <div id="animationButtons" class="w-100" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 1.125rem;">
         <button type="button" class="btn btn-danger btn-rounded text-light" onclick="sendBytes([2]);" style="display: flex; justify-content: space-between;">
           <span>Stop</span>
@@ -47,56 +47,60 @@
 
     <div class="settings-collapse">
 
-      <h3 class="mt-4">General</h3>
-      <div class="form-check form-switch"
-        onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
-        <input type="checkbox" class="form-check-input" id="useStartupAnimation">
-        <label class="form-check-label" for="useStartupAnimation">Enable startup animation</label>
-      </div>
-      <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Startup animation</label>
-      <select class="form-select" id="startupAnimation" disabled></select>
+      <div class="px-3" id="settingsContent">
 
-      <h3 class="mt-4">Alarm</h3>
-      <p>Be woken up by an animation that slowly fades in over a custom duration.</p>
-      <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" id="alarmEnabled">
-        <label class="form-check-label" for="alarmEnabled">Enabled</label>
-      </div>
-      <label for="alarmTime" class="form-label">Time</label>
-      <input id="alarmTime" type="time" class="form-control">
-      <label for="alarmDuration" class="form-label">Duration</label>
-      <input id="alarmDuration" name="alarmDuration">
-      <label for="alarmAnimation" class="form-label">Animation</label>
-      <select class="form-select" id="alarmAnimation"></select>
-      <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
-      <select class="form-select" id="postAlarmAnimation"></select>
+        <h3 class="mt-4">General</h3>
+        <div class="form-check form-switch"
+          onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
+          <input type="checkbox" class="form-check-input" id="useStartupAnimation">
+          <label class="form-check-label" for="useStartupAnimation">Enable startup animation</label>
+        </div>
+        <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Startup animation</label>
+        <select class="form-select" id="startupAnimation" disabled></select>
 
-      <h3 class="mt-4">Sunset</h3>
-      <p>Automatically fade in an animation when the sun sets at your location.</p>
-      <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" id="sunsetEnabled">
-        <label class="form-check-label" for="sunsetEnabled">Enabled</label>
-      </div>
-      <label for="sunsetDuration" class="form-label">Duration</label>
-      <input id="sunsetDuration" name="sunsetDuration">
-      <label for="sunsetOffset" class="form-label">Offset</label>
-      <input id="sunsetOffset" name="sunsetOffset">
-      <label for="sunsetAnimation" class="form-label">Animation</label>
-      <select class="form-select" id="sunsetAnimation"></select>
+        <h3 class="mt-4">Alarm</h3>
+        <p>Be woken up by an animation that slowly fades in over a custom duration.</p>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="alarmEnabled">
+          <label class="form-check-label" for="alarmEnabled">Enabled</label>
+        </div>
+        <label for="alarmTime" class="form-label">Time</label>
+        <input id="alarmTime" type="time" class="form-control">
+        <label for="alarmDuration" class="form-label">Duration</label>
+        <input id="alarmDuration" name="alarmDuration">
+        <label for="alarmAnimation" class="form-label">Animation</label>
+        <select class="form-select" id="alarmAnimation"></select>
+        <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
+        <select class="form-select" id="postAlarmAnimation"></select>
 
-      <h3 class="mt-4">Time</h3>
-      <label for="longitude" class="form-label">Longitude</label>
-      <input type="text" class="form-control" id="longitude" name="longitude">
-      <label for="latitude" class="form-label">Latitude</label>
-      <input type="text" class="form-control" id="latitude" name="latitude">
-      <label for="timeZone" class="form-label">Time zone</label>
-      <input id="timeZone" name="timeZone">
-      <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" id="summerTime">
-        <label class="form-check-label" for="summerTime">Summer time</label>
-      </div>
+        <h3 class="mt-4">Sunset</h3>
+        <p>Automatically fade in an animation when the sun sets at your location.</p>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="sunsetEnabled">
+          <label class="form-check-label" for="sunsetEnabled">Enabled</label>
+        </div>
+        <label for="sunsetDuration" class="form-label">Duration</label>
+        <input id="sunsetDuration" name="sunsetDuration">
+        <label for="sunsetOffset" class="form-label">Offset</label>
+        <input id="sunsetOffset" name="sunsetOffset">
+        <label for="sunsetAnimation" class="form-label">Animation</label>
+        <select class="form-select" id="sunsetAnimation"></select>
 
-      <button onClick="sendConfig();" type="button" class="btn btn-primary btn-rounded btn-block mt-4 w-100 text-dark" style="background-color: #5990eb;">Save</button>
+        <h3 class="mt-4">Time</h3>
+        <label for="longitude" class="form-label">Longitude</label>
+        <input type="text" class="form-control" id="longitude" name="longitude">
+        <label for="latitude" class="form-label">Latitude</label>
+        <input type="text" class="form-control" id="latitude" name="latitude">
+        <label for="timeZone" class="form-label">Time zone</label>
+        <input id="timeZone" name="timeZone">
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="summerTime">
+          <label class="form-check-label" for="summerTime">Summer time</label>
+        </div>
+
+        <button onClick="sendConfig();" type="button" class="btn btn-primary btn-rounded btn-block mt-4 w-100 text-dark" style="background-color: #5990eb;">Save</button>
+
+      </div>
 
     </div>
 
@@ -111,14 +115,14 @@
 
     <script type="text/template" id="sliderTemplate">
       <label for="brightness" class="form-label my-1 d-flex align-items-center">
-        <i class="bi bi-sliders" style="margin-right: 1.5rem; min-width: 1rem; display: inline-block; font-size: 1.25rem;"></i>
+        <i class="bi bi-${slider.icon}" style="margin-right: 1.5rem; min-width: 1rem; display: inline-block; font-size: 1.25rem;"></i>
         <span>${slider.name}</span>
       </label>
       <input type="range" class="form-range" min="${slider.min}" max="${slider.max}" step="${slider.step}" value="${slider.value}" id="brightness"
         oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);" style="margin: 0.625rem 0rem">
     </script>
 
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>

@@ -47,8 +47,8 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
 
   registerAnimation(new Color("Color"));
 
-  registerSlider(new Slider("Brightness", 0, 255, 255, 1));
-  registerSlider(new Slider("Speed", 0, 255, 127, 1));
+  registerSlider(new Slider("Brightness", 0, 255, 255, 1, "brightness-high"));
+  registerSlider(new Slider("Speed", 0, 255, 127, 1, "speedometer"));
 }
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)

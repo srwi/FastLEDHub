@@ -64,6 +64,7 @@ namespace WebSocket
         FastLEDHub.sliders.get(binary[1])->value = value;
         break;
       }
+      }
     }
 
     /// Callback function for websocket events

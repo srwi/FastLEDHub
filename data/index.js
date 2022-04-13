@@ -182,10 +182,10 @@ function main() {
     document.querySelector('.settings-collapse').classList.toggle('open')
   });
 
-  // $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  // $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
-  // $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  // $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
+  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
+  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
   var colorPicker = new iro.ColorPicker('#picker', {
     width: 250,

@@ -129,42 +129,14 @@ body .form-range::-moz-range-progress {
 	height:6px;
 	border-radius: 50vh;
 }
-body .cp-disp {
-	display: none;
-}
-body .cp-xy-slider {
-	width: 230px;
-	height: 230px;
-	z-index: 9999;
-}
-body .cp-xy-cursor {
-	width: 16px;
-	height: 16px;
-	border-width: 2px;
-	margin: -8px;
-	z-index: 9999;
-}
-body .cp-z-slider {
-	height: 230px;
-	width: 40px;
-	z-index: 9999;
-}
-body .cp-z-cursor {
-	border-width: 8px;
-	margin-top: -8px;
-	z-index: 9999;
-}
-body .cp-alpha {
-	display: none;
-}
-body .cp-color-picker {
-	z-index: 9999;
-	background-color: #1d1d1f;
-}
 body .popover {
 	background-color: #252529;
 	padding-top: 7px
 }
 #colorButton {
 	transition: none;
+}
+#controlsWrapper, #navbarContent, #settingsContent {
+	max-width: 450px;
+	margin: auto;
 }

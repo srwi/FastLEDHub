@@ -131,6 +131,7 @@ void ConfigClass::getApplicationStateJson(JsonDocument &doc)
     slider["max"] = FastLEDHub.sliders.get(i)->max;
     slider["step"] = FastLEDHub.sliders.get(i)->step;
     slider["value"] = FastLEDHub.sliders.get(i)->value;
+    slider["icon"] = FastLEDHub.sliders.get(i)->icon;
   }
 }
 
