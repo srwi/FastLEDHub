@@ -1,7 +1,4 @@
-let currentAnimation = '';
-let currentStatus = 0;
-let currentColor = '';
-
+let colorPicker;
 let connection;
 let ws_queue;
 let ws_cooldown_timer;
@@ -91,8 +88,8 @@ function handleJsonData(data) {
   if (data.hasOwnProperty('sunsetOffset'))
     sunsetOffset.value = data.sunsetOffset;
   if (data.hasOwnProperty('color')) {
-    colorButton.style.backgroundColor = '#' + data.color;
-    currentColor = data.color;
+    colorButton.style.backgroundColor = data.color;
+    colorPicker.color.hexString = data.color;
   }
 
   if (data.hasOwnProperty('status') && data.hasOwnProperty('currentAnimation'))
@@ -100,22 +97,19 @@ function handleJsonData(data) {
 }
 
 function updateAnimationButtons(status, animation) {
-  currentStatus = status;
-  currentAnimation = animation;
-
   animationButtons = document.querySelectorAll('#animationButtons button');
   animationButtons.forEach((btn, idx) => {
     buttonIcon = btn.querySelector('div i')
     buttonContent = btn.querySelector('div span').innerHTML
     if (animation == buttonContent) {
-      if (currentStatus == 2) {
+      if (status == 2) {
         buttonIcon.classList = 'bi bi-play-fill'
       }
-      else if (currentStatus == 1) {
+      else if (status == 1) {
         buttonIcon.classList = 'bi bi-pause'
       }
     }
-    else if (idx == animationButtons.length - 1 && currentStatus == 0) {
+    else if (idx == animationButtons.length - 1 && status == 0) {
       buttonIcon.classList = 'bi bi-stop-fill'
     }
     else {
@@ -142,7 +136,7 @@ function sendConfig() {
     sunsetOffset: sunsetOffset.value,
     sunsetAnimation: sunsetAnimation.value,
     startupAnimation: useStartupAnimation.checked ? startupAnimation.value : '',
-    color: currentColor
+    color: colorPicker.color.hex
   }, null, 2);
   sendText(json);
 }
@@ -188,12 +182,7 @@ window.onload = () => {
     sendConfig();
   });
 
-  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
-  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
-
-  var colorPicker = new iro.ColorPicker('#colorPicker', {
+  colorPicker = new iro.ColorPicker('#colorPicker', {
     width: 250,
     display: "inline-block",
     layout: [
@@ -204,11 +193,12 @@ window.onload = () => {
     ]
   });
   colorPicker.on('color:change', function(color) {
-    if (currentColor == color.hexString)
-      return;
-
     colorButton.style.backgroundColor = color.hexString;
-    currentColor = color.hexString;
     sendBytes([0, color.red, color.green, color.blue]);
   });
+
+  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
+  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
+  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 };
