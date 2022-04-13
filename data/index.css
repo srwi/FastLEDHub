@@ -4,55 +4,69 @@ html {
 body {
 	height: 100%;
 	padding-top: 56px;
-	color: #e2e1e6 !important;
-	background-color: #141414 !important;
+	color: #e2e1e6;
+	background-color: #141414;
 }
-p {
-	margin: 0px !important;
+h6 {
+	color: #5990eb;
+	margin-top: 25px;
+	margin-bottom: 10px;
+}
+#animationButtons {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 1.125rem;
+}
+#animationButtons button {
+	display: flex;
+	justify-content: space-between;
+	vertical-align: middle;
+}
+#animationButtons button i {
+	font-size: 1.25rem;
+	margin: -0.188rem 0rem;
+}
+#colorPickerWrapper label i {
+	margin-right: 1.5rem;
+	font-size: 1.25rem;
+}
+#colorButton {
+	transition: none;
+	height: 2.5rem;
+	width: 2.5rem;
+	border-radius: 50%;
+}
+#slidersWrapper label i {
+	display: inline-block;
+	margin-right: 1.5rem;
+	min-width: 1rem;
+	font-size: 1.25rem;
+}
+#slidersWrapper input {
+	margin: 0.625rem 0;
 }
 body .navbar {
-	background-color: #28292e !important;
+	background-color: #28292e;
 }
 .btn-rounded {
-	padding: 0px 25px !important;
-	border-radius: 15px !important;
-	padding: 15px 20px 18px !important;
+	border-radius: 15px;
+	padding: 15px 20px 18px;
 }
 .btn {
 	border-width: 0px;
-    outline:0px !important;
+    outline:0px;
 }
-.btn-default:hover {
-	color: rgb(192, 192, 192);
-}
-.settings-collapse {
-	position: fixed;
-	top: 56px;
-	bottom: 0;
-	left: 100%;
-	width: 100%;
-	padding: 0 1rem 1rem;
-	overflow-y: auto;
-	visibility: hidden;
+#settingsOffcanvas {
 	background-color: #141414;
-	transition: transform .25s ease-in-out, visibility .25s ease-in-out;
-}
-.settings-collapse.open {
-	visibility: visible;
-	transform: translateX(-100%);
-}
-.navbar-expand-always {
-	flex-wrap: nowrap;
-	justify-content: flex-start;
 }
 .btn:focus {
-	box-shadow: none !important;
+	box-shadow: none;
 }
 .form-select {
-	background-color: #1d1d1f !important;
-	border-color: #1d1d1f !important;
-	color: rgb(241, 241, 241) !important;
-	border-radius: 50vh !important;
+	background-color: #1d1d1f;
+	border-color: #1d1d1f;
+	color: rgb(241, 241, 241);
+	border-radius: 50vh;
 	border-width: 0px;
 }
 .form-select[disabled] {
@@ -79,15 +93,18 @@ input, textarea {
 	margin: 0px 4px;
 }
 .form-control {
-	border-width: 0px !important;
+	border-width: 0px;
 }
 .form-check {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 .form-check-input {
 	border-color: transparent !important;
 	height: 25px !important;
 	width: 42px !important;
+}
+.form-check-input:checked {
+	background-color: #365078 !important;
 }
 .form-check-label {
 	margin: 4px 13px;
@@ -125,16 +142,9 @@ input[type=range]::-webkit-slider-thumb {
 	margin-top: -11.5px;
 }
 body .form-range::-moz-range-progress {
-	background-color: #365078 !important;
+	background-color: #365078;
 	height:6px;
 	border-radius: 50vh;
-}
-body .popover {
-	background-color: #252529;
-	padding-top: 7px
-}
-#colorButton {
-	transition: none;
 }
 #controlsWrapper, #navbarContent, #settingsContent {
 	max-width: 450px;

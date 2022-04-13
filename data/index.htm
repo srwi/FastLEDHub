@@ -14,52 +14,55 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-always fixed-top navbar-dark">
+    <nav class="navbar fixed-top navbar-dark">
       <div class="container-fluid px-4" id="navbarContent">
-        <a class="navbar-brand" id="navbarTitle">FastLEDHub</a>
-        <button class="navbar-toggler border-0 p-1 shadow-none" type="button" id="navbarSideCollapse">
+        <a class="navbar-brand" id="navbarTitle"></a>
+        <button class="navbar-toggler border-0 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" id="settingsButton">
           <i class="bi bi-gear"></i>
+        </button>
+        <button class="navbar-toggler border-0 p-1 shadow-none" type="button" id="refreshButton" onclick="window.location.reload();">
+          <i class="bi bi-arrow-clockwise"></i>
         </button>
       </div>
     </nav>
 
     <div id="controlsWrapper" class="p-3">
-      <div id="animationButtons" class="w-100" style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 1.125rem;">
-        <button type="button" class="btn btn-danger btn-rounded text-light" onclick="sendBytes([2]);" style="display: flex; justify-content: space-between;">
+
+      <div id="animationButtons" class="w-100">
+        <button type="button" class="btn btn-danger btn-rounded text-light" id="stopButton" onclick="sendBytes([2]);">
           <span>Stop</span>
-          <i class="bi"></i>
+          <i></i>
         </button>
       </div>
 
-      <div class="py-4 mx-2 d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#colorPickerCollapse">
+      <div id="colorPickerWrapper" class="py-4 mx-2 d-flex justify-content-between" data-bs-toggle="collapse" data-bs-target="#colorPicker">
         <label class="form-label my-1 d-flex align-items-center">
-          <i class="bi bi-eyedropper" style="margin-right: 1.5rem; font-size: 1.25rem;"></i>
+          <i class="bi bi-eyedropper"></i>
           <span>Color picker</span>
         </label>
-        <button class="btn" id="colorButton" style="height: 2.5rem; width: 2.5rem; border-radius: 50%;"></button>
+        <button id="colorButton" class="btn"></button>
       </div>
-      <div class="collapse" id="colorPickerCollapse">
-        <div id="picker" class="text-center"></div>
-      </div>
+      <div id="colorPicker" class="text-center collapse"></div>
 
       <div id="slidersWrapper" class="m-2"></div>
+
     </div>
 
-    <div class="settings-collapse">
+    <div id="settingsOffcanvas" class="offcanvas offcanvas-end" tabindex="-1">
 
-      <div class="px-3" id="settingsContent">
-
-        <h3 class="mt-4">General</h3>
-        <div class="form-check form-switch"
-          onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Settings</h5>
+        <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+        <h6>General</h6>
+        <div class="form-check form-switch" onClick="$('#startupAnimation').prop('disabled', !$('#useStartupAnimation').is(':checked'))">
           <input type="checkbox" class="form-check-input" id="useStartupAnimation">
           <label class="form-check-label" for="useStartupAnimation">Enable startup animation</label>
         </div>
         <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Startup animation</label>
         <select class="form-select" id="startupAnimation" disabled></select>
-
-        <h3 class="mt-4">Alarm</h3>
-        <p>Be woken up by an animation that slowly fades in over a custom duration.</p>
+        <h6>Alarm</h6>
         <div class="form-check form-switch">
           <input type="checkbox" class="form-check-input" id="alarmEnabled">
           <label class="form-check-label" for="alarmEnabled">Enabled</label>
@@ -72,9 +75,7 @@
         <select class="form-select" id="alarmAnimation"></select>
         <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
         <select class="form-select" id="postAlarmAnimation"></select>
-
-        <h3 class="mt-4">Sunset</h3>
-        <p>Automatically fade in an animation when the sun sets at your location.</p>
+        <h6>Sunset</h6>
         <div class="form-check form-switch">
           <input type="checkbox" class="form-check-input" id="sunsetEnabled">
           <label class="form-check-label" for="sunsetEnabled">Enabled</label>
@@ -85,8 +86,7 @@
         <input id="sunsetOffset" name="sunsetOffset">
         <label for="sunsetAnimation" class="form-label">Animation</label>
         <select class="form-select" id="sunsetAnimation"></select>
-
-        <h3 class="mt-4">Time</h3>
+        <h6>Time</h6>
         <label for="longitude" class="form-label">Longitude</label>
         <input type="text" class="form-control" id="longitude" name="longitude">
         <label for="latitude" class="form-label">Latitude</label>
@@ -97,29 +97,24 @@
           <input type="checkbox" class="form-check-input" id="summerTime">
           <label class="form-check-label" for="summerTime">Summer time</label>
         </div>
-
-        <button onClick="sendConfig();" type="button" class="btn btn-primary btn-rounded btn-block mt-4 w-100 text-dark" style="background-color: #5990eb;">Save</button>
-
       </div>
 
     </div>
 
     <script type="text/template" id="animationButtonTemplate">
       <button type="button" class="btn btn-dark btn-rounded text-light" onclick="sendBytes([1, ${idx}]);">
-        <div style="display: flex; justify-content: space-between; vertical-align: middle;">
-          <span>${animation}</span>
-          <i style="font-size: 1.25rem; margin: -0.188rem 0rem;"></i>
-        </div>
+        <span>${animation}</span>
+        <i></i>
       </button>
     </script>
 
     <script type="text/template" id="sliderTemplate">
       <label for="brightness" class="form-label my-1 d-flex align-items-center">
-        <i class="bi bi-${slider.icon}" style="margin-right: 1.5rem; min-width: 1rem; display: inline-block; font-size: 1.25rem;"></i>
+        <i class="bi bi-${slider.icon}"></i>
         <span>${slider.name}</span>
       </label>
       <input type="range" class="form-range" min="${slider.min}" max="${slider.max}" step="${slider.step}" value="${slider.value}" id="brightness"
-        oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);" style="margin: 0.625rem 0rem">
+        oninput="sendBytes([20, ${idx}, (this.value >> 8) & 0xff, this.value & 0xff]);">
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

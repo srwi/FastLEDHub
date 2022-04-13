@@ -12,19 +12,25 @@ function openWebsocketConnection() {
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
     document.getElementById('navbarTitle').innerHTML = "FastLEDHub";
-    document.getElementById('navbarSideCollapse').style.display = "inline";
+    displayConnectedState(true);
   };
   connection.onerror = function (e) {
     console.log('WebSocket Error', e);
   };
   connection.onclose = function (e) {
-    document.getElementById('navbarTitle').innerHTML = "Connection lost...";
-    document.getElementById('navbarSideCollapse').style.display = "none";
+    document.getElementById('navbarTitle').innerHTML = "Disconnected...";
+    displayConnectedState(false);
   };
   connection.onmessage = function (e) {
     console.log('Received: ', e.data);
     handleJsonData(JSON.parse(e.data));
   };
+}
+
+function displayConnectedState(connected) {
+  document.getElementById('settingsButton').style.display = connected ? "block" : "none";
+  document.getElementById('controlsWrapper').style.display = connected ? "block" : "none";
+  document.getElementById('refreshButton').style.display = connected ? "none" : "block";
 }
 
 function handleJsonData(data) {
@@ -175,11 +181,11 @@ function sendText(text) {
   console.log('Sent text: ' + text);
 }
 
-function main() {
+window.onload = () => {
   openWebsocketConnection();
 
-  document.querySelector('#navbarSideCollapse').addEventListener('click', function () {
-    document.querySelector('.settings-collapse').classList.toggle('open')
+  settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
+    sendConfig();
   });
 
   $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
@@ -187,7 +193,7 @@ function main() {
   $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
   $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 
-  var colorPicker = new iro.ColorPicker('#picker', {
+  var colorPicker = new iro.ColorPicker('#colorPicker', {
     width: 250,
     display: "inline-block",
     layout: [
@@ -205,8 +211,4 @@ function main() {
     currentColor = color.hexString;
     sendBytes([0, color.red, color.green, color.blue]);
   });
-}
-
-window.onload = function() {
-  main();
 };
