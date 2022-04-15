@@ -9,8 +9,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 
 - Control multiple animations via an intuitive web interface
 - Adjust brightness and animation speed globally
-- Define color pickers to use as parameters for your animations
-- Define custom numeric sliders to parameterize your animations
+- Add widgets like color pickers or sliders to control complex animations
 - Alarm: Be woken up to an animation slowly fading in
 - Sunset: Automatically fade in an animation when the sun sets at your location
 - Control animations and brightness using hardware inputs
@@ -132,7 +131,7 @@ Keep in mind the following important differences to just using FastLED:
 - Within your animation use `FastLEDHub[0].size()` instead of `NUM_LEDS` to get the number of leds. If you are using multiple lightstrips change the index accordingly.
 - Every time you may want to use `FastLED` use `FastLEDHub` instead. Since `FastLEDHub` inherits from `FastLED` all member functions will be available just like before. FastLEDHub just adds some stuff on top of that.
 
-If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDHub, generally those are the necessary changes you have to perform.
+If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDHub, generally those are the necessary changes you have to perform. Have a look at the examples for further insights.
 
 ### Registering animations
 
@@ -222,10 +221,6 @@ Most functions can be triggered via HTTP requests:
 - Trigger sunset: `http://<device-ip>/sunset`
 - Trigger alarm: `http://<device-ip>/alarm`
 - Reset ESP8266: `http://<device-ip>/reboot`
-
-```cpp
-FastLEDHub.initialize("Project Name", true);
-```
 
 ## License & Attribution
 
