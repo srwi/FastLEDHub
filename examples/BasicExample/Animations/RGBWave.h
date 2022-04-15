@@ -2,7 +2,9 @@
 
 #include <FastLEDHub.h>
 
-class RgbWave : public Animation
+extern CRGB leds[];
+
+class RGBWave : public Animation
 {
 public:
   using Animation::Animation;
@@ -19,7 +21,7 @@ public:
   {
     for (uint16_t i = 0; i < FastLEDHub.size(); i++)
     {
-      FastLEDHub.leds()[i] = hsv2rgb_smooth((ledDiv * i + step) % HSV2RGB_SMOOTH_RANGE, FastLEDHub.getSlider("Saturation")->value, 255);
+      leds[i] = hsv2rgb_smooth((ledDiv * i + step) % HSV2RGB_SMOOTH_RANGE, FastLEDHub.getSlider("Saturation")->value, 255);
     }
 
     step++;
