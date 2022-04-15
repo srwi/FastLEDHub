@@ -50,7 +50,7 @@ namespace WebSocket
       case 2: // Stop
         FastLEDHub.stop();
         break;
-      case 10: // Color data
+      case 10: // Led data
         FastLEDHub.stop();
         Fade::stop();
         for (uint16_t i = 0; i < FastLEDHub.size(); i++)

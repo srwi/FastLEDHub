@@ -16,16 +16,15 @@ public:
   uint16_t alarmDuration = 1;
   uint8_t alarmHour = 0;
   uint8_t alarmMinute = 0;
-  String alarmAnimation = "Color";
-  String postAlarmAnimation = "Color";
+  String alarmAnimation = "";
+  String postAlarmAnimation = "";
   bool sunsetEnabled = false;
   uint16_t sunsetDuration = 1;
   int8_t sunsetHour = 0;
   int8_t sunsetMinute = 0;
   int16_t sunsetOffset = 0;
-  String sunsetAnimation = "Color";
+  String sunsetAnimation = "";
   String startupAnimation = "";
-  String color = "ffffff";
   LinkedList<int16_t> sliderValues;
   LinkedList<CRGB> colorPickerValues;
 

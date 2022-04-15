@@ -72,8 +72,6 @@ bool ConfigClass::parseJson(const char *input)
     sunsetAnimation = doc["sunsetAnimation"].as<String>();
   if (doc.containsKey("startupAnimation"))
     startupAnimation = doc["startupAnimation"].as<String>();
-  if (doc.containsKey("color"))
-    color = doc["color"].as<String>();
   if (doc.containsKey("sliderValues"))
   {
     sliderValues.clear();
@@ -115,7 +113,6 @@ void ConfigClass::getUserConfigJson(JsonDocument &doc)
   doc["sunsetOffset"] = sunsetOffset;
   doc["sunsetAnimation"] = sunsetAnimation;
   doc["startupAnimation"] = startupAnimation;
-  doc["color"] = color;
   JsonArray sliderValueArray = doc.createNestedArray("sliderValues");
   for (uint16_t i = 0; i < sliderValues.size(); i++)
   {
