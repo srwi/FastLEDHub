@@ -48,14 +48,25 @@
         <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body">
+
         <h6>Startup animation</h6>
         <div class="form-check form-switch">
           <input type="checkbox" class="form-check-input" id="useStartupAnimation" data-bs-toggle="collapse" data-bs-target="#useStartupAnimationCollapse" aria-controls="useStartupAnimationCollapse">
           <label class="form-check-label" for="useStartupAnimation">Enabled</label>
         </div>
         <div id="useStartupAnimationCollapse" class="collapse">
-          <label id="startupAnimationLabel" for="startupAnimation" class="form-label">Animation</label>
+          <label for="startupAnimation" class="form-label">Animation</label>
           <select class="form-select" id="startupAnimation"></select>
+        </div>
+
+        <h6>Time</h6>
+        <div class="spinner d-flex">
+          <label for="timeZone" class="form-spinner-label">Time zone (GMT)</label>
+          <input id="timeZone" class="form-control" type="number" min="-23" max="23" step="1" value="0" />
+        </div>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="summerTime">
+          <label class="form-check-label" for="summerTime">Summer time</label>
         </div>
 
         <h6>Alarm</h6>
@@ -66,8 +77,10 @@
         <div id="alarmEnabledCollapse" class="collapse">
           <label for="alarmTime" class="form-label">Time</label>
           <input id="alarmTime" type="time" class="form-control">
-          <label for="alarmDuration" class="form-label">Duration</label>
-          <input id="alarmDuration" name="alarmDuration">
+          <div class="spinner d-flex mt-3">
+            <label for="alarmDuration" class="form-spinner-label">Duration (min)</label>
+            <input id="alarmDuration" class="form-control" type="number" min="1" max="1439" step="1" value="1" />
+          </div>
           <label for="alarmAnimation" class="form-label">Animation</label>
           <select class="form-select" id="alarmAnimation"></select>
           <label for="postAlarmAnimation" class="form-label">Animation (timer finished)</label>
@@ -80,22 +93,20 @@
           <label class="form-check-label" for="sunsetEnabled">Enabled</label>
         </div>
         <div id="sunsetEnabledCollapse" class="collapse">
-          <label for="sunsetDuration" class="form-label">Duration</label>
-          <input id="sunsetDuration" name="sunsetDuration">
-          <label for="sunsetOffset" class="form-label">Offset</label>
-          <input id="sunsetOffset" name="sunsetOffset">
+          <div class="spinner d-flex">
+            <label for="sunsetDuration" class="form-spinner-label">Duration (min)</label>
+            <input id="sunsetDuration" class="form-control" type="number" min="1" max="1439" step="1" value="1" />
+          </div>
+          <div class="spinner d-flex">
+            <label for="sunsetOffset" class="form-spinner-label">Offset (min)</label>
+            <input id="sunsetOffset" class="form-control" type="number" min="-1439" max="1439" step="1" value="0" />
+          </div>
           <label for="sunsetAnimation" class="form-label">Animation</label>
           <select class="form-select" id="sunsetAnimation"></select>
           <label for="longitude" class="form-label">Longitude</label>
           <input type="text" class="form-control" id="longitude" name="longitude">
           <label for="latitude" class="form-label">Latitude</label>
           <input type="text" class="form-control" id="latitude" name="latitude">
-          <label for="timeZone" class="form-label">Time zone</label>
-          <input id="timeZone" name="timeZone">
-          <div class="form-check form-switch">
-            <input type="checkbox" class="form-check-input" id="summerTime">
-            <label class="form-check-label" for="summerTime">Summer time</label>
-          </div>
         </div>
       </div>
 
@@ -128,9 +139,7 @@
       <div id="${colorPickerId}" class="text-center collapse"></div>
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.2/jquery.bootstrap-touchspin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
     <script src="index.js"></script>
   </body>

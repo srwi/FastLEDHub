@@ -1,10 +1,10 @@
 let connection;
-let ws_queue;
-let ws_cooldown_timer;
+let queue;
+let cooldownTimer;
 
 function openWebsocketConnection() {
-  const ws_uri =  'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
-  connection = new WebSocket(ws_uri, ['arduino']);
+  const uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  connection = new WebSocket(uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
     document.getElementById('navbarTitle').innerHTML = 'FastLEDHub';
@@ -21,6 +21,45 @@ function openWebsocketConnection() {
     console.log('Received: ', e.data);
     handleJsonData(JSON.parse(e.data));
   };
+}
+
+function setupSpinners() {
+  const spinners = document.getElementsByClassName('spinner');
+  [].forEach.call(spinners, (spinnerDiv) => {
+      const inputElement = spinnerDiv.getElementsByTagName('input')[0];
+      inputElement.classList.add('spinner-input');
+
+      const buttonDec = document.createElement("span");
+      buttonDec.classList.add('btn-spinner', 'btn-spinner-dec');
+      buttonDec.innerHTML = '&minus;';
+      buttonDec.addEventListener('click', (ev) => {
+          const attrMin = inputElement.getAttribute('min');
+          const attrStep = inputElement.getAttribute('step');
+          const value = Number(inputElement.value);
+          const step = attrStep ? Number(attrStep) : 1;
+          const newValue = value - step;
+          if (value !== newValue) {
+              inputElement.value = attrMin ? Math.max(Number(attrMin), newValue) : newValue;
+          }
+      });
+
+      const buttonInc = document.createElement("span");
+      buttonInc.classList.add('btn-spinner', 'btn-spinner-inc');
+      buttonInc.innerHTML = '&plus;';
+      buttonInc.addEventListener('click', (ev) => {
+          const attrMin = inputElement.getAttribute('max');
+          const attrStep = inputElement.getAttribute('step');
+          const value = Number(inputElement.value);
+          const step = attrStep ? Number(attrStep) : 1;
+          const newValue = value + step;
+          if (value !== newValue) {
+              inputElement.value = attrMin ? Math.min(Number(attrMin), newValue) : newValue;
+          }
+      });
+
+      inputElement.insertAdjacentElement('beforebegin', buttonDec);
+      inputElement.insertAdjacentElement('afterend', buttonInc);
+  });
 }
 
 function displayConnectedState(connected) {
@@ -168,27 +207,27 @@ function sendConfig() {
 }
 
 function sendBytes(bytes) {
-  ws_queue = bytes;
+  queue = bytes;
 
-  if (ws_cooldown_timer)
+  if (cooldownTimer)
     return;
 
   sendBytesQueue()
-  ws_cooldown_timer = setTimeout(() => {
-    ws_cooldown_timer = null;
+  cooldownTimer = setTimeout(() => {
+    cooldownTimer = null;
     sendBytesQueue();
   }, 15);
 }
 
 function sendBytesQueue() {
-  if (!ws_queue || connection.readyState != 1)
+  if (!queue || connection.readyState != 1)
     return;
 
-  const data = Uint8Array.from(ws_queue);
+  const data = Uint8Array.from(queue);
   connection.send(data.buffer);
   console.log('Sent bytes: ' + data);
 
-  ws_queue = null;
+  queue = null;
 }
 
 function sendText(text) {
@@ -204,12 +243,9 @@ function sendText(text) {
 window.onload = () => {
   openWebsocketConnection();
 
+  setupSpinners();
+
   settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
     sendConfig();
   });
-
-  $('#alarmDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#timeZone').TouchSpin({ min: -23, max: 23, prefix: 'GMT+' });
-  $('#sunsetDuration').TouchSpin({ min: 1, max: 1439, postfix: 'minutes' });
-  $('#sunsetOffset').TouchSpin({ min: -1439, max: 1439, postfix: 'minutes' });
 };
