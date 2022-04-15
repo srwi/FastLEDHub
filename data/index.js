@@ -1,3 +1,5 @@
+'use strict';
+
 let connection;
 let queue;
 let cooldownTimer;
@@ -72,7 +74,7 @@ function registerColorPicker(colorPicker, idx) {
   const template = document.getElementById('colorPickerTemplate').innerHTML;
   const colorPickerId = 'colorPicker' + idx;
   const colorPickerButtonId = 'colorPickerButton' + idx;
-  colorPickersWrapper = document.getElementById('colorPickersWrapper');
+  const colorPickersWrapper = document.getElementById('colorPickersWrapper');
   colorPickersWrapper.insertAdjacentHTML('beforeend', eval('`' + template + '`'));
   const cp = new iro.ColorPicker('#' + colorPickerId, {
     width: 250,
@@ -99,7 +101,7 @@ function registerAnimation(animation, idx) {
   startupAnimation.add(new Option(animation));
 
   const template = document.getElementById('animationButtonTemplate').innerHTML;
-  animationButtons = document.getElementById('animationButtons');
+  const animationButtons = document.getElementById('animationButtons');
   animationButtons.lastElementChild.insertAdjacentHTML('beforebegin', eval('`' + template + '`'));
 }
 
@@ -163,10 +165,10 @@ function handleJsonData(data) {
 }
 
 function updateAnimationButtons(status, animation) {
-  animationButtons = document.querySelectorAll('#animationButtons button');
+  const animationButtons = document.querySelectorAll('#animationButtons button');
   animationButtons.forEach((btn, idx) => {
-    buttonIcon = btn.querySelector('div i')
-    buttonContent = btn.querySelector('div span').innerHTML
+    let buttonIcon = btn.querySelector('div i')
+    const buttonContent = btn.querySelector('div span').innerHTML
     if (animation == buttonContent) {
       if (status == 2) {
         buttonIcon.classList = 'bi bi-play-fill'

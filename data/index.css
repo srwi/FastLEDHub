@@ -60,7 +60,7 @@ body .navbar {
 }
 .btn {
 	border-width: 0px;
-    outline:0px;
+	outline:0px;
 }
 #settingsOffcanvas {
 	background-color: #141414;
@@ -160,35 +160,35 @@ body .form-range::-moz-range-progress {
 	padding: 10px 0px;
 }
 .spinner .btn-spinner {
-    padding: 0px 5px;
-    font-size: 19px;
+	padding: 0px 5px;
+	font-size: 19px;
 	font-weight: bold;
-    cursor: pointer;
-    user-select: none;
+	cursor: pointer;
+	user-select: none;
 	vertical-align: middle;
 }
 .spinner .btn-spinner:hover {
-    color: white;
+	color: white;
 }
 .spinner .spinner-input {
-    -moz-appearance: textfield;
-    -webkit-appearance: none;
-    width: 100px;
-    height: 32px;
-    border: 1px solid #6E6F7A;
-    border-radius: 5px;
-    color: #000;
-    text-align: center;
-    padding: 0.375rem 0.75rem;
+	-moz-appearance: textfield;
+	-webkit-appearance: none;
+	width: 100px;
+	height: 32px;
+	border: 1px solid #6E6F7A;
+	border-radius: 5px;
+	color: #000;
+	text-align: center;
+	padding: 0.375rem 0.75rem;
 	line-height: 1.5;
 }
 .spinner input::-webkit-outer-spin-button,
 .spinner input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 .spinner input[type=number]{
-    -moz-appearance: textfield;
+	-moz-appearance: textfield;
 }
 .form-spinner-label {
 	flex: 1;
