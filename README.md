@@ -3,22 +3,22 @@
 [![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
 [![LGPL-2.1 license](https://img.shields.io/github/license/stnkl/FastLEDHub)](https://github.com/stnkl/FastLEDHub/blob/master/LICENSE)
 
-FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. FastLEDHub is compatible with most of the demo sketches at [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos). It requires little knowledge about the ESP8266 platform making in an ideal playground for beginners getting started with FastLED animations.
+FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. It requires little knowledge about the ESP8266 platform making it an ideal playground for beginners getting started with FastLED animations.
 
 ## Features
 
 - Control multiple animations via an intuitive web interface
-- Use hardware inputs to cycle through animations and adjust the brightness
-- Adjust the animation speed globally
-- Select any constant color via the web interface
+- Adjust brightness and animation speed globally
+- Define color pickers to use as parameters for your animations
 - Define custom numeric sliders to parameterize your animations
 - Alarm: Be woken up to an animation slowly fading in
 - Sunset: Automatically fade in an animation when the sun sets at your location
+- Control animations and brightness using hardware inputs
 - Control animations using HTTP requests for easy automation
 
 ## Demo
 
-![FastLEDHub web app screenshot](https://user-images.githubusercontent.com/17520641/158074593-c8d84507-1317-4146-9735-651f1761ee38.gif)
+![FastLEDHub web app screenshot](https://user-images.githubusercontent.com/17520641/163568239-527e2239-536c-4324-8e0f-5c712b3d4635.gif)
 
 
 ## Installation
@@ -71,16 +71,17 @@ Using FastLEDHub to manage your FastLED animations requires mainly three steps:
 
 ```cpp
 #include <FastLEDHub.h>
-#include <ESPEssentials.h>
 
-#define NUM_LEDS 6
+#define NUM_LEDS 100
 #define LED_TYPE WS2812B
 #define LIGHTSTRIP_PIN 5
 
+CRGB leds[NUM_LEDS];
+
 void setup()
 {
-  FastLEDHub.initialize("Project Name", NUM_LEDS);
-  FastLEDHub.addLeds<LED_TYPE, LIGHTSTRIP_PIN, GRB>(FastLEDHub.hardwareLeds, NUM_LEDS);
+  FastLEDHub.initialize("Project Name");
+  FastLEDHub.addLeds<LED_TYPE, LIGHTSTRIP_PIN, GRB>(leds, NUM_LEDS);
 }
 
 void loop()
@@ -91,6 +92,8 @@ void loop()
 
 Change `NUM_LEDS`, `LED_TYPE` and `LIGHTSTRIP_PIN` according to your hardware configuration. You may notice that this is not different than setting up a regular FastLED sketch apart from using `FastLEDHub` instead of `FastLED`.
 
+*Note:* By default FastLEDHub will apply gamma correction to the brightness value. To disable this behavior call `FastLEDHub.initialize("Project Name", false)` instead.
+
 ### Adding a new animation
 
 Create a new animation file `Animations/ExampleAnimation.h`:
@@ -99,6 +102,8 @@ Create a new animation file `Animations/ExampleAnimation.h`:
 #pragma once
 
 #include <FastLEDHub.h>
+
+extern CRGB leds[];
 
 class ExampleAnimation : public Animation
 {
@@ -122,12 +127,12 @@ public:
 While creating your animation proceed as you usually would with FastLED by defining the `reset` and `loop` functions. `reset` will be called each time an animation gets started. Use this function to reset the state variables of your animation to its starting values. It will not be called when resuming the animation from the paused status. `loop` will be called repeatedly as long as the animation is running.
 
 Keep in mind the following important differences to just using FastLED:
-- The regular `setup` function is called `reset` to emphasize its purpose
-- Instead of creating your own `leds` array use the existing `FastLEDHub.leds`
-- Within your animation use `FastLEDHub.numLeds` instead of `NUM_LEDS`
+- The regular `setup` function is called `reset` to emphasize its purpose.
+- Since `leds` has already been defined in the main sketch, simply indicate its existence with `extern CRGB leds[]`.
+- Within your animation use `FastLEDHub[0].size()` instead of `NUM_LEDS` to get the number of leds. If you are using multiple lightstrips change the index accordingly.
 - Every time you may want to use `FastLED` use `FastLEDHub` instead. Since `FastLEDHub` inherits from `FastLED` all member functions will be available just like before. FastLEDHub just adds some stuff on top of that.
 
-If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDHub, those are the necessary changes you have to perform.
+If you want to convert an existing FastLED sketch (e.g. from [atuline/FastLED-Demos](https://github.com/atuline/FastLED-Demos)), so it can be handled by FastLEDHub, generally those are the necessary changes you have to perform.
 
 ### Registering animations
 
@@ -138,47 +143,63 @@ In your main sketch include your animations and register them at the end of the 
 
 ...
 
-registerAnimation(new ExampleAnimation("Example animation name"));
+FastLEDHub.registerAnimation(new ExampleAnimation("Example animation name"));
 ```
 
 The animation name can be any unique string and will be used to identify animations in the web interface.
 
 ## Additional features
 
-### Static color display
+### Custom color pickers
 
-FastLEDHub allows you to display a static color in the web interface. It will be handled as a separate animation and will always have animation index `0`. This is important if you want to trigger animations using HTTP requests.
+FastLEDHub allows you to register multiple color pickers to use as parameters for your animations. This allows you to integrate custom colors, gradients and more.
+
+To add a color picker use
+
+```cpp
+FastLEDHub.registerColorPicker(new ColorPicker("Primary Color", CRGB(255, 0, 0)));
+FastLEDHub.registerColorPicker(new ColorPicker("Secondary Color", CRGB(0, 255, 0), "paint-bucket"));
+```
+
+Within the web interface FastLEDHub uses [Bootstrap icons](https://icons.getbootstrap.com/#icons) to allow you to further differentiate between color pickers. Here `paint-bucket` refers to the respective icon class.
+
+To access those colors within your animation use
+
+```cpp
+CRGB primaryColor = FastLEDHub.getColorPicker("Primary Color")->value; // access by name
+CRGB secondaryColor = FastLEDHub.getColorPicker(1)->value;             // access by index
+```
 
 ### Pre-defined and custom sliders
 
-You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDHub automatically adds two sliders for brightness (0-1023, default: 1023) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDHub and don't require any further attention. Changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDHub.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()` or Arduino's standard `delay()`.
+You can add custom numeric sliders of type `int16_t` to adjust variables of animations dynamically. FastLEDHub automatically adds two sliders for brightness (0-255, default: 127) and animation speed (0-255, default: 127). Both of these fixed sliders have been integrated tightly into FastLEDHub and don't require any further attention. By default changing the brightness will apply gamma correction automatically. Adjusting the speed will affect the effective delay of `FastLEDHub.delay()` to speed up or slow down animations. To prevent this explicitly use `FastLED.delay()`.
 
 To add more custom sliders simply register them in the main sketch via
 
 ```cpp
-FastLEDHub.registerSlider(new Slider("Saturation", 150, 255, 200, 1));
+FastLEDHub.registerSlider(new Slider("Hue", 0, 359, 180, 1));
+FastLEDHub.registerSlider(new Slider("Saturation", 150, 255, 200, 1, "palette"));
 ```
 
-This example registers a slider with a range of `150-255` and step size `1` defaulting to the value `200`. Again the slider name `"Saturation"` can be any unique string identifying the slider in the web interface.
+Again `"palette"` refers to an optional [Bootstrap icon](https://icons.getbootstrap.com/#icons) and the slider name can be any unique string identifying the slider in the web interface.
 
 To access custom slider values inside of your animation use
 
 ```cpp
-int16_t saturation = FastLEDHub.getSlider("Saturation")->value;
+int16_t hue = FastLEDHub.getSlider(2)->value;                   // access by index
+int16_t saturation = FastLEDHub.getSlider("Saturation")->value; // access by name
 ```
+
+*Remember:* Since FastLEDHub comes with two pre-defined sliders `Brightness` and `Speed` the first custom slider will have index `2`.
 
 ### Hardware inputs
 
-FastLEDHub supports a potentiometer for brightness adjustments and a push button to cycle through animations. They have to be specifically enabled with
+FastLEDHub supports a potentiometer for brightness adjustments and push buttons to play/pause and cycle through animations. They have to be specifically enabled with
 
 ```cpp
 FastLEDHub.enablePotentiometer(potentiometerPin);
-```
-
-and
-
-```cpp
 FastLEDHub.enableToggleButton(togglePin);
+FastLEDHub.enableCycleButton(cyclePin);
 ```
 
 ### Alarm and sunset
@@ -201,6 +222,10 @@ Most functions can be triggered via HTTP requests:
 - Trigger sunset: `http://<device-ip>/sunset`
 - Trigger alarm: `http://<device-ip>/alarm`
 - Reset ESP8266: `http://<device-ip>/reboot`
+
+```cpp
+FastLEDHub.initialize("Project Name", true);
+```
 
 ## License & Attribution
 
