@@ -118,7 +118,7 @@ public:
 
     void loop()
     {
-      // animate FastLEDHub.leds
+      // animate leds
     }
 };
 ```
