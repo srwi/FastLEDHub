@@ -1,4 +1,4 @@
-name: Build library
+name: Build examples
 
 on: [push, pull_request]
 
@@ -12,6 +12,10 @@ jobs:
         board:
           - "nodemcuv2"
           - "lolin32"
+        example:
+          - "examples/BasicExample/BasicExample.ino"
+          - "examples/ColorPickers/ColorPickers.ino"
+          - "examples/Sliders/Sliders.ino"
 
     steps:
     - uses: actions/checkout@v2
@@ -34,17 +38,15 @@ jobs:
         pip install --upgrade platformio
     - name: Install 3rd party dependencies
       run: |
-        pio lib install \
+        pio lib -g install \
         ArduinoJson \
         FastLED \
         LinkedList \
         WebSockets \
         https://github.com/tzapu/WiFiManager \
-        https://github.com/stnkl/ESPEssentials
-    - name: Create main file
-      run: |
-        echo "#include <Arduino.h>" >> main.ino
-        echo "void setup() { }" >> main.ino
-        echo "void loop() { }" >> main.ino
-    - name: Run PlatformIO
-      run: pio ci --board=${{ matrix.board }} .
+        https://github.com/stnkl/ESPEssentials \
+        https://github.com/stnkl/FastLEDHub
+    - name: Run PlatformIO examples
+      run: pio ci --board=${{ matrix.board }}
+      env:
+        PLATFORMIO_CI_SRC: ${{ matrix.example }}
