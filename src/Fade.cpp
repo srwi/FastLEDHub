@@ -2,8 +2,12 @@
 #include "FastLEDHub.h"
 #include "SerialOut.h"
 
+#if defined(ESP32)
+  #include <HTTPClient.h>
+#elif defined(ESP8266)
+  #include <ESP8266HTTPClient.h>
+#endif
 #include <ArduinoJson.h>
-#include <ESP8266HTTPClient.h>
 #include <ESPEssentials.h>
 #include <Ticker.h>
 #include <time.h>
@@ -17,7 +21,8 @@ namespace Fade
     FadeMode m_mode = FadeMode::NONE;
     uint16_t m_targetBrightness = 0;
     Ticker m_fadeTicker;
-    Ticker m_debounce;
+    Ticker m_debounceTicker;
+    bool m_debounce = false;
 
     void tick()
     {
@@ -101,7 +106,7 @@ namespace Fade
 
   void handle()
   {
-    if (m_mode != FadeMode::NONE || m_debounce.active())
+    if (m_mode != FadeMode::NONE || m_debounce)
       return;
 
     int8_t hour, minute;
@@ -125,8 +130,8 @@ namespace Fade
     FastLEDHub.setBrightness(0);
     FastLEDHub.show();
 
-    m_debounce.once(61, [&]()
-                    { m_debounce.detach(); });
+    m_debounceTicker.once(61, [](){ m_debounce = false; });
+    m_debounce = true;
 
     if (fadeMode == FadeMode::ALARM)
     {

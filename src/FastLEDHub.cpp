@@ -1,14 +1,9 @@
 #include "FastLEDHub.h"
 
-#include "Animation.h"
-#include "ColorUtils.h"
-#include "Config.h"
 #include "Fade.h"
 #include "SerialOut.h"
-#include "Webserver.h"
+#include "FWebserver.h"
 #include "WebSocket.h"
-
-#include <ESPEssentials.h>
 
 FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
                                      m_toggleButtonPushed(false),
@@ -27,7 +22,7 @@ FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
 void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorrection)
 {
   m_gammaCorrectionEnabled = enableGammaCorrection;
-  initESPEssentials(projectName);
+  ESPEssentials::init(projectName);
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
   {
@@ -49,28 +44,28 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, std::bind(&FastLEDHubClass::handleInput, this));
+  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_potentiometerPin = pin;
 }
 
 void FastLEDHubClass::handle()
 {
-  handleESPEssentials();
+  ESPEssentials::handle();
 
   if (!m_autostartHandled)
     autostart();
@@ -121,7 +116,7 @@ void FastLEDHubClass::delay(uint16_t ms)
   unsigned long start = micros();
   while (micros() - start < 1000.0 * ms * pow((m_speed - 255) / 128.0, 2))
   {
-    handleESPEssentials();
+    ESPEssentials::handle();
     Fade::handle();
     WebSocket::handle();
   }

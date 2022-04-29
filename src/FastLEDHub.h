@@ -7,6 +7,7 @@
 #include "Slider.h"
 
 #include <Arduino.h>
+#include <ESPEssentials.h>
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 #include <LinkedList.h>

@@ -4,7 +4,11 @@
 #include "SerialOut.h"
 #include "FastLEDHub.h"
 
-#include <FS.h>
+#if defined(ESP32)
+  #include <SPIFFS.h>
+#elif defined(ESP8266)
+  #include <FS.h>
+#endif
 
 bool ConfigClass::initialize()
 {

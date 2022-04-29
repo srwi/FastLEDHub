@@ -1,9 +1,11 @@
 # FastLEDHub
 
+![ESP8266](https://img.shields.io/badge/ESP-8266-000000.svg?colorB=blue)
+![ESP32](https://img.shields.io/badge/ESP-32-000000.svg?colorB=blue)
 [![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
 [![LGPL-2.1 license](https://img.shields.io/github/license/stnkl/FastLEDHub)](https://github.com/stnkl/FastLEDHub/blob/master/LICENSE)
 
-FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 with minimal changes to your existing code. It requires little knowledge about the ESP8266 platform making it an ideal playground for beginners getting started with FastLED animations.
+FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 and ESP32 with minimal changes to your existing code. It requires little knowledge about the ESP8266/ESP32 platform making it an ideal playground for beginners getting started with FastLED animations.
 
 ## Features
 
@@ -65,6 +67,7 @@ Using FastLEDHub to manage your FastLED animations requires mainly three steps:
 - Creating the main sketch to initialize your lightstrip with FastLEDHub
 - Creating an animation or modifying an existing sketch to be compatible with FastLEDHub
 - Registering your animations in the main sketch
+- Upload the web interface files to SPIFFS storage
 
 ### Creating the main sketch
 
@@ -147,6 +150,13 @@ FastLEDHub.registerAnimation(new ExampleAnimation("Example animation name"));
 
 The animation name can be any unique string and will be used to identify animations in the web interface.
 
+### Uploading web interface files
+
+To be able to access the web interface, several files have to be uploaded to SPIFFS storage. They are located within the `data` folder inside FastLEDHub's library folder. To upload those files there are two easy options:
+
+- Copy the whole `data` folder into your sketch directory and upload the files using the Arduino filesystem uploader ([ESP8266](https://github.com/esp8266/arduino-esp8266fs-plugin), [ESP32](https://github.com/me-no-dev/arduino-esp32fs-plugin)).
+- After the sketch has been flashed to the device upload each file within the `data` folder individually by accessing `http://<device-ip>/edit`.
+
 ## Additional features
 
 ### Custom color pickers
@@ -220,7 +230,7 @@ Most functions can be triggered via HTTP requests:
 - Restart animation: `http://<device-ip>/restart`
 - Trigger sunset: `http://<device-ip>/sunset`
 - Trigger alarm: `http://<device-ip>/alarm`
-- Reset ESP8266: `http://<device-ip>/reboot`
+- Reset device: `http://<device-ip>/reboot`
 
 ## License & Attribution
 

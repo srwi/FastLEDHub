@@ -1,9 +1,12 @@
 #include "WebSocket.h"
 
 #include <ArduinoJson.h>
-#include <ESP8266mDNS.h>
+#if defined(ESP32)
+  #include <ESPmDNS.h>
+#elif defined(ESP8266)
+  #include <ESP8266mDNS.h>
+#endif
 #include <FastLED.h>
-#include <Hash.h>
 
 #include "Animation.h"
 #include "ColorUtils.h"
