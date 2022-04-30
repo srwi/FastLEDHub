@@ -26,12 +26,12 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 
 ### Library dependencies
 
-- ArduinoJson
-- ESPEssentials
+- ArduinoJson ≥ 6.0
+- ESPEssentials ≥ 2.0
 - FastLED
 - LinkedList
 - WebSockets
-- WiFiManager ≥ 2.0.0
+- WiFiManager ≥ 2.0
 
 ### Official releases via the Arduino IDE v1.8+
 1. Open the Arduino IDE
