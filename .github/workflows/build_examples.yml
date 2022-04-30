@@ -13,9 +13,9 @@ jobs:
           - "nodemcuv2"
           - "lolin32"
         example:
-          - "examples/BasicExample/BasicExample.ino"
-          - "examples/ColorPickers/ColorPickers.ino"
-          - "examples/Sliders/Sliders.ino"
+          - "examples/BasicExample"
+          - "examples/ColorPickers"
+          - "examples/Sliders"
 
     steps:
     - uses: actions/checkout@v2
