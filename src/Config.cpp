@@ -10,10 +10,14 @@
   #include <FS.h>
 #endif
 
+#include <EESuspendTimer.h>
+
 bool ConfigClass::initialize()
 {
+  SUSPEND_TIMER1;
   if (!SPIFFS.begin())
   {
+    RESUME_TIMER1;
     PRINTLN("[FastLEDHub] Couldn't mount file system.");
     return false;
   }
@@ -21,9 +25,11 @@ bool ConfigClass::initialize()
   File configFile = SPIFFS.open(m_configFilename, "r");
   if (!configFile)
   {
+    RESUME_TIMER1;
     PRINTLN("[FastLEDHub] Opening file '" + m_configFilename + "' failed.");
     return false;
   }
+  RESUME_TIMER1;
 
   String content;
   if (configFile.available())
@@ -177,15 +183,18 @@ String ConfigClass::asString(bool includeApplicationState)
 
 bool ConfigClass::save()
 {
+  SUSPEND_TIMER1;
   File configFile = SPIFFS.open(m_configFilename, "w");
   if (!configFile)
   {
+    RESUME_TIMER1;
     PRINTLN("[FastLEDHub] Opening file " + m_configFilename + " for saving failed.");
     return false;
   }
 
   configFile.println(asString());
   configFile.close();
+  RESUME_TIMER1;
 
   return true;
 }
