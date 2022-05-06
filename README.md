@@ -62,12 +62,12 @@ cd ~/Arduino/libraries/FastLEDHub && git pull
 
 ## Usage
 
-Using FastLEDHub to manage your FastLED animations requires mainly three steps:
+Using FastLEDHub to manage your FastLED animations requires mainly four steps:
 
 - Creating the main sketch to initialize your lightstrip with FastLEDHub
 - Creating an animation or modifying an existing sketch to be compatible with FastLEDHub
 - Registering your animations in the main sketch
-- Upload the web interface files to SPIFFS storage
+- Uploading the web interface files to SPIFFS storage
 
 ### Creating the main sketch
 
