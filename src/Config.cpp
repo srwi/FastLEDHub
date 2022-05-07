@@ -4,21 +4,27 @@
 #include "SerialOut.h"
 #include "FastLEDHub.h"
 
-#if defined(ESP32)
-  #include <SPIFFS.h>
-#elif defined(ESP8266)
-  #include <FS.h>
+#if defined(USE_SPIFFS)
+  #if defined(ESP32)
+    #include <SPIFFS.h>
+  #elif defined(ESP8266)
+    #include <FS.h>
+  #endif
+  #define FILESYSTEM SPIFFS
+#else
+  #include <LittleFS.h>
+  #define FILESYSTEM LittleFS
 #endif
 
 bool ConfigClass::initialize()
 {
-  if (!SPIFFS.begin())
+  if (!FILESYSTEM.begin())
   {
     PRINTLN("[FastLEDHub] Couldn't mount file system.");
     return false;
   }
 
-  File configFile = SPIFFS.open(m_configFilename, "r");
+  File configFile = FILESYSTEM.open(m_configFilename, "r");
   if (!configFile)
   {
     PRINTLN("[FastLEDHub] Opening file '" + m_configFilename + "' failed.");
@@ -177,7 +183,7 @@ String ConfigClass::asString(bool includeApplicationState)
 
 bool ConfigClass::save()
 {
-  File configFile = SPIFFS.open(m_configFilename, "w");
+  File configFile = FILESYSTEM.open(m_configFilename, "w");
   if (!configFile)
   {
     PRINTLN("[FastLEDHub] Opening file " + m_configFilename + " for saving failed.");
