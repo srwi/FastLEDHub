@@ -59,6 +59,24 @@
           <select class="form-select" id="startupAnimation"></select>
         </div>
 
+        <h6>MQTT</h6>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="useMqtt" data-bs-toggle="collapse" data-bs-target="#useMqttCollapse" aria-controls="useMqttCollapse">
+          <label class="form-check-label" for="useMqtt">Enabled</label>
+        </div>
+        <div id="useMqttCollapse" class="collapse">
+          <label for="mqttHost" class="form-label">Host</label>
+          <input type="text" class="form-control" id="mqttHost" name="mqttHost">
+          <label for="mqttUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="mqttUsername" name="mqttUsername">
+          <label for="mqttPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="mqttPassword" name="mqttPassword">
+          <label for="mqttTopicName" class="form-label">Topic name</label>
+          <input type="text" class="form-control" id="mqttTopicName" name="mqttTopicName">
+          <label for="mqttClientId" class="form-label">Client ID</label>
+          <input type="text" class="form-control" id="mqttClientId" name="mqttClientId">
+        </div>
+
         <h6>Time</h6>
         <div class="spinner d-flex">
           <label for="timeZone" class="form-spinner-label">Time zone (GMT)</label>

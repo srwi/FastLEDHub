@@ -146,8 +146,18 @@ function handleJsonData(data) {
     sunsetAnimation.value = data.sunsetAnimation;
   if (data.hasOwnProperty('sunsetDuration'))
     sunsetDuration.value = data.sunsetDuration;
-  if (data.hasOwnProperty('sunsetOffset'))
-    sunsetOffset.value = data.sunsetOffset;
+  if (data.hasOwnProperty('mqttEnabled'))
+    mqttEnabled.value = data.mqttEnabled;
+  if (data.hasOwnProperty('mqttHostname'))
+    mqttHostname.value = data.mqttHostname;
+  if (data.hasOwnProperty('mqttUsername'))
+    mqttUsername.value = data.mqttUsername;
+  if (data.hasOwnProperty('mqttPassword'))
+    mqttPassword.value = data.mqttPassword;
+  if (data.hasOwnProperty('mqttTopicName'))
+    mqttTopicName.value = data.mqttTopicName;
+  if (data.hasOwnProperty('mqttClientId'))
+    mqttClientId.value = data.mqttClientId;
   if (data.hasOwnProperty('timeZone'))
     timeZone.value = data.timeZone;
   if (data.hasOwnProperty('summerTime'))
@@ -203,7 +213,13 @@ function sendConfig() {
     sunsetDuration: sunsetDuration.value,
     sunsetOffset: sunsetOffset.value,
     sunsetAnimation: sunsetAnimation.value,
-    startupAnimation: useStartupAnimation.checked ? startupAnimation.value : ''
+    startupAnimation: useStartupAnimation.checked ? startupAnimation.value : '',
+    mqttEnabled: mqttEnabled.value,
+    mqttHostname: mqttHostname.value,
+    mqttUsername: mqttUsername.value,
+    mqttPassword: mqttPassword.value,
+    mqttTopicName: mqttTopicName.value,
+    mqttClientId: mqttClientId.value
   }, null, 2);
   sendText(json);
 }
