@@ -6,6 +6,7 @@
 #elif defined(ESP8266)
   #include <ESP8266mDNS.h>
 #endif
+#define FASTLED_INTERNAL
 #include <FastLED.h>
 
 #include "Animation.h"

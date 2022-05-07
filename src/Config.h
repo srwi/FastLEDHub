@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#define FASTLED_INTERNAL
 #include <FastLED.h>
 #include <LinkedList.h>
 
