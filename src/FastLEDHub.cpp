@@ -67,6 +67,9 @@ void FastLEDHubClass::handle()
 {
   ESPEssentials::handle();
 
+  if (ESPEssentials::OTA.isBusy())
+    return;
+
   if (!m_autostartHandled)
     autostart();
 
