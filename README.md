@@ -62,12 +62,12 @@ cd ~/Arduino/libraries/FastLEDHub && git pull
 
 ## Usage
 
-Using FastLEDHub to manage your FastLED animations requires mainly three steps:
+Using FastLEDHub to manage your FastLED animations requires mainly four steps:
 
 - Creating the main sketch to initialize your lightstrip with FastLEDHub
 - Creating an animation or modifying an existing sketch to be compatible with FastLEDHub
 - Registering your animations in the main sketch
-- Upload the web interface files to SPIFFS storage
+- Uploading the web interface files to the flash storage
 
 ### Creating the main sketch
 
@@ -152,7 +152,7 @@ The animation name can be any unique string and will be used to identify animati
 
 ### Uploading web interface files
 
-To be able to access the web interface, several files have to be uploaded to SPIFFS storage. They are located within the `data` folder inside FastLEDHub's library folder. To upload those files there are two easy options:
+To be able to access the web interface, several files have to be uploaded to the flash storage. They are located within the `data` folder inside FastLEDHub's library folder. To upload those files there are two easy options:
 
 - Copy the whole `data` folder into your sketch directory and upload the files using the Arduino filesystem uploader ([ESP8266](https://github.com/esp8266/arduino-esp8266fs-plugin), [ESP32](https://github.com/me-no-dev/arduino-esp32fs-plugin)).
 - After the sketch has been flashed to the device upload each file within the `data` folder individually by accessing `http://<device-ip>/edit`.

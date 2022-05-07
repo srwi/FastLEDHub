@@ -67,6 +67,9 @@ void FastLEDHubClass::handle()
 {
   ESPEssentials::handle();
 
+  if (ESPEssentials::OTA.isBusy())
+    return;
+
   if (!m_autostartHandled)
     autostart();
 
@@ -355,6 +358,8 @@ void FastLEDHubClass::toggle()
 {
   if (m_status == RUNNING)
     pause();
+  else if (m_status == STOPPED)
+    begin(getAnimation(0));
   else
     resume();
 }
