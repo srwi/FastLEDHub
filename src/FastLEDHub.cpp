@@ -355,6 +355,8 @@ void FastLEDHubClass::toggle()
 {
   if (m_status == RUNNING)
     pause();
+  else if (m_status == STOPPED)
+    begin(getAnimation(0));
   else
     resume();
 }
