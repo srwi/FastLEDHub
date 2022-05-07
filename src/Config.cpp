@@ -16,6 +16,8 @@
   #define FILESYSTEM LittleFS
 #endif
 
+#include <EESuspendTimerGuard.h>
+
 bool ConfigClass::initialize()
 {
   if (!FILESYSTEM.begin())
@@ -24,6 +26,7 @@ bool ConfigClass::initialize()
     return false;
   }
 
+  SUSPEND_TIMER1();
   File configFile = FILESYSTEM.open(m_configFilename, "r");
   if (!configFile)
   {
@@ -36,6 +39,8 @@ bool ConfigClass::initialize()
   {
     content = configFile.readString();
   }
+  configFile.close();
+  RESUME_TIMER1();
 
   char json[content.length()];
   content.toCharArray(json, content.length());
@@ -183,6 +188,7 @@ String ConfigClass::asString(bool includeApplicationState)
 
 bool ConfigClass::save()
 {
+  SUSPEND_TIMER1();
   File configFile = FILESYSTEM.open(m_configFilename, "w");
   if (!configFile)
   {
