@@ -14,7 +14,7 @@
 #include <Ticker.h>
 
 #define FASTLEDHUB_INPUT_TICKER_INTERVAL 10
-#define SPECTRUM_LENGTH 32
+#define SPECTRUM_LENGTH 16
 
 enum AnimationStatus
 {

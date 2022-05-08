@@ -6,7 +6,7 @@ let cooldownTimer;
 let audioCtx, microphoneStream, source, analyser, spectogramSender;
 
 function openWebsocketConnection() {
-  const uri = 'ws://192.168.0.34:81/'// + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  const uri = 'ws://192.168.0.35:81/'
   connection = new WebSocket(uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
@@ -219,7 +219,7 @@ function sendBytes(bytes) {
   cooldownTimer = setTimeout(() => {
     cooldownTimer = null;
     sendBytesQueue();
-  }, 15);
+  }, 10);
 }
 
 function sendBytesQueue() {
@@ -258,6 +258,9 @@ function toggleSpectrogram()
 
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   analyser = audioCtx.createAnalyser();
+  // analyser.minDecibels = -90;
+  analyser.maxDecibels = -10;
+  analyser.smoothingTimeConstant = 0.65;
 
   if (navigator.mediaDevices.getUserMedia)
   {
@@ -277,7 +280,7 @@ function toggleSpectrogram()
     microphoneStream = stream;
     source = audioCtx.createMediaStreamSource(stream);
     source.connect(analyser);
-    spectogramSender = setInterval(handleSpectrumData, 10);
+    spectogramSender = setInterval(handleSpectrumData, 5);
     spectrumButton.classList.add("text-white");
   }
 
@@ -287,7 +290,17 @@ function toggleSpectrogram()
     let binCount = analyser.frequencyBinCount;
     let spectrumData = new Uint8Array(binCount);
     analyser.getByteFrequencyData(spectrumData);
-    sendBytes([30].concat(Array.from(spectrumData)));
+    // sendBytes([30].concat(Array.from(spectrumData)));
+    visualize(spectrumData);
+  }
+
+  function visualize(data)
+  {
+    let ary = Array.from(data);
+    ary.forEach((d, idx) => {
+      console.log(d);
+      spectrumDisplay.children.item(idx).style.height = (d / 255 * 100) + "px";
+    })
   }
 }
 
@@ -300,4 +313,6 @@ window.onload = () => {
   settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
     sendConfig();
   });
+
+  toggleSpectrogram();
 };
