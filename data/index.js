@@ -6,7 +6,7 @@ let cooldownTimer;
 let audioCtx, microphoneStream, source, analyser, spectogramSender;
 
 function openWebsocketConnection() {
-  const uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  const uri = 'ws://192.168.0.34:81/'// + (location.hostname ? location.hostname : 'localhost') + ':81/';
   connection = new WebSocket(uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
