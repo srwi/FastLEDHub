@@ -5,7 +5,7 @@ let queue;
 let cooldownTimer;
 
 function openWebsocketConnection() {
-  const uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  const uri = "ws://192.168.0.34:81/"//'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
   connection = new WebSocket(uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
@@ -242,6 +242,54 @@ function sendText(text) {
   console.log('Sent text: ' + text);
 }
 
+function spectrogram()
+{
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var source;
+
+  var analyser = audioCtx.createAnalyser();
+  // analyser.minDecibels = -90;
+  // analyser.maxDecibels = -10;
+  // analyser.smoothingTimeConstant = 0.85;
+
+  if (navigator.mediaDevices.getUserMedia) {
+      console.log('getUserMedia supported.');
+      var constraints = {audio: true}
+      navigator.mediaDevices.getUserMedia (constraints)
+        .then(
+          function(stream)
+          {
+            source = audioCtx.createMediaStreamSource(stream);
+            source.connect(analyser);
+
+            setInterval(visualize, 5);
+          })
+        .catch( function(err) { console.log('The following gUM error occured: ' + err);})
+  } else {
+      console.log('getUserMedia not supported on your browser!');
+  }
+
+  function toHexString(byteArray) {
+    return Array.from(byteArray, function(byte) {
+      return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('')
+  }
+
+  function visualize()
+  {
+    analyser.fftSize = 32;
+    var bufferLengthAlt = analyser.frequencyBinCount;
+    var dataArrayAlt = new Uint8Array(bufferLengthAlt);
+
+    analyser.getByteFrequencyData(dataArrayAlt);
+
+    console.log(dataArrayAlt);
+
+    document.body.style.backgroundColor = "#" + toHexString([dataArrayAlt[0], dataArrayAlt[1], dataArrayAlt[2]])
+  }
+}
+
+
 window.onload = () => {
   openWebsocketConnection();
 
@@ -250,4 +298,6 @@ window.onload = () => {
   settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
     sendConfig();
   });
+
+  spectrogram();
 };
