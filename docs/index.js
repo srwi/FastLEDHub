@@ -3,9 +3,10 @@
 let connection;
 let queue;
 let cooldownTimer;
+let audioCtx, microphoneStream, source, analyser, spectogramSender;
 
 function openWebsocketConnection() {
-  const uri = "ws://192.168.0.34:81/"//'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
+  const uri = 'ws://' + (location.hostname ? location.hostname : 'localhost') + ':81/';
   connection = new WebSocket(uri, ['arduino']);
   connection.binaryType = 'arraybuffer';
   connection.onopen = function (e) {
@@ -242,50 +243,51 @@ function sendText(text) {
   console.log('Sent text: ' + text);
 }
 
-function spectrogram()
+function toggleSpectrogram()
 {
-  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  var source;
-
-  var analyser = audioCtx.createAnalyser();
-  // analyser.minDecibels = -90;
-  // analyser.maxDecibels = -10;
-  // analyser.smoothingTimeConstant = 0.85;
-
-  if (navigator.mediaDevices.getUserMedia) {
-      console.log('getUserMedia supported.');
-      var constraints = {audio: true}
-      navigator.mediaDevices.getUserMedia (constraints)
-        .then(
-          function(stream)
-          {
-            source = audioCtx.createMediaStreamSource(stream);
-            source.connect(analyser);
-
-            setInterval(visualize, 5);
-          })
-        .catch( function(err) { console.log('The following gUM error occured: ' + err);})
-  } else {
-      console.log('getUserMedia not supported on your browser!');
+  if (audioCtx?.state == "running")
+  {
+    clearInterval(spectogramSender);
+    audioCtx.close();
+    microphoneStream.getAudioTracks().forEach(track => {
+      track.stop();
+    });
+    spectrumButton.classList.remove("text-white");
+    return;
   }
 
-  function toHexString(byteArray) {
-    return Array.from(byteArray, function(byte) {
-      return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-    }).join('')
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+
+  if (navigator.mediaDevices.getUserMedia)
+  {
+    let constraints = {audio: true}
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(onGotUserMedia)
+      .catch((e) => { console.log("The following error occured in getUserMedia: " + e); })
+  }
+  else
+  {
+    console.log("getUserMedia not supported.");
   }
 
-  function visualize()
+  function onGotUserMedia(stream)
+  {
+    microphoneStream = stream;
+    source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    spectogramSender = setInterval(handleSpectrumData, 10);
+    spectrumButton.classList.add("text-white");
+  }
+
+  function handleSpectrumData()
   {
     analyser.fftSize = 32;
-    var bufferLengthAlt = analyser.frequencyBinCount;
-    var dataArrayAlt = new Uint8Array(bufferLengthAlt);
-
-    analyser.getByteFrequencyData(dataArrayAlt);
-
-    console.log(dataArrayAlt);
-
-    document.body.style.backgroundColor = "#" + toHexString([dataArrayAlt[0], dataArrayAlt[1], dataArrayAlt[2]])
+    let binCount = analyser.frequencyBinCount;
+    let spectrumData = new Uint8Array(binCount);
+    analyser.getByteFrequencyData(spectrumData);
+    sendBytes([30].concat(Array.from(spectrumData)));
   }
 }
 
@@ -298,6 +300,4 @@ window.onload = () => {
   settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
     sendConfig();
   });
-
-  spectrogram();
 };
