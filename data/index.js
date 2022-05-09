@@ -3,26 +3,28 @@
 let connection;
 let queue;
 let cooldownTimer;
-let audioCtx, microphoneStream, source, analyser, spectogramSender;
+let spectrogram;
 
-function openWebsocketConnection() {
-  const uri = 'ws://192.168.0.35:81/'
-  connection = new WebSocket(uri, ['arduino']);
-  connection.binaryType = 'arraybuffer';
+function openWebsocket(uri) {
+  let ws = new WebSocket(uri, ['arduino']);
+  ws.binaryType = 'arraybuffer';
+  return ws;
+}
+
+function openMainWebsocket() {
+  connection = openWebsocket('ws://192.168.0.35:81/')
   connection.onopen = function (e) {
-    document.getElementById('navbarTitle').innerHTML = 'FastLEDHub';
     displayConnectedState(true);
   };
-  connection.onerror = function (e) {
-    console.log('WebSocket Error', e);
-  };
   connection.onclose = function (e) {
-    document.getElementById('navbarTitle').innerHTML = 'Disconnected...';
     displayConnectedState(false);
   };
   connection.onmessage = function (e) {
     console.log('Received: ', e.data);
     handleJsonData(JSON.parse(e.data));
+  };
+  connection.onerror = function (e) {
+    console.log('WebSocket Error', e);
   };
 }
 
@@ -32,7 +34,7 @@ function setupSpinners() {
       const inputElement = spinnerDiv.getElementsByTagName('input')[0];
       inputElement.classList.add('spinner-input');
 
-      const buttonDec = document.createElement("span");
+      const buttonDec = document.createElement('span');
       buttonDec.classList.add('btn-spinner', 'btn-spinner-dec');
       buttonDec.innerHTML = '&minus;';
       buttonDec.addEventListener('click', (ev) => {
@@ -46,7 +48,7 @@ function setupSpinners() {
           }
       });
 
-      const buttonInc = document.createElement("span");
+      const buttonInc = document.createElement('span');
       buttonInc.classList.add('btn-spinner', 'btn-spinner-inc');
       buttonInc.innerHTML = '&plus;';
       buttonInc.addEventListener('click', (ev) => {
@@ -66,6 +68,11 @@ function setupSpinners() {
 }
 
 function displayConnectedState(connected) {
+  if (connected)
+    document.getElementById('navbarTitle').innerHTML = 'FastLEDHub';
+  else
+    document.getElementById('navbarTitle').innerHTML = 'Disconnected...';
+
   document.getElementById('settingsButton').style.display = connected ? 'block' : 'none';
   document.getElementById('controlsWrapper').style.display = connected ? 'block' : 'none';
   document.getElementById('refreshButton').style.display = connected ? 'none' : 'block';
@@ -157,6 +164,8 @@ function handleJsonData(data) {
     longitude.value = data.longitude;
   if (data.hasOwnProperty('latitude'))
     latitude.value = data.latitude;
+  if (data.hasOwnProperty('extraSpectrogramDevices'))
+    extraSpectrogramDevices.value = data.extraSpectrogramDevices;
   if (data.hasOwnProperty('alarmDuration'))
     alarmDuration.value = data.alarmDuration;
   if (data.hasOwnProperty('alarmHour') && data.hasOwnProperty('alarmMinute'))
@@ -173,15 +182,12 @@ function updateAnimationButtons(status, animation) {
     if (animation == buttonContent) {
       if (status == 2) {
         buttonIcon.classList = 'bi bi-play-fill'
-      }
-      else if (status == 1) {
+      } else if (status == 1) {
         buttonIcon.classList = 'bi bi-pause'
       }
-    }
-    else if (idx == animationButtons.length - 1 && status == 0) {
+    } else if (idx == animationButtons.length - 1 && status == 0) {
       buttonIcon.classList = 'bi bi-stop-fill'
-    }
-    else {
+    } else {
       buttonIcon.classList = 'bi'
     }
   });
@@ -200,6 +206,7 @@ function sendConfig() {
     summerTime: summerTime.checked,
     longitude: longitude.value,
     latitude: latitude.value,
+    extraSpectrogramDevices: extraSpectrogramDevices.value,
     sunsetEnabled: sunsetEnabled.checked,
     sunsetDuration: sunsetDuration.value,
     sunsetOffset: sunsetOffset.value,
@@ -243,76 +250,113 @@ function sendText(text) {
   console.log('Sent text: ' + text);
 }
 
-function toggleSpectrogram()
+class Spectrogram
 {
-  if (audioCtx?.state == "running")
-  {
-    clearInterval(spectogramSender);
-    audioCtx.close();
-    microphoneStream.getAudioTracks().forEach(track => {
+  constructor() {
+  }
+
+  openConnections() {
+    this.connections = [connection]
+    let extraDevices = extraSpectrogramDevices.value.split(',');
+    extraDevices.forEach((uri) => {
+      uri = uri.trim();
+      if (uri != "")
+        this.connections.push(openWebsocket(`ws://${uri}:81/`));
+    });
+  }
+
+  begin() {
+    this.bins = 16;
+    this.fftRangeBit = 10;
+    this.fftRange = 1024;
+    this.fftSize = 2048;
+    this.connections = [];
+    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    this.analyser = this.audioCtx.createAnalyser();
+    this.analyser.fftSize = 2048;
+    this.analyser.minDecibels = -90;
+    this.analyser.maxDecibels = -10;
+    this.analyser.smoothingTimeConstant = 0.70;
+
+    this.openConnections();
+
+    if (navigator.mediaDevices.getUserMedia) {
+      let constraints = {audio: true}
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then((stream) => {
+            this.microphoneStream = stream;
+            this.source = this.audioCtx.createMediaStreamSource(stream);
+            this.source.connect(this.analyser);
+            this.sendTimer = setInterval(this.tick.bind(this), 5);
+            spectrumButton.classList.add('text-white');
+          })
+        .catch((e) => { console.log('The following error occured in getUserMedia: ' + e); })
+    } else {
+      console.log('getUserMedia not supported.');
+    }
+  }
+
+  end() {
+    clearInterval(this.sendTimer);
+    this.audioCtx.close();
+    this.microphoneStream.getAudioTracks().forEach(track => {
       track.stop();
     });
-    spectrumButton.classList.remove("text-white");
-    return;
+    spectrumButton.classList.remove('text-white');
   }
 
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  // analyser.minDecibels = -90;
-  analyser.maxDecibels = -10;
-  analyser.smoothingTimeConstant = 0.65;
+  tick() {
+    let fft = new Uint8Array(this.analyser.frequencyBinCount);
+    this.analyser.getByteFrequencyData(fft);
 
-  if (navigator.mediaDevices.getUserMedia)
-  {
-    let constraints = {audio: true}
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(onGotUserMedia)
-      .catch((e) => { console.log("The following error occured in getUserMedia: " + e); })
-  }
-  else
-  {
-    console.log("getUserMedia not supported.");
-  }
+    let spectrumData = new Array(this.bins);
+    let left = 0;
+    for (let line = 0; line < this.bins; line++) {
+      let right = Math.round(Math.pow(2, this.fftRangeBit * line / (this.bins - 1)) / this.fftRange * (this.fftRange - 1));
+      let peak = 0;
+      for (; left < right; left++) {
+        if (fft[left + 1] / 255 > peak) {
+          peak = fft[left + 1] / 255;
+        }
+      }
+      let intensity = Math.pow(peak, 1.2);
+      intensity = Math.min(Math.max(intensity, 0), 1);
+      spectrumData[line] = intensity * 255
+    }
 
-  function onGotUserMedia(stream)
-  {
-    microphoneStream = stream;
-    source = audioCtx.createMediaStreamSource(stream);
-    source.connect(analyser);
-    spectogramSender = setInterval(handleSpectrumData, 5);
-    spectrumButton.classList.add("text-white");
+    this.transmit(spectrumData);
+    this.visualize(spectrumData);
   }
 
-  function handleSpectrumData()
-  {
-    analyser.fftSize = 32;
-    let binCount = analyser.frequencyBinCount;
-    let spectrumData = new Uint8Array(binCount);
-    analyser.getByteFrequencyData(spectrumData);
-    // sendBytes([30].concat(Array.from(spectrumData)));
-    visualize(spectrumData);
+  transmit(data) {
+    this.connections.forEach((c) => {
+      if (c.readyState == 1)
+        c.send(Uint8Array.from([30].concat(data)).buffer);
+    });
   }
 
-  function visualize(data)
-  {
-    let ary = Array.from(data);
-    ary.forEach((d, idx) => {
-      console.log(d);
-      spectrumDisplay.children.item(idx).style.height = (d / 255 * 100) + "px";
+  visualize(data) {
+    while (spectrumDisplay.children.length < this.bins)
+      spectrumDisplay.appendChild(document.createElement('div'));
+    data.forEach((d, idx) => {
+      spectrumDisplay.children.item(idx).style.height = (d / 255 * 100) + 'px';
     })
+  }
+
+  toggle() {
+    if (this.audioCtx?.state == 'running')
+      this.end();
+    else
+      this.begin();
   }
 }
 
-
 window.onload = () => {
-  openWebsocketConnection();
-
+  openMainWebsocket();
   setupSpinners();
-
+  spectrogram = new Spectrogram();
   settingsOffcanvas.addEventListener('hidden.bs.offcanvas', function () {
     sendConfig();
   });
-
-  toggleSpectrogram();
 };

@@ -26,6 +26,13 @@ h6 {
 	font-size: 1.25rem;
 	margin: -0.188rem 0rem;
 }
+#spectrumDisplay {
+	height: 100px;
+}
+#spectrumDisplay div {
+	flex: 1;
+	background-color: white;
+}
 #colorPickersWrapper {
 	margin: 10px 8px;
 }

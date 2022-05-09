@@ -17,7 +17,7 @@
     <nav class="navbar fixed-top navbar-dark">
       <div class="container-fluid px-4" id="navbarContent">
         <a class="navbar-brand me-auto" id="navbarTitle"></a>
-        <button class="navbar-toggler border-0 p-1 shadow-none px-3" type="button" id="spectrumButton" onclick="toggleSpectrogram();">
+        <button class="navbar-toggler border-0 p-1 shadow-none px-3" type="button" id="spectrumButton" onclick="spectrogram.toggle();">
           <i class="bi bi-music-note-beamed"></i>
         </button>
         <button class="navbar-toggler border-0 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" id="settingsButton">
@@ -44,7 +44,7 @@
 
     </div>
 
-    <div id="settingsOffcanvas" class="offcanvas offcanvas-end show" tabindex="-1">
+    <div id="settingsOffcanvas" class="offcanvas offcanvas-end" tabindex="-1">
 
       <div class="offcanvas-header">
         <h5 class="offcanvas-title">Settings</h5>
@@ -52,24 +52,14 @@
       </div>
       <div class="offcanvas-body">
 
-        <h6>Startup animation</h6>
-        <div class="form-check form-switch">
-          <input type="checkbox" class="form-check-input" id="useStartupAnimation" data-bs-toggle="collapse" data-bs-target="#useStartupAnimationCollapse" aria-controls="useStartupAnimationCollapse">
-          <label class="form-check-label" for="useStartupAnimation">Enabled</label>
-        </div>
-        <div id="useStartupAnimationCollapse" class="collapse">
-          <label for="startupAnimation" class="form-label">Animation</label>
-          <select class="form-select" id="startupAnimation"></select>
-        </div>
-
         <h6>Time</h6>
-        <div class="spinner d-flex">
-          <label for="timeZone" class="form-spinner-label">Time zone (GMT)</label>
-          <input id="timeZone" class="form-control" type="number" min="-23" max="23" step="1" value="0" />
-        </div>
         <div class="form-check form-switch">
           <input type="checkbox" class="form-check-input" id="summerTime">
           <label class="form-check-label" for="summerTime">Summer time</label>
+        </div>
+        <div class="spinner d-flex">
+          <label for="timeZone" class="form-spinner-label">Time zone (GMT)</label>
+          <input id="timeZone" class="form-control" type="number" min="-23" max="23" step="1" value="0" />
         </div>
 
         <h6>Alarm</h6>
@@ -112,25 +102,20 @@
           <input type="text" class="form-control" id="latitude" name="latitude">
         </div>
 
-        <h6>Spectrogram</h6>
-        <div id="spectrumDisplay" class="d-flex justify-content-between align-items-end" style="height: 100px">
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
-          <div class="flex-fill" style="background-color: white"></div>
+        <h6>Startup animation</h6>
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="useStartupAnimation" data-bs-toggle="collapse" data-bs-target="#useStartupAnimationCollapse" aria-controls="useStartupAnimationCollapse">
+          <label class="form-check-label" for="useStartupAnimation">Enabled</label>
         </div>
+        <div id="useStartupAnimationCollapse" class="collapse">
+          <label for="startupAnimation" class="form-label">Animation</label>
+          <select class="form-select" id="startupAnimation"></select>
+        </div>
+
+        <h6>Spectrogram</h6>
+        <label for="extraSpectrogramDevices" class="form-label">Additional devices</span></label>
+        <input type="text" class="form-control" id="extraSpectrogramDevices" name="extraSpectrogramDevices" placeholder="IP addresses (comma-separated)">
+        <div id="spectrumDisplay" class="d-flex justify-content-between align-items-end"></div>
       </div>
 
     </div>
