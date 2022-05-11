@@ -16,11 +16,11 @@
 
     <nav class="navbar fixed-top navbar-dark">
       <div class="container-fluid px-4" id="navbarContent">
-        <a class="navbar-brand me-auto" id="navbarTitle"></a>
-        <button class="navbar-toggler border-0 p-1 shadow-none px-3" type="button" id="spectrumButton" onclick="spectrogram.toggle();">
+        <a class="navbar-brand me-auto" id="navbarTitle">Connecting...</a>
+        <button class="navbar-toggler border-0 p-1 shadow-none d-none px-3" type="button" id="spectrumButton" onclick="spectrogram.toggle();">
           <i class="bi bi-music-note-beamed"></i>
         </button>
-        <button class="navbar-toggler border-0 p-1 shadow-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" id="settingsButton">
+        <button class="navbar-toggler border-0 p-1 shadow-none d-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" id="settingsButton">
           <i class="bi bi-gear"></i>
         </button>
         <button class="navbar-toggler border-0 p-1 shadow-none" type="button" id="refreshButton" onclick="window.location.reload();">
@@ -32,7 +32,7 @@
     <div id="controlsWrapper" class="p-3">
 
       <div id="animationButtons" class="w-100">
-        <button type="button" class="btn btn-danger btn-rounded text-light" id="stopButton" onclick="sendBytes([2]);">
+        <button type="button" class="btn btn-danger btn-rounded text-light d-none" id="stopButton" onclick="sendBytes([2]);">
           <span>Stop</span>
           <i></i>
         </button>
