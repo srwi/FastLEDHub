@@ -57,7 +57,7 @@ namespace WebSocket
       case 10: // Led data
         FastLEDHub.stop();
         Fade::stop();
-        for (uint16_t i = 0; i < FastLEDHub.size(); i++)
+        for (uint16_t i = 0; i < FastLEDHub.size(); ++i)
           FastLEDHub.leds()[i] = CRGB(binary[1 + i * 3], binary[2 + i * 3], binary[3 + i * 3]);
         break;
       case 20: // Slider data
@@ -71,6 +71,11 @@ namespace WebSocket
         FastLEDHub.getSlider(binary[1])->value = value;
         break;
       }
+      case 30: // Spectrum data
+        for (uint16_t i = 0; i < SPECTRUM_LENGTH; ++i)
+        {
+          FastLEDHub.spectrumData[i] = binary[i + 1];
+        }
       }
     }
 

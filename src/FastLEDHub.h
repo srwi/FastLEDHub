@@ -14,6 +14,7 @@
 #include <Ticker.h>
 
 #define FASTLEDHUB_INPUT_TICKER_INTERVAL 10
+#define SPECTRUM_LENGTH 16
 
 enum AnimationStatus
 {
@@ -154,6 +155,9 @@ public:
   /// Get the name of the currently selected animation
   /// @return Current animation name
   String getCurrentAnimationName();
+
+  /// Spectrum data byte array of length SPECTRUM_LENGTH
+  uint8_t spectrumData[SPECTRUM_LENGTH];
 
   /// List of all registered animation pointers
   LinkedList<Animation *> animations;
