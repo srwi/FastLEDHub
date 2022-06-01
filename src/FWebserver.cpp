@@ -58,11 +58,20 @@ namespace Webserver
                                     FastLEDHub.begin(FastLEDHub.getAnimation(animationName));
                                     ESPEssentials::WebServer.send(200, "text/plain", "Started '" + animationName + "'");
                                   }
-                                  else
+                                  else if (ESPEssentials::WebServer.hasArg("index"))
                                   {
-                                    uint8_t animationIndex = ESPEssentials::WebServer.hasArg("index") ? ESPEssentials::WebServer.arg("index").toInt() : 0;
+                                    uint8_t animationIndex = ESPEssentials::WebServer.arg("index").toInt();
                                     FastLEDHub.begin(FastLEDHub.getAnimation(animationIndex));
                                     ESPEssentials::WebServer.send(200, "text/plain", "Started animation #" + String(animationIndex));
+                                  }
+                                  else if (Config.startupAnimation != "")
+                                  {
+                                    FastLEDHub.begin(FastLEDHub.getAnimation(Config.startupAnimation));
+                                    ESPEssentials::WebServer.send(200, "text/plain", "Started '" + Config.startupAnimation + "'");
+                                  }
+                                  else
+                                  {
+                                    ESPEssentials::WebServer.send(200, "text/plain", "No startup animation defined.");
                                   }
                                 });
   }
