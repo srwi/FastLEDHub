@@ -17,9 +17,6 @@
     <nav class="navbar fixed-top navbar-dark">
       <div class="container-fluid px-4" id="navbarContent">
         <a class="navbar-brand me-auto" id="navbarTitle">Connecting...</a>
-        <button class="navbar-toggler border-0 p-1 shadow-none d-none px-3" type="button" id="spectrumButton" onclick="spectrogram.toggle();">
-          <i class="bi bi-music-note-beamed"></i>
-        </button>
         <button class="navbar-toggler border-0 p-1 shadow-none d-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#settingsOffcanvas" id="settingsButton">
           <i class="bi bi-gear"></i>
         </button>
@@ -111,11 +108,6 @@
           <label for="startupAnimation" class="form-label">Animation</label>
           <select class="form-select" id="startupAnimation"></select>
         </div>
-
-        <h6>Spectrogram</h6>
-        <label for="extraSpectrogramDevices" class="form-label">Additional devices</span></label>
-        <input type="text" class="form-control" id="extraSpectrogramDevices" name="extraSpectrogramDevices" placeholder="IP addresses (comma-separated)">
-        <div id="spectrumDisplay" class="d-flex justify-content-between align-items-end"></div>
       </div>
 
     </div>

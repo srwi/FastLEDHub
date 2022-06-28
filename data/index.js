@@ -3,7 +3,6 @@
 let connection;
 let queue;
 let cooldownTimer;
-let spectrogram; // eslint-disable-line no-unused-vars
 
 function openWebsocket(uri) {
   const ws = new WebSocket(uri, ["arduino"]);
@@ -74,7 +73,6 @@ function setupSpinners() {
 function displayConnectedState(connected) {
   document.getElementById("navbarTitle").innerHTML = connected ? "FastLEDHub" : "Disconnected...";
   document.getElementById("refreshButton").classList.toggle("d-none", connected);
-  document.getElementById("spectrumButton").classList.toggle("d-none", !connected);
   document.getElementById("stopButton").classList.toggle("d-none", !connected);
   document.getElementById("settingsButton").classList.toggle("d-none", !connected);
 }
@@ -180,8 +178,6 @@ function handleJsonData(data) {
     document.getElementById("longitude").value = data.longitude;
   if (Object.prototype.hasOwnProperty.call(data, "latitude"))
     document.getElementById("latitude").value = data.latitude;
-  if (Object.prototype.hasOwnProperty.call(data, "extraSpectrogramDevices"))
-    document.getElementById("extraSpectrogramDevices").value = data.extraSpectrogramDevices;
   if (Object.prototype.hasOwnProperty.call(data, "alarmDuration"))
     document.getElementById("alarmDuration").value = data.alarmDuration;
   if (
@@ -232,7 +228,6 @@ function sendConfig() {
       summerTime: document.getElementById("summerTime").checked,
       longitude: document.getElementById("longitude").value,
       latitude: document.getElementById("latitude").value,
-      extraSpectrogramDevices: document.getElementById("extraSpectrogramDevices").value,
       sunsetEnabled: document.getElementById("sunsetEnabled").checked,
       sunsetDuration: document.getElementById("sunsetDuration").value,
       sunsetOffset: document.getElementById("sunsetOffset").value,
@@ -279,113 +274,9 @@ function sendText(text) {
   console.log("Sent text: " + text);
 }
 
-class Spectrogram {
-  openConnections() {
-    this.connections = [connection];
-    const extraDevices = document.getElementById("extraSpectrogramDevices").value.split(",");
-    extraDevices.forEach((uri) => {
-      uri = uri.trim();
-      if (uri !== "") this.connections.push(openWebsocket(`ws://${uri}:81/`));
-    });
-  }
-
-  begin() {
-    this.bins = 16;
-    this.fftRangeBit = 10;
-    this.fftRange = 1024;
-    this.connections = [];
-    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    this.analyser = this.audioCtx.createAnalyser();
-    this.analyser.fftSize = 2048;
-    this.analyser.minDecibels = -90;
-    this.analyser.maxDecibels = -10;
-    this.analyser.smoothingTimeConstant = 0.7;
-
-    this.openConnections();
-
-    if (navigator.mediaDevices.getUserMedia) {
-      const constraints = { audio: true };
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then((stream) => {
-          this.microphoneStream = stream;
-          this.source = this.audioCtx.createMediaStreamSource(stream);
-          this.source.connect(this.analyser);
-          this.sendTimer = setInterval(this.tick.bind(this), 5);
-          spectrumButton.classList.add("text-white");
-        })
-        .catch((e) => {
-          console.log("The following error occured in getUserMedia: " + e);
-        });
-    } else {
-      console.log("GetUserMedia not supported.");
-    }
-  }
-
-  end() {
-    clearInterval(this.sendTimer);
-    this.audioCtx.close();
-    this.microphoneStream.getAudioTracks().forEach((track) => {
-      track.stop();
-    });
-    spectrumButton.classList.remove("text-white");
-  }
-
-  tick() {
-    const fft = new Uint8Array(this.analyser.frequencyBinCount);
-    this.analyser.getByteFrequencyData(fft);
-
-    const spectrumData = new Array(this.bins);
-    let left = 0;
-    for (let line = 0; line < this.bins; line++) {
-      const right = Math.round(
-        (Math.pow(2, (this.fftRangeBit * line) / (this.bins - 1)) /
-          this.fftRange) *
-          (this.fftRange - 1)
-      );
-      let peak = 0;
-      for (; left < right; left++) {
-        if (fft[left + 1] / 255 > peak) {
-          peak = fft[left + 1] / 255;
-        }
-      }
-      let intensity = Math.pow(peak, 1.2);
-      intensity = Math.min(Math.max(intensity, 0), 1);
-      spectrumData[line] = intensity * 255;
-    }
-
-    this.transmit(spectrumData);
-    this.visualize(spectrumData);
-  }
-
-  transmit(data) {
-    this.connections.forEach((c) => {
-      if (c.readyState === 1) c.send(Uint8Array.from([30].concat(data)).buffer);
-    });
-  }
-
-  visualize(data) {
-    const spectrumDisplay = document.getElementById("spectrumDisplay")
-    while (spectrumDisplay.children.length < this.bins)
-      spectrumDisplay.appendChild(document.createElement("div"));
-    data.forEach((d, idx) => {
-      spectrumDisplay.children.item(idx).style.height = (d / 255) * 100 + "px";
-    });
-  }
-
-  toggle() {
-    if (this.audioCtx?.state === "running") {
-      this.end();
-    } else {
-      this.begin();
-    }
-  }
-}
-
 window.onload = () => {
   openMainWebsocket();
   setupSpinners();
-  spectrogram = new Spectrogram();
   document.getElementById("settingsOffcanvas").addEventListener("hidden.bs.offcanvas", function () {
     sendConfig();
   });

@@ -26,7 +26,6 @@ public:
   int16_t sunsetOffset = 0;
   String sunsetAnimation = "";
   String startupAnimation = "";
-  String extraSpectrogramDevices = "";
   LinkedList<int16_t> sliderValues;
   LinkedList<CRGB> colorPickerValues;
 
