@@ -15,6 +15,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 - Alarm: Be woken up to an animation slowly fading in
 - Sunset: Automatically fade in an animation when the sun sets at your location
 - Control animations and brightness using hardware inputs
+- Incorporate audio spectrum data into your animations
 - Control animations using HTTP requests for easy automation
 
 ## Demo
@@ -216,6 +217,17 @@ FastLEDHub.enableCycleButton(cyclePin);
 Setting up an alarm in the web interface will fade in a user defined animation over any period of time to wake you up in the morning. You can optionally set a different animation to be started after the fade in period has ended (i.e. full brightness has been reached).
 
 Similarly the sunset feature will fade in an animation as soon as the sun sets at your location. Please configure latitude, longitude and time zone in the web interface beforehand.
+
+### Audio spectrum data
+
+[FastLEDHub-AudioViz](https://github.com/stnkl/FastLEDHub_AudioViz) allows you to send audio spectrum data from a Windows audio device to your ESP32/ESP8266. The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. Data is transmitted via a websocket connection and can be used by accessing the `FastLEDHub.spectrumData` array from within your animation:
+
+```cpp
+uint8_t lowFrequencies = FastLEDHub.spectrumData[0];
+uint8_t highFrequencies = FastLEDHub.spectrumData[SPECTRUM_LENGTH - 1];
+```
+
+`SPECTRUM_LENGTH` defines the number of bins (16). The `Spectrogram` example shows one way to use the spectrum data in your animations.
 
 ### Control via HTTP requests
 
