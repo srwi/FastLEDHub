@@ -50,6 +50,11 @@ namespace Webserver
                                   FastLEDHub.restart();
                                   ESPEssentials::WebServer.send(200, "text/plain", "Animation restarted.");
                                 });
+    ESPEssentials::WebServer.on("/status", HTTP_GET, [&]()
+                                {
+                                  String statusMsg = "{\"status\": " + String((int) FastLEDHub.getStatus()) + ", \"currentAnimation\": \"" + FastLEDHub.getCurrentAnimationName() + "\"}";
+                                  ESPEssentials::WebServer.send(200, "text/plain", statusMsg.c_str());
+                                });
     ESPEssentials::WebServer.on("/begin", HTTP_GET, [&]()
                                 {
                                   if (ESPEssentials::WebServer.hasArg("animation"))
