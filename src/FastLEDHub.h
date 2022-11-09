@@ -183,11 +183,11 @@ private:
   Ticker m_inputTicker;
   Animation *m_currentAnimation;
   AnimationStatus m_status = STOPPED;
-  uint8_t m_speed;
-  uint8_t m_potentiometerPin;
-  uint8_t m_cycleButtonPin;
-  uint8_t m_toggleButtonPin;
   uint8_t m_brightness;
+  uint8_t m_speed;
+  int8_t m_potentiometerPin;
+  int8_t m_cycleButtonPin;
+  int8_t m_toggleButtonPin;
 };
 
 extern FastLEDHubClass FastLEDHub;

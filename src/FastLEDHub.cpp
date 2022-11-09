@@ -11,11 +11,11 @@ FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
                                      m_gammaCorrectionEnabled(false),
                                      m_filteredBrightness(128),
                                      m_status(STOPPED),
+                                     m_brightness(255),
                                      m_speed(255),
                                      m_potentiometerPin(-1),
                                      m_cycleButtonPin(-1),
-                                     m_toggleButtonPin(-1),
-                                     m_brightness(255)
+                                     m_toggleButtonPin(-1)
 {
 }
 
@@ -281,7 +281,9 @@ String FastLEDHubClass::getCurrentAnimationName()
 
 void FastLEDHubClass::autostart()
 {
-  if (Config.startupAnimation != "")
+  if (Config.startupAnimation == "")
+    clear(true);
+  else
     begin(getAnimation(Config.startupAnimation));
 
   m_autostartHandled = true;
