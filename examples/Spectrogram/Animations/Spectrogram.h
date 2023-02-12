@@ -1,6 +1,6 @@
 #pragma once
 
-// This example requires the use of https://github.com/stnkl/FastLEDHub_AudioViz to send
+// This example requires the use of https://github.com/srwi/FastLEDHub_AudioViz to send
 // spectrum data to the ESP32/ESP8266 running FastLEDHub.
 
 #include <FastLEDHub.h>

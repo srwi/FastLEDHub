@@ -29,7 +29,7 @@ jobs:
         LinkedList \
         WebSockets \
         https://github.com/tzapu/WiFiManager \
-        https://github.com/stnkl/ESPEssentials
+        https://github.com/srwi/ESPEssentials
     - name: Create main file
       run: |
         echo "#include <Arduino.h>" >> main.ino

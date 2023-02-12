@@ -3,7 +3,7 @@
 ![ESP8266](https://img.shields.io/badge/ESP-8266-000000.svg?colorB=blue)
 ![ESP32](https://img.shields.io/badge/ESP-32-000000.svg?colorB=blue)
 [![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
-[![LGPL-2.1 license](https://img.shields.io/github/license/stnkl/FastLEDHub)](https://github.com/stnkl/FastLEDHub/blob/master/LICENSE)
+[![LGPL-2.1 license](https://img.shields.io/github/license/srwi/FastLEDHub)](https://github.com/srwi/FastLEDHub/blob/master/LICENSE)
 
 FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 and ESP32 with minimal changes to your existing code. It requires little knowledge about the ESP8266/ESP32 platform making it an ideal playground for beginners getting started with FastLED animations.
 
@@ -42,7 +42,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 ### Manual Installation
 
 1. Make sure you have installed the dependencies above
-2. Download the desired version from the [releases](https://github.com/stnkl/FastLEDHub/releases) page
+2. Download the desired version from the [releases](https://github.com/srwi/FastLEDHub/releases) page
 3. Extract the contents of the downloaded zip file
 4. Rename the extracted folder to `FastLEDHub`
 5. Move this folder to your libraries directory `~/Arduino/libraries`)
@@ -52,7 +52,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 
 ```bash
 cd ~/Arduino/libraries
-git clone https://github.com/stnkl/FastLEDHub.git
+git clone https://github.com/srwi/FastLEDHub.git
 ```
 
 To update to the latest version of the library
@@ -220,7 +220,7 @@ Similarly the sunset feature will fade in an animation as soon as the sun sets a
 
 ### Audio spectrum data
 
-[FastLEDHub-AudioViz](https://github.com/stnkl/FastLEDHub_AudioViz) allows you to send audio spectrum data from a Windows audio device to your ESP32/ESP8266. The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. Data is transmitted via a websocket connection and can be used by accessing the `FastLEDHub.spectrumData` array from within your animation:
+[FastLEDHub-AudioViz](https://github.com/srwi/FastLEDHub_AudioViz) allows you to send audio spectrum data from a Windows audio device to your ESP32/ESP8266. The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. Data is transmitted via a websocket connection and can be used by accessing the `FastLEDHub.spectrumData` array from within your animation:
 
 ```cpp
 uint8_t lowFrequencies = FastLEDHub.spectrumData[0];
