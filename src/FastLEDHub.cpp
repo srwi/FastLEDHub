@@ -53,7 +53,7 @@ void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
   m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
-  m_cycleButtonPin = pin;
+  m_toggleButtonPin = pin;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
