@@ -215,7 +215,7 @@ void FastLEDHubClass::handleInput()
   {
     // Adjust the range slightly so low and high adc values
     // span the whole 10bit brightness range
-    int16_t potiBrightness = (1023 - analogRead(A0) - 29) * 1.06;
+    int16_t potiBrightness = (1023 - analogRead(m_potentiometerPin) - 29) * 1.06;
     potiBrightness = constrain(potiBrightness, 0, 1023);
 
     // Low pass filter the potentiometer value to smoothen it out
