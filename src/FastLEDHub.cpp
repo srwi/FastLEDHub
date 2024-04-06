@@ -26,7 +26,7 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
   Config.initialize();
   if (WiFi.status() == WL_CONNECTED)
   {
-    WebSocket::initialize();
+    WebSocket::initialize(projectName);
     Webserver::initialize();
     Fade::initialize();
   }

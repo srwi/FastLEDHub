@@ -115,11 +115,11 @@ namespace WebSocket
 
   } // namespace
 
-  void initialize()
+  void initialize(const String &hostname)
   {
     m_socket.begin();
     m_socket.onEvent(onEvent);
-    MDNS.begin("fastledhub");
+    MDNS.begin(hostname);
     MDNS.addService("http", "tcp", 80);
     MDNS.addService("ws", "tcp", 81);
   }

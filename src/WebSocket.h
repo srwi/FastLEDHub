@@ -7,7 +7,7 @@ namespace WebSocket
 {
 
   /// Initialize the websocket instance
-  void initialize();
+  void initialize(const String &hostname = "fastledhub");
 
   /// Handle websocket
   void handle();
