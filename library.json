@@ -17,5 +17,6 @@
     "maintainer": true,
     "url": "https://github.com/srwi"
   },
+  "license": "LGPL-2.1-or-later",
   "version": "2.1.3"
 }
