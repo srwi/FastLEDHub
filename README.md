@@ -27,7 +27,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 
 ### Library dependencies
 
-- ArduinoJson ≥ 6.0
+- ArduinoJson ≥ 7.0
 - ESPEssentials ≥ 2.1
 - FastLED
 - LinkedList

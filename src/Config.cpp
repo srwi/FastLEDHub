@@ -50,7 +50,7 @@ bool ConfigClass::initialize()
 
 bool ConfigClass::parseJson(const char *input)
 {
-  StaticJsonDocument<1024> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, input);
 
   if (doc.containsKey("timeZone"))
@@ -128,12 +128,12 @@ void ConfigClass::getUserConfigJson(JsonDocument &doc)
   doc["sunsetOffset"] = sunsetOffset;
   doc["sunsetAnimation"] = sunsetAnimation;
   doc["startupAnimation"] = startupAnimation;
-  JsonArray sliderValueArray = doc.createNestedArray("sliderValues");
+  JsonArray sliderValueArray = doc["sliderValues"].to<JsonArray>();
   for (uint16_t i = 0; i < sliderValues.size(); i++)
   {
     sliderValueArray.add(sliderValues.get(i));
   }
-  JsonArray colorPickerValueArray = doc.createNestedArray("colorPickerValues");
+  JsonArray colorPickerValueArray = doc["colorPickerValues"].to<JsonArray>();
   for (uint16_t i = 0; i < colorPickerValues.size(); i++)
   {
     colorPickerValueArray.add(rgb2hex(colorPickerValues.get(i)));
@@ -144,15 +144,15 @@ void ConfigClass::getApplicationStateJson(JsonDocument &doc)
 {
   doc["status"] = FastLEDHub.getStatus();
   doc["currentAnimation"] = FastLEDHub.getCurrentAnimationName();
-  JsonArray animations = doc.createNestedArray("animations");
+  JsonArray animations = doc["animations"].to<JsonArray>();
   for (uint8_t i = 0; i < FastLEDHub.animations.size(); i++)
   {
     animations.add(FastLEDHub.animations.get(i)->getName());
   }
-  JsonArray sliders = doc.createNestedArray("sliders");
+  JsonArray sliders = doc["sliders"].to<JsonArray>();
   for (uint8_t i = 0; i < FastLEDHub.sliders.size(); i++)
   {
-    JsonObject slider = sliders.createNestedObject();
+    JsonObject slider = sliders.add<JsonObject>();
     slider["name"] = FastLEDHub.sliders.get(i)->name;
     slider["min"] = FastLEDHub.sliders.get(i)->min;
     slider["max"] = FastLEDHub.sliders.get(i)->max;
@@ -160,10 +160,10 @@ void ConfigClass::getApplicationStateJson(JsonDocument &doc)
     slider["value"] = FastLEDHub.sliders.get(i)->value;
     slider["icon"] = FastLEDHub.sliders.get(i)->icon;
   }
-  JsonArray colorPickers = doc.createNestedArray("colorPickers");
+  JsonArray colorPickers = doc["colorPickers"].to<JsonArray>();
   for (uint8_t i = 0; i < FastLEDHub.colorPickers.size(); i++)
   {
-    JsonObject colorPicker = colorPickers.createNestedObject();
+    JsonObject colorPicker = colorPickers.add<JsonObject>();
     colorPicker["name"] = FastLEDHub.colorPickers.get(i)->name;
     colorPicker["value"] = rgb2hex(FastLEDHub.colorPickers.get(i)->value);
     colorPicker["icon"] = FastLEDHub.colorPickers.get(i)->icon;
@@ -172,7 +172,7 @@ void ConfigClass::getApplicationStateJson(JsonDocument &doc)
 
 String ConfigClass::asString(bool includeApplicationState)
 {
-  DynamicJsonDocument doc(3072);
+  JsonDocument doc;
 
   getUserConfigJson(doc);
 
