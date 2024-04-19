@@ -2,7 +2,6 @@
 
 ![ESP8266](https://img.shields.io/badge/ESP-8266-000000.svg?colorB=blue)
 ![ESP32](https://img.shields.io/badge/ESP-32-000000.svg?colorB=blue)
-[![arduino-library-badge](https://www.ardu-badge.com/badge/FastLEDHub.svg?)](https://www.ardu-badge.com/FastLEDHub)
 [![LGPL-2.1 license](https://img.shields.io/github/license/srwi/FastLEDHub)](https://github.com/srwi/FastLEDHub/blob/master/LICENSE)
 
 FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.com/FastLED/FastLED)) sketches on the ESP8266 and ESP32 with minimal changes to your existing code. It requires little knowledge about the ESP8266/ESP32 platform making it an ideal playground for beginners getting started with FastLED animations.
