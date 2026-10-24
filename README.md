@@ -16,6 +16,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 - Control animations and brightness using hardware inputs
 - Incorporate audio spectrum data into your animations
 - Control animations using HTTP requests for easy automation
+- Control animations and settings via MQTT with Home Assistant auto-discovery
 
 ## Demo
 
@@ -30,6 +31,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 - ESPEssentials ≥ 2.1
 - FastLED
 - LinkedList
+- PubSubClient
 - WebSockets
 - WiFiManager ≥ 2.0
 
@@ -242,6 +244,21 @@ Most functions can be triggered via HTTP requests:
 - Trigger sunset: `http://<device-ip>/sunset`
 - Trigger alarm: `http://<device-ip>/alarm`
 - Reset device: `http://<device-ip>/reboot`
+
+### Control via MQTT & Home Assistant
+
+FastLEDHub includes built-in MQTT support and automatically integrates with Home Assistant using MQTT Discovery. When enabled, the lightstrip is recognized as a light entity in Home Assistant with support for on/off, brightness, animation effects, and RGB color controls.
+
+#### Configuration
+
+MQTT can be configured in the web interface under settings:
+
+- **Enabled**: Toggle MQTT client on/off
+- **Host**: IP address or hostname of your MQTT broker
+- **Port**: MQTT broker port (default: `1883`)
+- **Username / Password**: Optional credentials for broker authentication
+- **Base Topic**: Base topic prefix (defaults to the project name passed to `FastLEDHub.initialize()`)
+- **Client ID**: Unique client ID (defaults to `<ProjectName>-<ChipID/MAC>`)
 
 ## License & Attribution
 

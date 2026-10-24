@@ -16,7 +16,7 @@
     "url": "https://github.com/srwi"
   },
   "license": "LGPL-2.1-or-later",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "dependencies": {
     "knolleary/PubSubClient": "^2.8"
   }
