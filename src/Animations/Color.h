@@ -9,13 +9,17 @@ class Color : public Animation
 public:
   using Animation::Animation;
 
-  void reset()
-  {
+  CRGB _color;
+
+  void setColor(CRGB color) {
+    _color = color;
+    FastLEDHub.getColorPicker(0)->value = _color;
+  }
+  void reset() {
   }
 
-  void loop()
-  {
-    CRGB color = FastLEDHub.getColorPicker(0)->value;
-    FastLEDHub.showColor(color);
+  void loop() {
+    _color = FastLEDHub.getColorPicker(0)->value;
+    FastLEDHub.showColor(_color);
   }
 };
