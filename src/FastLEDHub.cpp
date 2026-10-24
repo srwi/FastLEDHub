@@ -10,6 +10,7 @@ FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
                                      m_autostartHandled(false),
                                      m_gammaCorrectionEnabled(false),
                                      m_filteredBrightness(128),
+                                     m_lastInputCheck(0),
                                      m_status(STOPPED),
                                      m_brightness(255),
                                      m_speed(255),
@@ -44,21 +45,18 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_cycleButtonPin = pin;
 }
 
 void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_toggleButtonPin = pin;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
 {
-  m_inputTicker.attach_ms(FASTLEDHUB_INPUT_TICKER_INTERVAL, +[](FastLEDHubClass* t) { t->handleInput(); }, this);
   pinMode(pin, INPUT);
   m_potentiometerPin = pin;
 }
@@ -69,6 +67,8 @@ void FastLEDHubClass::handle()
 
   if (ESPEssentials::OTA.isBusy())
     return;
+
+  handleInput();
 
   if (!m_autostartHandled)
     autostart();
@@ -119,9 +119,11 @@ void FastLEDHubClass::delay(uint16_t ms)
   unsigned long start = micros();
   while (micros() - start < 1000.0 * ms * pow((m_speed - 255) / 128.0, 2))
   {
+    handleInput();
     ESPEssentials::handle();
     Fade::handle();
     WebSocket::handle();
+    yield();
   }
 }
 
@@ -211,6 +213,11 @@ ColorPicker *FastLEDHubClass::getColorPicker(uint8_t i)
 
 void FastLEDHubClass::handleInput()
 {
+  unsigned long now = millis();
+  if (now - m_lastInputCheck < FASTLEDHUB_INPUT_INTERVAL)
+    return;
+  m_lastInputCheck = now;
+
   if (m_potentiometerPin >= 0 && Fade::getMode() == Fade::FadeMode::NONE)
   {
     // Adjust the range slightly so low and high adc values

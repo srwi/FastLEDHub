@@ -11,9 +11,8 @@
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 #include <LinkedList.h>
-#include <Ticker.h>
 
-#define FASTLEDHUB_INPUT_TICKER_INTERVAL 10
+#define FASTLEDHUB_INPUT_INTERVAL 10
 #define SPECTRUM_LENGTH 16
 
 enum AnimationStatus
@@ -180,7 +179,7 @@ private:
   bool m_autostartHandled;
   bool m_gammaCorrectionEnabled;
   float m_filteredBrightness;
-  Ticker m_inputTicker;
+  unsigned long m_lastInputCheck;
   Animation *m_currentAnimation;
   AnimationStatus m_status = STOPPED;
   uint8_t m_brightness;
