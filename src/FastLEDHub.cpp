@@ -5,8 +5,8 @@
 #include "FWebserver.h"
 #include "WebSocket.h"
 
-FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(false),
-                                     m_toggleButtonPushed(false),
+FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(true),
+                                     m_toggleButtonPushed(true),
                                      m_autostartHandled(false),
                                      m_gammaCorrectionEnabled(false),
                                      m_filteredBrightness(128),
@@ -45,14 +45,16 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
 {
-  pinMode(pin, INPUT);
+  pinMode(pin, INPUT_PULLUP);
   m_cycleButtonPin = pin;
+  m_cycleButtonPushed = true;
 }
 
 void FastLEDHubClass::enableToggleButton(uint8_t pin)
 {
-  pinMode(pin, INPUT);
+  pinMode(pin, INPUT_PULLUP);
   m_toggleButtonPin = pin;
+  m_toggleButtonPushed = true;
 }
 
 void FastLEDHubClass::enablePotentiometer(uint8_t pin)
