@@ -16,6 +16,11 @@ jobs:
           - "examples/BasicExample"
           - "examples/ColorPickers"
           - "examples/Sliders"
+        include:
+          - board: "nodemcuv2"
+            extra_flags: ""
+          - board: "lolin32"
+            extra_flags: "--project-option=board_build.partitions=huge_app.csv"
 
     steps:
     - uses: actions/checkout@v4
@@ -33,11 +38,12 @@ jobs:
         ArduinoJson \
         FastLED \
         LinkedList \
+        PubSubClient \
         WebSockets \
         https://github.com/tzapu/WiFiManager \
         https://github.com/srwi/ESPEssentials \
         https://github.com/srwi/FastLEDHub
     - name: Run PlatformIO examples
-      run: pio ci --board=${{ matrix.board }}
+      run: pio ci --board=${{ matrix.board }} ${{ matrix.extra_flags }}
       env:
         PLATFORMIO_CI_SRC: ${{ matrix.example }}

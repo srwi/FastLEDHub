@@ -29,6 +29,7 @@ jobs:
         ArduinoJson \
         FastLED \
         LinkedList \
+        PubSubClient \
         WebSockets \
         https://github.com/tzapu/WiFiManager \
         https://github.com/srwi/ESPEssentials
