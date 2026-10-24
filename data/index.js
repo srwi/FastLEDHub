@@ -146,6 +146,26 @@ function handleJsonData(data) {
         { toggle: false }
       ).show();
   }
+  if (Object.prototype.hasOwnProperty.call(data, "mqttEnabled")) {
+    document.getElementById("mqttEnabled").checked = data.mqttEnabled;
+    if (data.mqttEnabled) {
+      new bootstrap.Collapse(document.getElementById("mqttEnabledCollapse"), {
+        toggle: false,
+      }).show();
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(data, "mqttHost"))
+    document.getElementById("mqttHost").value = data.mqttHost;
+  if (Object.prototype.hasOwnProperty.call(data, "mqttPort"))
+    document.getElementById("mqttPort").value = data.mqttPort;
+  if (Object.prototype.hasOwnProperty.call(data, "mqttUsername"))
+    document.getElementById("mqttUsername").value = data.mqttUsername;
+  if (Object.prototype.hasOwnProperty.call(data, "mqttPassword"))
+    document.getElementById("mqttPassword").value = data.mqttPassword;
+  if (Object.prototype.hasOwnProperty.call(data, "mqttTopicName"))
+    document.getElementById("mqttTopicName").value = data.mqttTopicName;
+  if (Object.prototype.hasOwnProperty.call(data, "mqttClientId"))
+    document.getElementById("mqttClientId").value = data.mqttClientId;
   if (Object.prototype.hasOwnProperty.call(data, "alarmEnabled")) {
     document.getElementById("alarmEnabled").checked = data.alarmEnabled;
     if (data.alarmEnabled)
@@ -235,6 +255,13 @@ function sendConfig() {
       startupAnimation: document.getElementById("useStartupAnimation").checked
         ? document.getElementById("startupAnimation").value
         : "",
+      mqttEnabled: document.getElementById("mqttEnabled").checked,
+      mqttHost: document.getElementById("mqttHost").value,
+      mqttPort: parseInt(document.getElementById("mqttPort").value, 10) || 1883,
+      mqttUsername: document.getElementById("mqttUsername").value,
+      mqttPassword: document.getElementById("mqttPassword").value,
+      mqttTopicName: document.getElementById("mqttTopicName").value,
+      mqttClientId: document.getElementById("mqttClientId").value,
     },
     null,
     2

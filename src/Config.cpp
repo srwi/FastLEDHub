@@ -87,6 +87,20 @@ bool ConfigClass::parseJson(const char *input)
     sunsetAnimation = doc["sunsetAnimation"].as<String>();
   if (doc.containsKey("startupAnimation"))
     startupAnimation = doc["startupAnimation"].as<String>();
+  if (doc.containsKey("mqttEnabled"))
+    mqttEnabled = doc["mqttEnabled"];
+  if (doc.containsKey("mqttHost"))
+    mqttHost = doc["mqttHost"].as<String>();
+  if (doc.containsKey("mqttPort"))
+    mqttPort = doc["mqttPort"];
+  if (doc.containsKey("mqttUsername"))
+    mqttUsername = doc["mqttUsername"].as<String>();
+  if (doc.containsKey("mqttPassword"))
+    mqttPassword = doc["mqttPassword"].as<String>();
+  if (doc.containsKey("mqttTopicName"))
+    mqttTopicName = doc["mqttTopicName"].as<String>();
+  if (doc.containsKey("mqttClientId"))
+    mqttClientId = doc["mqttClientId"].as<String>();
   if (doc.containsKey("sliderValues"))
   {
     sliderValues.clear();
@@ -128,6 +142,13 @@ void ConfigClass::getUserConfigJson(JsonDocument &doc)
   doc["sunsetOffset"] = sunsetOffset;
   doc["sunsetAnimation"] = sunsetAnimation;
   doc["startupAnimation"] = startupAnimation;
+  doc["mqttEnabled"] = mqttEnabled;
+  doc["mqttHost"] = mqttHost;
+  doc["mqttPort"] = mqttPort;
+  doc["mqttUsername"] = mqttUsername;
+  doc["mqttPassword"] = mqttPassword;
+  doc["mqttTopicName"] = mqttTopicName;
+  doc["mqttClientId"] = mqttClientId;
   JsonArray sliderValueArray = doc["sliderValues"].to<JsonArray>();
   for (uint16_t i = 0; i < sliderValues.size(); i++)
   {

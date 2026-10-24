@@ -2,6 +2,7 @@
 
 #include "Fade.h"
 #include "SerialOut.h"
+#include "FMQTT.h"
 #include "FWebserver.h"
 #include "WebSocket.h"
 
@@ -30,6 +31,7 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
     WebSocket::initialize(projectName);
     Webserver::initialize();
     Fade::initialize();
+    FMQTT::initialize(projectName);
   }
 
   if (Config.sliderValues.size() >= 2)
@@ -83,6 +85,7 @@ void FastLEDHubClass::handle()
 
   Fade::handle();
   WebSocket::handle();
+  FMQTT::handle();
 }
 
 bool FastLEDHubClass::isDim()
@@ -112,6 +115,7 @@ void FastLEDHubClass::setBrightness(uint8_t brightness)
     brightness = round((float)brightness * brightness / 255.);
 
   CFastLED::setBrightness(brightness);
+  FMQTT::publishStatus();
 }
 
 uint8_t FastLEDHubClass::getBrightness()
@@ -355,6 +359,7 @@ void FastLEDHubClass::begin(Animation *animation)
   m_currentAnimation->reset();
 
   WebSocket::broadcastStatus();
+  FMQTT::publishStatus();
   PRINTLN("Started '" + m_currentAnimation->getName() + "'");
 }
 
@@ -380,6 +385,7 @@ void FastLEDHubClass::stop()
   m_currentAnimation = NULL;
 
   WebSocket::broadcastStatus();
+  FMQTT::publishStatus();
   PRINTLN("Stopped animation");
 }
 
@@ -391,6 +397,7 @@ void FastLEDHubClass::resume()
   m_status = RUNNING;
 
   WebSocket::broadcastStatus();
+  FMQTT::publishStatus();
   PRINTLN("Resumed '" + m_currentAnimation->getName() + "'");
 }
 
@@ -407,6 +414,7 @@ void FastLEDHubClass::pause()
   m_status = PAUSED;
 
   WebSocket::broadcastStatus();
+  FMQTT::publishStatus();
   PRINTLN("Paused '" + m_currentAnimation->getName() + "'");
 }
 

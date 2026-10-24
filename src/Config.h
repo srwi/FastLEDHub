@@ -26,6 +26,13 @@ public:
   int16_t sunsetOffset = 0;
   String sunsetAnimation = "";
   String startupAnimation = "";
+  bool mqttEnabled = false;
+  String mqttHost = "";
+  uint16_t mqttPort = 1883;
+  String mqttUsername = "";
+  String mqttPassword = "";
+  String mqttTopicName = "";
+  String mqttClientId = "";
   LinkedList<int16_t> sliderValues;
   LinkedList<CRGB> colorPickerValues;
 
