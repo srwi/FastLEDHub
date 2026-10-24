@@ -20,7 +20,7 @@ FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(true),
 {
 }
 
-void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorrection)
+void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorrection, bool enableBrightnessSlider, bool enableSpeedSlider)
 {
   m_gammaCorrectionEnabled = enableGammaCorrection;
   ESPEssentials::init(projectName);
@@ -39,8 +39,11 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
     setBrightness(m_brightness);
   }
 
-  registerSlider(new Slider("Brightness", 0, 255, 255, 1, "brightness-high"));
-  registerSlider(new Slider("Speed", 0, 255, 127, 1, "speedometer"));
+  if (enableBrightnessSlider)
+    registerSlider(new Slider("Brightness", 0, 255, 255, 1, "brightness-high"));
+
+  if (enableSpeedSlider)
+    registerSlider(new Slider("Speed", 0, 255, 127, 1, "speedometer"));
 }
 
 void FastLEDHubClass::enableCycleButton(uint8_t pin)
@@ -194,6 +197,48 @@ Slider *FastLEDHubClass::getSlider(String name)
 Slider *FastLEDHubClass::getSlider(uint8_t i)
 {
   return (i < sliders.size()) ? sliders.get(i) : NULL;
+}
+
+void FastLEDHubClass::enableBrightnessSlider(bool enable)
+{
+  Slider *s = getSlider("Brightness");
+  if (!enable && s)
+  {
+    for (uint8_t i = 0; i < sliders.size(); i++)
+    {
+      if (sliders.get(i) == s)
+      {
+        sliders.remove(i);
+        delete s;
+        break;
+      }
+    }
+  }
+  else if (enable && !s)
+  {
+    registerSlider(new Slider("Brightness", 0, 255, 255, 1, "brightness-high"));
+  }
+}
+
+void FastLEDHubClass::enableSpeedSlider(bool enable)
+{
+  Slider *s = getSlider("Speed");
+  if (!enable && s)
+  {
+    for (uint8_t i = 0; i < sliders.size(); i++)
+    {
+      if (sliders.get(i) == s)
+      {
+        sliders.remove(i);
+        delete s;
+        break;
+      }
+    }
+  }
+  else if (enable && !s)
+  {
+    registerSlider(new Slider("Speed", 0, 255, 127, 1, "speedometer"));
+  }
 }
 
 ColorPicker *FastLEDHubClass::getColorPicker(String name)

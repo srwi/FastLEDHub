@@ -35,7 +35,9 @@ public:
   /// Initialize FastLEDHub
   /// @param projectName Project name
   /// @param enableGammaCorrection Enable brightness gamma correction (default: true)
-  void initialize(const String &projectName, bool enableGammaCorrection = true);
+  /// @param enableBrightnessSlider Enable default Brightness slider (default: true)
+  /// @param enableSpeedSlider Enable default Speed slider (default: true)
+  void initialize(const String &projectName, bool enableGammaCorrection = true, bool enableBrightnessSlider = true, bool enableSpeedSlider = true);
 
   /// Initialize cycle button. The button will be used to cycle through animations.
   /// @param pin Button pin
@@ -85,6 +87,14 @@ public:
   /// @param i Slider index
   /// @return Pointer to slider
   Slider *getSlider(uint8_t i);
+
+  /// Enable or disable the default brightness slider
+  /// @param enable True to enable, false to disable
+  void enableBrightnessSlider(bool enable = true);
+
+  /// Enable or disable the default speed slider
+  /// @param enable True to enable, false to disable
+  void enableSpeedSlider(bool enable = true);
 
   /// Return a pointer to a color picker by name
   /// @param name Color picker name

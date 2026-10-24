@@ -63,12 +63,17 @@ namespace WebSocket
       case 20: // Slider data
       {
         int16_t value = (binary[2] << 8) | binary[3];
-        if (binary[1] == 0)
-          FastLEDHub.setBrightness(value);
-        else if (binary[1] == 1)
-          FastLEDHub.setSpeed(value);
-        Config.sliderValues.set(binary[1], value);
-        FastLEDHub.getSlider(binary[1])->value = value;
+        Slider *slider = FastLEDHub.getSlider(binary[1]);
+        if (slider)
+        {
+          if (slider->name == "Brightness")
+            FastLEDHub.setBrightness(value);
+          else if (slider->name == "Speed")
+            FastLEDHub.setSpeed(value);
+          slider->value = value;
+        }
+        if (binary[1] < Config.sliderValues.size())
+          Config.sliderValues.set(binary[1], value);
         break;
       }
       case 30: // Spectrum data
