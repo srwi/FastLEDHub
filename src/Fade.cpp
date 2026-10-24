@@ -62,7 +62,7 @@ namespace Fade
         payload = http.getString();
       http.end();
 
-      StaticJsonDocument<1024> doc;
+      JsonDocument doc;
       deserializeJson(doc, payload);
       if (doc.containsKey("results") && doc["results"].containsKey("sunset"))
       {
