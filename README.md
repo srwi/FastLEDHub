@@ -17,6 +17,7 @@ FastLEDHub allows you to manage all of your [FastLED]([FastLED](https://github.c
 - Incorporate audio spectrum data into your animations
 - Control animations using HTTP requests for easy automation
 - Control animations and settings via MQTT with Home Assistant auto-discovery
+- Realtime streaming: Stream live LED data via UDP (supporting WLED, DDP, and Hyperion protocols) from software like Hyperion, LedFX, or xLights
 
 ## Demo
 
@@ -259,6 +260,10 @@ MQTT can be configured in the web interface under settings:
 - **Username / Password**: Optional credentials for broker authentication
 - **Base Topic**: Base topic prefix (defaults to the project name passed to `FastLEDHub.initialize()`)
 - **Client ID**: Unique client ID (defaults to `<ProjectName>-<ChipID/MAC>`)
+
+### Realtime streaming
+
+FastLEDHub supports streaming live LED pixel data in real time over UDP. It supports WLED, DDP, and Hyperion protocols, allowing you to control your LEDs directly from external applications such as Hyperion, LedFX or xLights without extra configuration.
 
 ## License & Attribution
 
