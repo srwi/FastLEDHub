@@ -5,6 +5,7 @@
 #include "FMQTT.h"
 #include "FWebserver.h"
 #include "WebSocket.h"
+#include "RealtimeStream.h"
 
 FastLEDHubClass::FastLEDHubClass() : m_cycleButtonPushed(true),
                                      m_toggleButtonPushed(true),
@@ -33,6 +34,7 @@ void FastLEDHubClass::initialize(const String &projectName, bool enableGammaCorr
     Fade::initialize();
     FMQTT::initialize(projectName);
   }
+  RealtimeStream::initialize();
 
   if (Config.sliderValues.size() >= 2)
   {
@@ -80,8 +82,13 @@ void FastLEDHubClass::handle()
   if (!m_autostartHandled)
     autostart();
 
-  if (m_status == RUNNING && m_currentAnimation)
-    m_currentAnimation->loop();
+  RealtimeStream::handle();
+
+  if (!RealtimeStream::isActive())
+  {
+    if (m_status == RUNNING && m_currentAnimation)
+      m_currentAnimation->loop();
+  }
 
   Fade::handle();
   WebSocket::handle();
@@ -337,6 +344,11 @@ String FastLEDHubClass::getCurrentAnimationName()
   return m_currentAnimation->getName();
 }
 
+bool FastLEDHubClass::isRealtimeStreaming()
+{
+  return RealtimeStream::isActive();
+}
+
 void FastLEDHubClass::autostart()
 {
   if (Config.startupAnimation == "")
@@ -351,6 +363,9 @@ void FastLEDHubClass::begin(Animation *animation)
 {
   if (animation == NULL || (m_currentAnimation && m_currentAnimation->getName() == animation->getName()))
     return;
+
+  if (RealtimeStream::isActive())
+    RealtimeStream::stop();
 
   clear(true);
 
@@ -377,6 +392,9 @@ void FastLEDHubClass::cycle()
 
 void FastLEDHubClass::stop()
 {
+  if (RealtimeStream::isActive())
+    RealtimeStream::stop();
+
   if (m_status == STOPPED)
     return;
 

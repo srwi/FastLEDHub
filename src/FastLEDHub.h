@@ -165,6 +165,10 @@ public:
   /// @return Current animation name
   String getCurrentAnimationName();
 
+  /// Check if a realtime live stream (e.g. from Android TV, Hyperion, WLED UDP, DDP) is currently active
+  /// @return True if streaming
+  bool isRealtimeStreaming();
+
   /// Spectrum data byte array of length SPECTRUM_LENGTH
   uint8_t spectrumData[SPECTRUM_LENGTH];
 
